@@ -20,35 +20,6 @@
 
   <!-- Custom Theme Style -->
   <link href="../static/build/css/custom.min.css" rel="stylesheet">
-  <style>
-    body, html {
-      height: 100%;
-    }
-    .profile-header {
-      text-align: center;
-    }
-    .profile-picture {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background-color: #f0f0f0;
-      display: inline-block;
-      margin-bottom: 20px;
-    }
-    .form-container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .centered {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  </style>
 </head>
 
 <body class="nav-md">
@@ -57,7 +28,7 @@
     <div class="col-md-3 left_col">
       <div class="left_col scroll-view">
         <div class="navbar nav_title" style="border: 0;">
-          <a href="../static/vendors/bootstrap-daterangepicker/example/amd/index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+          <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
         </div>
 
         <div class="clearfix"></div>
@@ -83,7 +54,7 @@
             <ul class="nav side-menu">
               <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                  <li><a href="../static/vendors/bootstrap-daterangepicker/example/amd/index.html">Dashboard</a></li>
+                  <li><a href="index.html">Dashboard</a></li>
                   <li><a href="index2.html">Dashboard2</a></li>
                   <li><a href="index3.html">Dashboard3</a></li>
                 </ul>
@@ -221,7 +192,6 @@
                 <a class="dropdown-item"  href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
               </div>
             </li>
-
           </ul>
         </nav>
       </div>
@@ -230,47 +200,167 @@
 
     <!-- page content -->
     <div class="right_col" role="main">
-      <div class="container centered">
-        <div class="w-100">
-          <div class="profile-header">
-            <h2>Hi, Quan!</h2>
-            <p>Change information about yourself on this page.</p>
-            <div class="profile-picture"></div>
+      <div class="">
+        <div class="page-title">
+          <div class="title_left">
+            <h3>Warranty List</h3>
           </div>
-          <div class="form-container">
-            <form>
-              <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="quan@gmail.com">
+
+          <div class="title_right">
+            <div class="col-md-5 col-sm-5   form-group pull-right top_search">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search for...">
+                <span class="input-group-btn">
+                      <button class="btn btn-secondary" type="button">Go!</button>
+                    </span>
               </div>
-              <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Quan">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="x_panel">
+              <div class="x_content">
+                <!-- start project list -->
+                <table class="table table-striped projects">
+                  <thead>
+                  <tr>
+                    <th style="width: 1%">WarrantyId</th>
+                    <th style="width: 20%">ProductName</th>
+                    <th>UserName</th>
+                    <th>RepairDate</th>
+                    <th>Status</th>
+                    <th style="width: 20%">Edit</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>
+                      <a>IPhone15 Pro Max</a>
+                    </td>
+                    <td>
+                      <p>Nguyen Van A</p>
+                    </td>
+                    <td class="project_progress">
+                      <p>2/2/2222</p>
+                    </td>
+                    <td class="project_progress">
+                      <p>Success</p>
+                    </td>
+                    <td>
+                      <a href="#" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Edit </a>
+                      <!--                            <a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>-->
+<!--                      <a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>-->
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>
+                      <a>IPhone15 Pro Max</a>
+                    </td>
+                    <td>
+                      <p>Nguyen Van A</p>
+                    </td>
+                    <td class="project_progress">
+                      <p>2/2/2222</p>
+                    </td>
+                    <td class="project_progress">
+                      <p>Success</p>
+                    </td>
+                    <td>
+                      <a href="#" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Edit </a>
+                      <!--                            <a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>-->
+                      <!--                      <a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>-->
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>
+                      <a>IPhone15 Pro Max</a>
+                    </td>
+                    <td>
+                      <p>Nguyen Van A</p>
+                    </td>
+                    <td class="project_progress">
+                      <p>2/2/2222</p>
+                    </td>
+                    <td class="project_progress">
+                      <p>Success</p>
+                    </td>
+                    <td>
+                      <a href="#" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Edit </a>
+                      <!--                            <a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>-->
+                      <!--                      <a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>-->
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>
+                      <a>IPhone15 Pro Max</a>
+                    </td>
+                    <td>
+                      <p>Nguyen Van A</p>
+                    </td>
+                    <td class="project_progress">
+                      <p>2/2/2222</p>
+                    </td>
+                    <td class="project_progress">
+                      <p>Success</p>
+                    </td>
+                    <td>
+                      <a href="#" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Edit </a>
+                      <!--                            <a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>-->
+                      <!--                      <a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>-->
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>
+                      <a>IPhone15 Pro Max</a>
+                    </td>
+                    <td>
+                      <p>Nguyen Van A</p>
+                    </td>
+                    <td class="project_progress">
+                      <p>2/2/2222</p>
+                    </td>
+                    <td class="project_progress">
+                      <p>Success</p>
+                    </td>
+                    <td>
+                      <a href="#" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Edit </a>
+                      <!--                            <a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>-->
+                      <!--                      <a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>-->
+                    </td>
+                  </tr>
+
+                  </tbody>
+                </table>
+                <!-- end project list -->
+                <nav aria-label="...">
+                  <ul class="pagination justify-content-end">
+                    <li class="page-item disabled">
+                      <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active" aria-current="page">
+                      <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">Next</a>
+                    </li>
+                  </ul>
+                </nav>
               </div>
-              <div class="mb-3">
-                <label for="firstName" class="form-label">FullName</label>
-                <input type="text" class="form-control" id="firstName" placeholder="Quan">
-              </div>
-              <div class="mb-3">
-                <label for="phone" class="form-label">Phone</label>
-                <input type="tel" class="form-control" id="phone" placeholder="">
-              </div>
-              <button type="submit" class="btn btn-primary">Save Changes</button>
-            </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- /page content -->
-
-    <!-- footer content -->
-    <footer>
-      <div class="pull-right">
-        Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-      </div>
-      <div class="clearfix"></div>
-    </footer>
-    <!-- /footer content -->
   </div>
 </div>
 
@@ -282,8 +372,10 @@
 <script src="../static/vendors/fastclick/lib/fastclick.js"></script>
 <!-- NProgress -->
 <script src="../static/vendors/nprogress/nprogress.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="../static/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
 
 <!-- Custom Theme Scripts -->
-<script src="../static/build/js/custom.min.js"></script>
+<script src="../build/js/custom.min.js"></script>
 </body>
 </html>
