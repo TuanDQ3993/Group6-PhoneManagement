@@ -92,8 +92,7 @@ CREATE TABLE WarrantyRepair (
     repair_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50),
     FOREIGN KEY (product_id) REFERENCES Product(product_id),
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id),
-    FOREIGN KEY (technical_id) REFERENCES UserAccount(user_id)
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
 );  
 
 -- Table to manage purchases (hàng nhập)
