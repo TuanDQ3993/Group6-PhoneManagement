@@ -61,7 +61,7 @@ CREATE TABLE ProductColor (
 );
 
 -- Table to manage orders
-CREATE TABLE `Order` (
+CREATE TABLE Orders (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,  -- nguoi mua
     saler_id INT, -- nguoi ban
