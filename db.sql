@@ -59,36 +59,59 @@ CREATE TABLE ProductColor (
     FOREIGN KEY (color_id) REFERENCES Color(color_id)
 );
 
--- Table to manage sales
-CREATE TABLE Sales (
-    sales_id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT,
-    user_id INT,
-    quantity INT NOT NULL,
-    sales_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (product_id) REFERENCES Product(product_id),
+-- Table to manage orders
+CREATE TABLE `Order` (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,  -- nguoi mua
+    saler_id INT, -- nguoi ban
+    order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    total_amount DECIMAL(10,2),
+    status VARCHAR(50), 
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
+);
+
+-- Table to manage order details
+CREATE TABLE OrderDetail (
+    order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,
+    product_id INT,
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES `Order`(order_id),
+    FOREIGN KEY (product_id) REFERENCES Product(product_id)
 );
 
 -- Table to manage warranty and repair
 CREATE TABLE WarrantyRepair (
     warranty_id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT,
-    user_id INT,
+    user_id INT,   -- Nguoi can sua
+    technical_id INT, -- Nguoi sua
     issue_description VARCHAR(255),
     repair_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50),
     FOREIGN KEY (product_id) REFERENCES Product(product_id),
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
+);  
+
+-- Table to manage purchases (hàng nhập)
+CREATE TABLE Purchase (
+    purchase_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,  -- Nguoi nhap hang
+    purchase_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    total_amount DECIMAL(10,2),
+    origin VARCHAR(50),
+    status VARCHAR(50),
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
 );
 
--- Table to manage product returns
-CREATE TABLE ReturnProduct (
-    return_id INT AUTO_INCREMENT PRIMARY KEY,
+-- Table to manage purchase details (chi tiết hàng nhập)
+CREATE TABLE PurchaseDetail (
+    purchase_detail_id INT AUTO_INCREMENT PRIMARY KEY,
+    purchase_id INT,
     product_id INT,
-    user_id INT,
-    return_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    reason VARCHAR(255),
-    FOREIGN KEY (product_id) REFERENCES Product(product_id),
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES Purchase(purchase_id),
+    FOREIGN KEY (product_id) REFERENCES Product(product_id)
 );
