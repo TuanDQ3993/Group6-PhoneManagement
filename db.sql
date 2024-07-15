@@ -18,6 +18,7 @@ CREATE TABLE UserAccount (
     phone_number VARCHAR(50) NOT NULL,
     role_id INT,
     active BIT,
+    avatar longtext, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (role_id) REFERENCES Role(role_id)
 );
