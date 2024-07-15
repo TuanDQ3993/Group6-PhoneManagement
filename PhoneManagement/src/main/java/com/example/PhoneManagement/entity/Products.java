@@ -2,14 +2,20 @@ package com.example.PhoneManagement.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-@Data
+
 @Entity(name = "Product")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Products {
     @Id
@@ -17,17 +23,18 @@ public class Products {
     @Column(name="product_id")
     int productId;
 
-    @Column(name="product_name")
+    @Column(name="product_name", nullable = false, length = 100)
     String productName;
 
-    @Column(name="description")
+    @Lob
+    @Column(name="description",columnDefinition = "text")
     String description;
 
     @Column(name = "quantity")
     int quantity;
 
-    @Column(name="price")
-    float price ;
+    @Column(name="price", precision = 10, scale = 2)
+    BigDecimal price ;
 
     @Column(name="warranty_period")
     int warrantyPeriod;
@@ -44,13 +51,16 @@ public class Products {
     List<ProductColor> productColorList;
 
     @OneToMany(mappedBy = "products")
-    List<Sales> salesList;
-
-    @OneToMany(mappedBy = "products")
     List<WarrantyRepair> warrantyRepairList;
 
     @OneToMany(mappedBy = "products")
-    List<ReturnProduct> returnProductList;
+    List<OrderDetail> orderDetailList;
+
+    @OneToMany(mappedBy = "products")
+    List<PurchaseDetail> purchaseDetailList;
+
+
+
 
 
 }
