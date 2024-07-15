@@ -3,13 +3,18 @@ package com.example.PhoneManagement.entity;
 import com.example.PhoneManagement.entity.Key.KeyProductColor;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 
-@Data
+
 @Entity(name = "productcolor")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductColor {
 
@@ -24,7 +29,8 @@ public class ProductColor {
     @JoinColumn(name="color_id",insertable = false, updatable = false)
     Colors colors;
 
-    @Column(name="image")
+    @Lob
+    @Column(name="image",columnDefinition = "text")
     String image;
 
     @Column(name="quantity")

@@ -7,36 +7,31 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.math.BigDecimal;
 
-@Entity(name="warrantyrepair")
+@Entity(name = "orderdetail")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class WarrantyRepair {
+public class OrderDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="warranty_id")
-    int warrantyId;
+    @Column(name="order_detail_id")
+    int orderDetailId;
 
-    @Column(name="issue_description")
-    String issueDescription;
+    @Column(name="quantity",nullable = false)
+    int quantity;
 
-    @Column(name="repair_date")
-    Date repairDate;
-
-    @Column(name="technical_id")
-    int technicalId;
+    @Column(name="price",nullable = false, precision = 10, scale = 2)
+    BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
-    Users user;
+    @JoinColumn(name="order_id")
+    Orders order;
 
     @ManyToOne
     @JoinColumn(name="product_id")
     Products products;
-
-
 }
