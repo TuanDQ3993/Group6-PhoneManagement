@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
@@ -8,18 +8,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Gentelella Alela! | </title>
-
+    <base th:href="@{/}" />
     <!-- Bootstrap -->
-    <link href="../static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="../static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link th:href="@{vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
     <!-- NProgress -->
-    <link href="../static/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <link th:href="@{vendors/nprogress/nprogress.css}" rel="stylesheet">
     <!-- iCheck -->
-    <link href="../static/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <link th:href="@{vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="../static/build/css/custom.min.css" rel="stylesheet">
+    <link th:href="@{build/css/custom.min.css}" rel="stylesheet">
   </head>
 
   <body class="nav-md">
@@ -244,30 +244,23 @@
                     <div class="col-md-7 col-sm-7 ">
                       <div class="d-flex justify-content-center">
                         <div class="product-image">
-                          <img style="width:60%" src="https://minhtuanmobile.com/uploads/products/230913061106-iphone-15-pro-max-natural.png" alt="..." />
+                          <img style="width:60%" th:src="${product.image.get(1)}" alt="..." />
                         </div>
                       </div>
                       <div class="d-flex justify-content-center mt-3">
                         <div class="product_gallery d-flex">
-                          <a class="mx-2">
-                            <img src="https://minhtuanmobile.com/uploads/products/230913061106-iphone-15-pro-max-natural.png" alt="..." />
-                          </a>
-                          <a class="mx-2">
-                            <img src="https://minhtuanmobile.com/uploads/products/230913061106-iphone-15-pro-max-natural.png" alt="..." />
-                          </a>
-                          <a class="mx-2">
-                            <img src="https://minhtuanmobile.com/uploads/products/230913061106-iphone-15-pro-max-natural.png" alt="..." />
+                          <a class="mx-2" th:each="image : ${product.image}">
+                            <img th:src="${image}" alt="..." />
                           </a>
                         </div>
                       </div>
-
-                    </div>
+                     </div>
 
                     <div class="col-md-5 col-sm-5 " style="border:0px solid #e5e5e5;">
 
-                      <h3 class="prod_title">Iphone15 Pro Max</h3>
+                      <h3 class="prod_title" th:text="${product.productName}"></h3>
 
-                      <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terr.</p>
+                      <p th:text="${product.description}"></p>
                       <br />
 
                       <div class="">
@@ -295,7 +288,7 @@
 
                       <div class="">
                         <div class="product_price">
-                          <h1 class="price">42.000.000</h1>
+                          <h1 class="price" th:text="${product.price}"></h1>
                           <br>
                         </div>
                       </div>
@@ -310,15 +303,15 @@
     </div>
 
     <!-- jQuery -->
-    <script src="../static/vendors/jquery/dist/jquery.min.js"></script>
+    <script th:src="@{vendors/jquery/dist/jquery.min.js}"></script>
     <!-- Bootstrap -->
-   <script src="../static/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+   <script th:src="@{vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
     <!-- FastClick -->
-    <script src="../static/vendors/fastclick/lib/fastclick.js"></script>
+    <script th:src="@{vendors/fastclick/lib/fastclick.js}"></script>
     <!-- NProgress -->
-    <script src="../static/vendors/nprogress/nprogress.js"></script>
+    <script th:src="@{vendors/nprogress/nprogress.js}"></script>
 
     <!-- Custom Theme Scripts -->
-    <script src="../static/build/js/custom.min.js"></script>
+    <script th:src="@{build/js/custom.min.js}"></script>
   </body>
 </html>
