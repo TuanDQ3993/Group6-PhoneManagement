@@ -1,12 +1,12 @@
 package com.example.PhoneManagement.controller;
 
-import com.example.PhoneManagement.dto.request.UserCreate;
-import com.example.PhoneManagement.dto.request.UserUpdateRequest;
+import com.example.PhoneManagement.dto.request.UserDTO;
 import com.example.PhoneManagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.security.Principal;
+import java.util.Optional;
 
 @RestController
 @RequestMapping ("/user")
@@ -14,29 +14,38 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @GetMapping("")
-    public ResponseEntity<?> getAllUser() {
-        return new ResponseEntity<>(userService.getAllUser(), HttpStatus.OK);
+
+    /* Test treen Postman
+    @GetMapping("/profile")
+    public UserDTO getProfile(Model model, @RequestBody LoginRequest loginRequest) {
+        String userName = loginRequest.getUsername();
+        Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
+        if(userDTO.isPresent()) {
+            model.addAttribute("user", userDTO.get());
+            return userDTO.get();
+        }else {
+            return new UserDTO();
+        }
+    }
+     */
+
+    @GetMapping("/profile")
+    public UserDTO getProfile(Model model, Principal principal) {
+        String userName = principal.getName();
+        Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
+        if(userDTO.isPresent()) {
+            model.addAttribute("user", userDTO.get());
+            return userDTO.get();
+        }else {
+            return new UserDTO();
+        }
     }
 
-    @PostMapping
-    public ResponseEntity<?> addUser(@RequestBody UserCreate request) {
-        return new ResponseEntity<>(userService.CreateUser(request), HttpStatus.OK);
+    @PutMapping("/profile")
+    public String updateProfile(@ModelAttribute("user") UserDTO userDTO) {
+        userService.updateUser(userDTO);
+        return "redirect:/profile?success";
     }
 
-    @GetMapping("/{userid}")
-    public ResponseEntity<?> getUserById(@PathVariable int userid) {
-        return new ResponseEntity<>(userService.getUserById(userid), HttpStatus.OK);
-    }
 
-    @PutMapping("/{userid}")
-    public ResponseEntity<?> updateUser(@PathVariable int userid, @RequestBody UserUpdateRequest request) {
-        return new ResponseEntity<>(userService.updateUser(userid,request), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{userid}")
-    public String deleteUser(@PathVariable int userid) {
-        userService.deleteUser(userid);
-        return "User deleted";
-    }
 }
