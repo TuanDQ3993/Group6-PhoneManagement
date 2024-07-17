@@ -15,12 +15,11 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDTO {
 
-    int userId;
     String userName;
-    String password;
     String fullName;
     String address;
     String phoneNumber;
-    Date createdAt;
-    int roleId;
+    String roleName;
+    String avatar;
+
 }
