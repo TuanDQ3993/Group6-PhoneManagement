@@ -51,7 +51,6 @@ public class Users {
     @JoinColumn(name="role_id")
     Roles role;
 
-
     @OneToMany(mappedBy = "user")
     List<WarrantyRepair> warrantyRepairList;
 

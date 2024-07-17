@@ -18,8 +18,10 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductColor {
 
-    @EmbeddedId
-    KeyProductColor keyProductColor;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="product_color_id")
+    int productcolorId;
 
     @ManyToOne
     @JoinColumn(name="product_id",insertable = false, updatable = false)
@@ -38,8 +40,4 @@ public class ProductColor {
 
     @Column(name="last_updated")
     Date lastUpdated;
-
-
-
-
 }
