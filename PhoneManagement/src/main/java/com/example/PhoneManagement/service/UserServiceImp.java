@@ -7,6 +7,7 @@ import com.example.PhoneManagement.entity.Roles;
 import com.example.PhoneManagement.entity.Users;
 import com.example.PhoneManagement.repository.RoleRepository;
 import com.example.PhoneManagement.repository.UserRepository;
+import com.example.PhoneManagement.service.imp.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserServiceImp implements UserService {
       @Autowired
       private UserRepository userRepository;
 
