@@ -43,11 +43,7 @@
                 <h2>John Doe</h2>
               </div>
             </div>
-            <!-- /menu profile quick info -->
-
             <br />
-
-            <!-- sidebar menu -->
             <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
               <div class="menu_section">
                 <h3>General</h3>
@@ -200,97 +196,112 @@
 
         <!-- page content -->
         <div class="right_col" role="main">
-
           <div class="">
-<!--            <div class="page-title">-->
-<!--              <div class="title_left">-->
-<!--                <h3>E-commerce :: Product Page</h3>-->
-<!--              </div>-->
-
-<!--              <div class="title_right">-->
-<!--                <div class="col-md-5 col-sm-5  form-group pull-right top_search">-->
-<!--                  <div class="input-group">-->
-<!--                    <input type="text" class="form-control" placeholder="Search for...">-->
-<!--                    <span class="input-group-btn">-->
-<!--                      <button class="btn btn-default" type="button">Go!</button>-->
-<!--                    </span>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-
             <div class="row">
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                   <div class="x_title">
                     <h2>Product Details</h2>
-<!--                    <ul class="nav navbar-right panel_toolbox">-->
-<!--                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>-->
-<!--                      </li>-->
-<!--                      <li class="dropdown">-->
-<!--                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>-->
-<!--                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">-->
-<!--                            <a class="dropdown-item" href="#">Settings 1</a>-->
-<!--                            <a class="dropdown-item" href="#">Settings 2</a>-->
-<!--                          </div>-->
-<!--                      </li>-->
-<!--                      <li><a class="close-link"><i class="fa fa-close"></i></a>-->
-<!--                      </li>-->
-<!--                    </ul>-->
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-
                     <div class="col-md-7 col-sm-7 ">
                       <div class="d-flex justify-content-center">
-                        <div class="product-image">
-                          <img style="width:60%" th:src="${product.image.get(1)}" alt="..." />
+                        <div class="product-image" >
+                          <img id="mainImage" style="display: flex; margin: 0 auto;" th:src="${product.image.get(1)}" alt="..." />
                         </div>
                       </div>
                       <div class="d-flex justify-content-center mt-3">
                         <div class="product_gallery d-flex">
-                          <a class="mx-2" th:each="image : ${product.image}">
-                            <img th:src="${image}" alt="..." />
+                          <a class="mx-2" th:each="image : ${product.image}" onclick="changeMainImage(this)">
+                            <img style="cursor: pointer" th:src="${image}" alt="..." />
                           </a>
                         </div>
                       </div>
                      </div>
 
-                    <div class="col-md-5 col-sm-5 " style="border:0px solid #e5e5e5;">
+                   <form th:method="post" th:action="@{/product/{productId}(productId=${product.productId})}">
+                     <div class="col-md-5 col-sm-5 " style="border:0px solid #e5e5e5;">
+                       <input th:field="*{product.productName}" style="font-size: 20px; padding: 5px; margin-bottom: 20px"  th:value="${product.productName}"> <br>
+                       <select th:field="*{product.category}">
+                         <option  th:each="cate : ${category}"
+                                th:text="${cate.categoryName}"
+                                 th:value="${cate.categoryId}"
+                                 th:selected="${cate.categoryId == product.category}"></option>
+                       </select>
+                       <br>
+                       <textarea th:field="*{product.description}" th:text="${product.description}" rows="8" cols="200" style="width: 100%; height: 300px"></textarea>
+                       <br />
+                       <div class="">
+                         <ul class="list-inline prod_color display-layout">
+                         </ul>
+                       </div>
+                       <br />
+                           <input th:field="*{product.price}" style="font-size: 30px;width:50%;padding: 5px;margin-bottom: 20px;" class="price" th:value="${product.price}">
+                            <input th:field="*{product.warrantyPeriod}" th:value="${product.warrantyPeriod}">
+                       <br>
+                       <button style="position: absolute; right: 0; margin-top: 10px; font-size: 20px; padding: 5px 15px;">Save Changes</button>
+                     </div>
+                   </form>
 
-                      <h3 class="prod_title" th:text="${product.productName}"></h3>
-
-                      <p th:text="${product.description}"></p>
-                      <br />
-
-                      <div class="">
-                        <ul class="list-inline prod_color display-layout">
-<!--                          <li>-->
-<!--                            <p>Green</p>-->
-<!--                            <div class="color bg-green"></div>-->
-<!--                          </li>-->
-<!--                          <li>-->
-<!--                            <p>Blue</p>-->
-<!--                            <div class="color bg-blue"></div>-->
-<!--                          </li>-->
-<!--                          <li>-->
-<!--                            <p>Red</p>-->
-<!--                            <div class="color bg-red"></div>-->
-<!--                          </li>-->
-<!--                          <li>-->
-<!--                            <p>Orange</p>-->
-<!--                            <div class="color bg-orange"></div>-->
-<!--                          </li>-->
-
-                        </ul>
-                      </div>
-                      <br />
-
-                      <div class="">
-                        <div class="product_price">
-                          <h1 class="price" th:text="${product.price}"></h1>
-                          <br>
-                        </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="x_panel">
+                        <div class="x_content">
+                          <!-- start project list -->
+                          <table class="table table-striped projects">
+                          <thead>
+                          <tr>
+                            <th>Color</th>
+                            <th>Image</th>
+                            <th>Quantity</th>
+                            <th>Edit</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr th:each="i : ${#numbers.sequence(0, size - 1)}">
+                            <form th:action="@{'/product/' + ${productId} + '?proId=' + ${proId}}" method="post">
+                              <td>
+                                <span th:text="${product.getColorName().get(i)}"></span>
+                                <input hidden type="text" name="color" th:value="${product.getColorId().get(i)}">
+                                <input type="text" class="form-control" th:value="${product.getColorName().get(i)}" style="display:none;"/>
+                              </td>
+                              <td>
+                                <span th:text="${product.getImage().get(i)}"></span>
+                                <input type="text" class="form-control" name="image" th:value="${product.getImage().get(i)}" style="display:none;"/>
+                              </td>
+                              <td>
+                                <span th:text="${product.getQuantity().get(i)}"></span>
+                                <input type="text" class="form-control" name="quantity" th:value="${product.getQuantity().get(i)}" style="display:none;"/>
+                              </td>
+                              <td>
+                                <input type="hidden" name="index" th:value="${i}" />
+                                <button type="button" class="btn btn-primary btn-xs edit-btn"><i class="fa fa-folder"></i> View </button>
+                                <button type="submit" class="btn btn-success btn-xs save-btn" style="display:none;"><i class="fa fa-save"></i> Save </button>
+                                <button type="button" class="btn btn-danger btn-xs cancel-btn" style="display:none;"><i class="fa fa-times"></i> Cancel </button>
+                              </td>
+                            </form>
+                          </tr>
+                          </tbody>
+                        </table>
+                          <!-- end project list -->
+                          <nav aria-label="...">
+                            <ul class="pagination justify-content-end">
+                              <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                              </li>
+                              <li class="page-item"><a class="page-link" href="#">1</a></li>
+                              <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="#">2</a>
+                              </li>
+                              <li class="page-item"><a class="page-link" href="#">3</a></li>
+                              <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                              </li>
+                            </ul>
+                          </nav>
+                          <!-- Bootstrap Modal -->
                       </div>
                     </div>
                   </div>
@@ -310,7 +321,29 @@
     <script th:src="@{vendors/fastclick/lib/fastclick.js}"></script>
     <!-- NProgress -->
     <script th:src="@{vendors/nprogress/nprogress.js}"></script>
+    <script>
+      function changeMainImage(element) {
+        const newSrc = element.querySelector('img').getAttribute('src');
+        document.getElementById('mainImage').setAttribute('src', newSrc);
+      }
+      $(document).ready(function() {
+        $('.edit-btn').click(function() {
+          var row = $(this).closest('tr');
+          row.find('span').hide();
+          row.find('input.form-control').show();
+          row.find('.edit-btn').hide();
+          row.find('.save-btn, .cancel-btn').show();
+        });
 
+        $('.cancel-btn').click(function() {
+          var row = $(this).closest('tr');
+          row.find('span').show();
+          row.find('input.form-control').hide();
+          row.find('.edit-btn').show();
+          row.find('.save-btn, .cancel-btn').hide();
+        });
+      });
+    </script>
     <!-- Custom Theme Scripts -->
     <script th:src="@{build/js/custom.min.js}"></script>
   </body>

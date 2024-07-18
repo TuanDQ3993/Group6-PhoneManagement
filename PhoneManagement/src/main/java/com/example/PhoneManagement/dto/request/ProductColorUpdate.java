@@ -1,29 +1,25 @@
 package com.example.PhoneManagement.dto.request;
 
 import com.example.PhoneManagement.entity.Colors;
+import com.example.PhoneManagement.entity.Products;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductViewRequest {
+public class ProductColorUpdate {
     int productId;
-    String productName;
-    int category;
-    List<Integer> colorId;
-    List<String> colorName;
-    List<String> image;
-    BigDecimal price;
-    String description;
-    List<Integer> quantity;
-    int warrantyPeriod;
+    int colorId;
+    String image;
+    int quantity;
     Date lastUpdated;
-    Date createdAt;
 }

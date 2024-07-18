@@ -229,7 +229,7 @@
                                     <tr>
                                         <th style="width: 1%">ProductId</th>
                                         <th style="width: 20%">ProductName</th>
-                                        <th>image</th>
+                                        <th>Image</th>
                                         <th>Quantity</th>
                                         <th>Price</th>
                                         <th>Category</th>
@@ -241,27 +241,33 @@
                                     <tr th:each="product : ${proList}">
                                         <td th:text="${product.productId}"></td>
                                         <td>
-                                            <a th:text="${product.productName}"></a>
+                                            <span class="view-span" th:text="${product.productName}"></span>
+                                            <input type="text" class="form-control edit-input" name="productName" th:value="${product.productName}" readonly style="display: none;">
                                         </td>
                                         <td>
-                                            <img style="width: 38%;" th:src="${product.image}">
-                                        </td>
-                                        <td class="project_progress">
-                                            <p th:text="${product.quantity}"></p>
-                                        </td>
-                                        <td class="project_progress">
-                                            <p th:text="${product.price}"></p>
+                                            <img style="width: 38%;" th:src="${product.image}" alt="Product Image">
                                         </td>
                                         <td>
-                                            <p th:text="${product.categoryId}"></p>
+                                            <span class="view-span" th:text="${product.quantity}"></span>
+                                            <input type="number" class="form-control edit-input" name="quantity" th:value="${product.quantity}" readonly style="display: none;">
                                         </td>
                                         <td>
-                                            <p th:text="${product.createdAt}"></p>
+                                            <span class="view-span" th:text="${product.price}"></span>
+                                            <input type="text" class="form-control edit-input" name="price" th:value="${product.price}" readonly style="display: none;">
                                         </td>
                                         <td>
-                                            <a th:href="@{/product(productId=${product.productId})}" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View </a>
-                                            <!--                            <a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>-->
-                                            <a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>
+                                            <span class="view-span" th:text="${product.cateName}"></span>
+                                            <input type="text" class="form-control edit-input" name="category" th:value="${product.cateName}" readonly style="display: none;">
+                                        </td>
+                                        <td>
+                                            <span class="view-span" th:text="${product.createdAt}"></span>
+                                            <input type="text" class="form-control edit-input" name="createdAt" th:value="${product.createdAt}" readonly style="display: none;">
+                                        </td>
+                                        <td>
+                                            <a href="#" class="btn btn-primary btn-xs edit-btn"><i class="fa fa-folder"></i> Edit </a>
+                                            <a href="#" class="btn btn-success btn-xs save-btn" style="display:none;"><i class="fa fa-save"></i> Save </a>
+                                            <a href="#" class="btn btn-danger btn-xs delete-btn"><i class="fa fa-trash-o"></i> Delete </a>
+                                            <a href="#" class="btn btn-warning btn-xs cancel-btn" style="display:none;"><i class="fa fa-times"></i> Cancel </a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -304,5 +310,44 @@
 
 <!-- Custom Theme Scripts -->
 <script th:src="@{build/js/custom.min.js}"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.edit-btn').click(function(e) {
+            e.preventDefault();
+            var row = $(this).closest('tr');
+            row.find('.view-span').hide();
+            row.find('.edit-input').show().prop('readonly', false);
+            $(this).hide();
+            row.find('.save-btn').show();
+            row.find('.delete-btn').hide(); // Ẩn nút Delete khi chỉnh sửa
+            row.find('.cancel-btn').show();
+        });
+
+        $('.save-btn').click(function(e) {
+            e.preventDefault();
+            var row = $(this).closest('tr');
+            // Gửi dữ liệu sửa đổi đến server (nếu cần)
+            // Sau khi lưu thành công, cập nhật giao diện
+            row.find('.edit-input').hide().prop('readonly', true);
+            row.find('.view-span').show();
+            $(this).hide();
+            row.find('.edit-btn').show();
+            row.find('.delete-btn').show(); // Hiện lại nút Delete
+            row.find('.cancel-btn').hide();
+        });
+
+        $('.cancel-btn').click(function(e) {
+            e.preventDefault();
+            var row = $(this).closest('tr');
+            row.find('.edit-input').hide().prop('readonly', true);
+            row.find('.view-span').show();
+            $(this).hide();
+            row.find('.edit-btn').show();
+            row.find('.save-btn').hide();
+            row.find('.delete-btn').show(); // Hiện lại nút Delete
+        });
+    });
+</script>
 </body>
 </html>

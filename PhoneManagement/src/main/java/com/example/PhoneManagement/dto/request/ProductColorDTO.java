@@ -19,7 +19,7 @@ public class ProductColorDTO {
     int productId;
     String productName;
     int categoryId;
-//    int colorId;
+    String cateName;
     String image;
     BigDecimal price;
     int quantity;

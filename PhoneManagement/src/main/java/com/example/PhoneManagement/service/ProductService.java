@@ -1,6 +1,7 @@
 package com.example.PhoneManagement.service;
 
 import com.example.PhoneManagement.dto.request.ProductColorDTO;
+import com.example.PhoneManagement.dto.request.ProductColorUpdate;
 import com.example.PhoneManagement.dto.request.ProductUpdateRequest;
 import com.example.PhoneManagement.dto.request.ProductViewRequest;
 import com.example.PhoneManagement.entity.Category;
@@ -16,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +43,7 @@ public class ProductService {
             dto.setProductId(product.getProductId());
             dto.setProductName(product.getProductName());
             dto.setCategoryId(product.getCategory().getCategoryId());
+            dto.setCateName(product.getCategory().getCategoryName());
             Category category = categories.stream()
                     .filter(cat -> cat.getCategoryId() == product.getCategory().getCategoryId())
                     .findFirst()
@@ -64,36 +68,54 @@ public class ProductService {
         Category category=categoryRepository.findById(products.getCategory().getCategoryId()).orElseThrow(()-> new RuntimeException(""));
         List<ProductColor> productColors=productColorRepository.findAll().stream().filter(pro -> pro.getProducts().getProductId()==products.getProductId()).toList();
         List<String> image=new ArrayList<>();
-        List<String> color=new ArrayList<>();
-
+        List<Integer> colorId=new ArrayList<>();
+        List<String> colorName=new ArrayList<>();
+        List<Integer> quantity=new ArrayList<>();
         productViewRequest.setProductId(products.getProductId());
         productViewRequest.setProductName(products.getProductName());
-        productViewRequest.setCategory(category.getCategoryName());
+        productViewRequest.setCategory(category.getCategoryId());
         for(ProductColor productColor: productColors){
             image.add(productColor.getImage());
-            color.add(productColor.getColors().getColorName());
+            colorId.add(productColor.getColors().getColorId());
+            colorName.add(productColor.getColors().getColorName());
+            quantity.add(productColor.getQuantity());
         }
-        productViewRequest.setColor(color);
+        productViewRequest.setColorId(colorId);
+        productViewRequest.setColorName(colorName);
         productViewRequest.setImage(image);
         productViewRequest.setPrice(products.getPrice());
         productViewRequest.setDescription(products.getDescription());
-        productViewRequest.setQuantity(products.getQuantity());
+        productViewRequest.setQuantity(quantity);
         productViewRequest.setWarrantyPeriod(products.getWarrantyPeriod());
         productViewRequest.setCreatedAt(products.getCreatedAt());
 
         return productViewRequest;
     }
 
-    public void updateProduct(int productId, ProductUpdateRequest request){
+    public Products updateProduct(int productId, ProductUpdateRequest request){
         Products products=productRepository.findById(productId).orElseThrow(()-> new RuntimeException("product not exist"));
-        Category category=categoryRepository.findById(1).orElseThrow(() ->new RuntimeException("Category not exist"));
-//        products.setProductName(request.getProductName());
+        Category category=categoryRepository.findById(request.getCategory()).orElseThrow(() ->new RuntimeException("Category not exist"));
+        products.setProductName(request.getProductName());
         products.setCategory(category);
         products.setDescription(request.getDescription());
-//        products.setPrice(request.getPrice());
+        products.setPrice(request.getPrice());
         products.setWarrantyPeriod(request.getWarrantyPeriod());
 
-        productRepository.save(products);
+        return productRepository.save(products);
     }
+
+    public ProductColor updateProductColor(int proId, ProductColorUpdate request){
+        ProductColor productColor= productColorRepository.findById(proId).orElseThrow(() -> new RuntimeException("Product not exist"));
+        Products products=productRepository.findById(request.getProductId()).orElseThrow(()-> new RuntimeException("product not exist"));
+        Colors colors=colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
+        productColor.setProducts(products);
+        productColor.setColors(colors);
+        productColor.setImage(request.getImage());
+        productColor.setQuantity(request.getQuantity());
+        productColor.setLastUpdated(new Date());
+
+        return productColorRepository.save(productColor);
+    }
+
 
 }
