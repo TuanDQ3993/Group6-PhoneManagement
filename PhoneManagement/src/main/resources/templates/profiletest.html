@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+</head>
+<body>
+<h1>User Profile</h1>
+<div>
+    <p><strong>Username:</strong> <span th:text="${user.userName}"></span></p>
+    <p><strong>Full Name:</strong> <span th:text="${user.fullName}"></span></p>
+    <p><strong>Address:</strong> <span th:text="${user.address}"></span></p>
+    <p><strong>Phone Number:</strong> <span th:text="${user.phoneNumber}"></span></p>
+    <!-- Thêm các thông tin khác của người dùng cần hiển thị -->
+</div>
+</body>
+</html>
