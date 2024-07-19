@@ -1,6 +1,7 @@
 package com.example.PhoneManagement.service;
 
 import com.example.PhoneManagement.dto.request.UserDTO;
+import com.example.PhoneManagement.entity.Users;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 

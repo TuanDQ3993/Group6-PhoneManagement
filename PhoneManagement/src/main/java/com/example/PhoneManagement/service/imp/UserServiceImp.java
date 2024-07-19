@@ -25,7 +25,6 @@ public class UserServiceImp implements UserService {
             userDTO.setFullName(user.getFullName());
             userDTO.setAddress(user.getAddress());
             userDTO.setPhoneNumber(user.getPhoneNumber());
-            userDTO.setRoleName(user.getRole().getRoleName());
             userDTO.setAvatar(user.getAvatar());
             return Optional.of(userDTO);
         }
