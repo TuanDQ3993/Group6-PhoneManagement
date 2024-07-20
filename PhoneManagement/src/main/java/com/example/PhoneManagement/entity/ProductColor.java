@@ -24,11 +24,11 @@ public class ProductColor {
     int productcolorId;
 
     @ManyToOne
-    @JoinColumn(name="product_id",insertable = false, updatable = false)
+    @JoinColumn(name="product_id")
     Products products;
 
     @ManyToOne
-    @JoinColumn(name="color_id",insertable = false, updatable = false)
+    @JoinColumn(name="color_id")
     Colors colors;
 
     @Lob

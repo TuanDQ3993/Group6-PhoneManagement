@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <base th:href="@{/}"/>
     <title>Gentelella Alela! | </title>
 
     <!-- Bootstrap -->
@@ -20,6 +20,46 @@
 
     <!-- Custom Theme Style -->
     <link th:href="@{build/css/custom.min.css}" rel="stylesheet">
+    <style>
+        /* Modal Background */
+        .modal {
+            display: none; /* Ẩn modal theo mặc định */
+            position: fixed;
+            z-index: 1; /* Đặt trên các phần tử khác */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Thêm thanh cuộn nếu cần */
+            background-color: rgb(0,0,0); /* Màu nền tối */
+            background-color: rgba(0,0,0,0.4); /* Để có hiệu ứng mờ */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* Canh giữa modal */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Đặt kích thước modal */
+        }
+
+        /* Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+
 </head>
 
 <body class="nav-md">
@@ -45,7 +85,7 @@
                 </div>
                 <!-- /menu profile quick info -->
 
-                <br />
+                <br/>
 
                 <!-- sidebar menu -->
                 <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
@@ -69,7 +109,8 @@
                                     <li><a href="form_buttons.html">Form Buttons</a></li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-desktop"></i> UI Elements <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-desktop"></i> UI Elements <span
+                                    class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="general_elements.html">General Elements</a></li>
                                     <li><a href="media_gallery.html">Media Gallery</a></li>
@@ -88,7 +129,8 @@
                                     <li><a href="tables_dynamic.html">Table Dynamic</a></li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-bar-chart-o"></i> Data Presentation <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-bar-chart-o"></i> Data Presentation <span
+                                    class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="chartjs.html">Chart JS</a></li>
                                     <li><a href="chartjs2.html">Chart JS2</a></li>
@@ -108,7 +150,8 @@
                     <div class="menu_section">
                         <h3>Live On</h3>
                         <ul class="nav side-menu">
-                            <li><a><i class="fa fa-bug"></i> Additional Pages <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-bug"></i> Additional Pages <span
+                                    class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="e_commerce.html">E-commerce</a></li>
                                     <li><a href="accountlist.html">Projects</a></li>
@@ -127,7 +170,8 @@
                                     <li><a href="pricing_tables.html">Pricing Tables</a></li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-sitemap"></i> Multilevel Menu <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-sitemap"></i> Multilevel Menu <span
+                                    class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="#level1_1">Level One</a>
                                     <li><a>Level One<span class="fa fa-chevron-down"></span></a>
@@ -144,7 +188,8 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li><a href="javascript:void(0)"><i class="fa fa-laptop"></i> Landing Page <span class="label label-success pull-right">Coming Soon</span></a></li>
+                            <li><a href="javascript:void(0)"><i class="fa fa-laptop"></i> Landing Page <span
+                                    class="label label-success pull-right">Coming Soon</span></a></li>
                         </ul>
                     </div>
 
@@ -179,17 +224,19 @@
                 <nav class="nav navbar-nav">
                     <ul class=" navbar-right">
                         <li class="nav-item dropdown open" style="padding-left: 15px;">
-                            <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true"
+                               id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
                                 <img src="images/img.jpg" alt="">Quan
                             </a>
                             <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item"  href="javascript:;"> Profile</a>
-                                <a class="dropdown-item"  href="javascript:;">
+                                <a class="dropdown-item" href="javascript:;"> Profile</a>
+                                <a class="dropdown-item" href="javascript:;">
                                     <span class="badge bg-red pull-right">50%</span>
                                     <span>Settings</span>
                                 </a>
-                                <a class="dropdown-item"  href="javascript:;">Help</a>
-                                <a class="dropdown-item"  href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                                <a class="dropdown-item" href="javascript:;">Help</a>
+                                <a class="dropdown-item" href="login.html"><i class="fa fa-sign-out pull-right"></i> Log
+                                    Out</a>
                             </div>
                         </li>
                     </ul>
@@ -207,20 +254,22 @@
                     </div>
 
                     <div class="title_right">
-                        <div class="col-md-5 col-sm-5   form-group pull-right top_search">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search for...">
-                                <span class="input-group-btn">
-                      <button class="btn btn-secondary" type="button">Go!</button>
-                    </span>
+                        <form method="post" th:action="@{/products/search}">
+                            <div class="col-md-5 col-sm-5   form-group pull-right top_search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" th:value="${search}" name="search"
+                                           placeholder="Search for...">
+                                    <button class="btn btn-secondary" type="submit">Go!</button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
 
 
                 <div class="row">
                     <div class="col-md-12">
+                        <button style="font-size: 17px; padding: 5px 20px; border: none; background: #cdc9c9" id="openModalBtn">Add</button>
                         <div class="x_panel">
                             <div class="x_content">
                                 <!-- start project list -->
@@ -229,46 +278,74 @@
                                     <tr>
                                         <th style="width: 1%">ProductId</th>
                                         <th style="width: 20%">ProductName</th>
-                                        <th>Image</th>
+<!--                                        <th>Image</th>-->
                                         <th>Quantity</th>
                                         <th>Price</th>
                                         <th>Category</th>
                                         <th>CreateAt</th>
+                                        <th>WarrantyPeriod</th>
                                         <th style="width: 20%">Edit</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="product : ${proList}">
-                                        <td th:text="${product.productId}"></td>
-                                        <td>
-                                            <span class="view-span" th:text="${product.productName}"></span>
-                                            <input type="text" class="form-control edit-input" name="productName" th:value="${product.productName}" readonly style="display: none;">
-                                        </td>
-                                        <td>
-                                            <img style="width: 38%;" th:src="${product.image}" alt="Product Image">
-                                        </td>
-                                        <td>
-                                            <span class="view-span" th:text="${product.quantity}"></span>
-                                            <input type="number" class="form-control edit-input" name="quantity" th:value="${product.quantity}" readonly style="display: none;">
-                                        </td>
-                                        <td>
-                                            <span class="view-span" th:text="${product.price}"></span>
-                                            <input type="text" class="form-control edit-input" name="price" th:value="${product.price}" readonly style="display: none;">
-                                        </td>
-                                        <td>
-                                            <span class="view-span" th:text="${product.cateName}"></span>
-                                            <input type="text" class="form-control edit-input" name="category" th:value="${product.cateName}" readonly style="display: none;">
-                                        </td>
-                                        <td>
-                                            <span class="view-span" th:text="${product.createdAt}"></span>
-                                            <input type="text" class="form-control edit-input" name="createdAt" th:value="${product.createdAt}" readonly style="display: none;">
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-primary btn-xs edit-btn"><i class="fa fa-folder"></i> Edit </a>
-                                            <a href="#" class="btn btn-success btn-xs save-btn" style="display:none;"><i class="fa fa-save"></i> Save </a>
-                                            <a href="#" class="btn btn-danger btn-xs delete-btn"><i class="fa fa-trash-o"></i> Delete </a>
-                                            <a href="#" class="btn btn-warning btn-xs cancel-btn" style="display:none;"><i class="fa fa-times"></i> Cancel </a>
-                                        </td>
+                                        <form method="post" th:action="@{/products/update}">
+                                            <input type="hidden" name="productId" th:value="${product.productId}">
+                                            <td th:text="${product.productId}"></td>
+                                            <td>
+                                                <span class="view-span" th:text="${product.productName}"></span>
+                                                <input type="text" class="form-control edit-input" name="productName"
+                                                       th:value="${product.productName}" style="display: none;">
+                                            </td>
+<!--                                            <td>-->
+<!--                                                <img style="width: 38%;" th:src="@{${product.image}}"-->
+<!--                                                     alt="Product Image">-->
+<!--                                            </td>-->
+                                            <td>
+                                                <span class="view-span" th:text="${product.quantity}"></span>
+                                                <input type="number" class="form-control edit-input" name="quantity"
+                                                       th:value="${product.quantity}" style="display: none;">
+                                            </td>
+                                            <td>
+                                                <span class="view-span" th:text="${product.price}"></span>
+                                                <input type="text" class="form-control edit-input" name="price"
+                                                       th:value="${product.price}" style="display: none;">
+                                            </td>
+                                            <td>
+                                                <span class="view-span" th:text="${product.cateName}"></span>
+                                                <select class="form-control edit-input" name="cateId"
+                                                        style="display: none;">
+                                                    <option th:each="category : ${category}"
+                                                            th:value="${category.categoryId}"
+                                                            th:text="${category.categoryName}"
+                                                            th:selected="${category.categoryId == product.categoryId}"></option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="view-span" th:text="${product.createdAt}"></span>
+                                                <input type="text" class="form-control edit-input" name="createAt"
+                                                       th:value="${product.createdAt}" readonly style="display: none;">
+                                            </td>
+                                            <td>
+                                                <span class="view-span" th:text="${product.warrantyPeriod}"></span>
+                                                <input type="text" class="form-control edit-input" name="warrantyPeriod"
+                                                       th:value="${product.warrantyPeriod}" style="display: none;">
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary btn-xs edit-btn"><i
+                                                        class="fa fa-folder"></i> Edit
+                                                </button>
+                                                <button type="button" class="btn btn-primary btn-xs view-btn"><i
+                                                        class="fa fa-folder"></i> <a style="color: white;" th:href="@{products/{productId}(productId=${product.productId})}">View</a>
+                                                </button>
+                                                <button type="submit" class="btn btn-success btn-xs save-btn"
+                                                        style="display: none;"><i class="fa fa-save"></i> Save
+                                                </button>
+                                                <button type="button" class="btn btn-warning btn-xs cancel-btn"
+                                                        style="display: none;"><i class="fa fa-times"></i> Cancel
+                                                </button>
+                                            </td>
+                                        </form>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -276,7 +353,8 @@
                                 <nav aria-label="...">
                                     <ul class="pagination justify-content-end">
                                         <li class="page-item disabled">
-                                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                            <a class="page-link" href="#" tabindex="-1"
+                                               aria-disabled="true">Previous</a>
                                         </li>
                                         <li class="page-item"><a class="page-link" href="#">1</a></li>
                                         <li class="page-item active" aria-current="page">
@@ -296,6 +374,43 @@
         </div>
     </div>
 </div>
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <h5>Add Product</h5>
+        <form id="addProductForm" method="post" th:action="@{/products/add}">
+            <div class="form-group">
+                <label for="productName">ProductName</label>
+                <input type="text" class="form-control" id="productName" name="productName" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select class="form-control" id="category" name="category" required>
+                    <option th:each="category : ${category}"
+                            th:value="${category.categoryId}"
+                            th:text="${category.categoryName}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="warrantyPeriod">WarrantyPeriod</label>
+                <input type="text" class="form-control" id="warrantyPeriod" name="warrantyPeriod" required>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantity</label>
+                <input type="text" class="form-control" id="quantity" name="quantity" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Product</button>
+        </form>
+    </div>
+</div>
 
 <!-- jQuery -->
 <script th:src="@{vendors/jquery/dist/jquery.min.js}"></script>
@@ -310,44 +425,59 @@
 
 <!-- Custom Theme Scripts -->
 <script th:src="@{build/js/custom.min.js}"></script>
-
 <script>
-    $(document).ready(function() {
-        $('.edit-btn').click(function(e) {
-            e.preventDefault();
-            var row = $(this).closest('tr');
-            row.find('.view-span').hide();
-            row.find('.edit-input').show().prop('readonly', false);
-            $(this).hide();
-            row.find('.save-btn').show();
-            row.find('.delete-btn').hide(); // Ẩn nút Delete khi chỉnh sửa
-            row.find('.cancel-btn').show();
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButtons = document.querySelectorAll('.edit-btn');
+        const cancelButtons = document.querySelectorAll('.cancel-btn');
+        const saveButtons = document.querySelectorAll('.save-btn');
+
+        editButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                toggleEdit(index, true);
+            });
         });
 
-        $('.save-btn').click(function(e) {
-            e.preventDefault();
-            var row = $(this).closest('tr');
-            // Gửi dữ liệu sửa đổi đến server (nếu cần)
-            // Sau khi lưu thành công, cập nhật giao diện
-            row.find('.edit-input').hide().prop('readonly', true);
-            row.find('.view-span').show();
-            $(this).hide();
-            row.find('.edit-btn').show();
-            row.find('.delete-btn').show(); // Hiện lại nút Delete
-            row.find('.cancel-btn').hide();
+        cancelButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                toggleEdit(index, false);
+            });
         });
 
-        $('.cancel-btn').click(function(e) {
-            e.preventDefault();
-            var row = $(this).closest('tr');
-            row.find('.edit-input').hide().prop('readonly', true);
-            row.find('.view-span').show();
-            $(this).hide();
-            row.find('.edit-btn').show();
-            row.find('.save-btn').hide();
-            row.find('.delete-btn').show(); // Hiện lại nút Delete
-        });
+        function toggleEdit(index, isEditing) {
+            const row = editButtons[index].closest('tr');
+            row.querySelectorAll('.view-span').forEach(span => {
+                span.style.display = isEditing ? 'none' : '';
+            });
+            row.querySelectorAll('.edit-input').forEach(input => {
+                input.style.display = isEditing ? '' : 'none';
+            });
+            editButtons[index].style.display = isEditing ? 'none' : '';
+            saveButtons[index].style.display = isEditing ? '' : 'none';
+            cancelButtons[index].style.display = isEditing ? '' : 'none';
+        }
     });
+
+    // Lấy các phần tử modal và nút
+    var modal = document.getElementById("myModal");
+    var btn = document.getElementById("openModalBtn");
+    var span = document.getElementById("closeModalBtn");
+
+    // Khi người dùng nhấn vào nút, mở modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // Khi người dùng nhấn vào nút đóng, đóng modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Khi người dùng nhấn vào bất kỳ đâu ngoài modal, đóng modal
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
 </script>
 </body>
 </html>

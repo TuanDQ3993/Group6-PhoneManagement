@@ -15,6 +15,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductViewRequest {
     int productId;
+    List<Integer> proColorId;
     String productName;
     int category;
     List<Integer> colorId;

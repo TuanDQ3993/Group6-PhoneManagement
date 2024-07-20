@@ -3,17 +3,19 @@ package com.example.PhoneManagement.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductColorUpdate {
-    int productId;
-    int colorId;
-    String image;
+public class ProductCreateRequest {
+    String productName;
+    int category;
+    BigDecimal price;
     int quantity;
-    Date lastUpdated;
+    String description;
+    int warrantyPeriod;
 }
