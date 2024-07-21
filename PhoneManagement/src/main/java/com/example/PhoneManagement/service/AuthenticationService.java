@@ -33,14 +33,11 @@ public class AuthenticationService {
     AuthenticationManager authenticationManager;
 
 
-
-
-
     public AuthenticationResponse register(RegisterRequest registerRequest) {
         if (userRepository.existsByUserName(registerRequest.getUserName())) {
             throw new IllegalArgumentException("Username/Email is already taken");
         }
-        var user=Users.builder()
+        var user = Users.builder()
                 .userName(registerRequest.getUserName())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .fullName(registerRequest.getFullName())
@@ -50,18 +47,18 @@ public class AuthenticationService {
                 .build();
 
         userRepository.save(user);
-        var jwtToken=jwtService.generateToken(user);
+        var jwtToken = jwtService.generateToken(user);
         return new AuthenticationResponse(jwtToken);
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-    authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken
-                    (request.getUsername(), request.getPassword()
-                    ));
-            var user= userRepository.findByUserName(request.getUsername())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            var jwtToken=jwtService.generateToken(user);
-            return new AuthenticationResponse(jwtToken);
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken
+                        (request.getUsername(), request.getPassword()
+                        ));
+        var user = userRepository.findByUserName(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        var jwtToken = jwtService.generateToken(user);
+        return new AuthenticationResponse(jwtToken);
     }
 }
