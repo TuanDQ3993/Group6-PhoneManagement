@@ -111,9 +111,11 @@ public class ProductController {
         return "redirect:/products/{productId}";
     }
 
-    @GetMapping("/{productId}/delete")
+    @PostMapping("/{productId}/delete")
     public String deleteProductColor(@RequestParam("proColorId")int proId, @PathVariable("productId") int productId){
-        productService.deleteProductColor(proId);
-        return "redirect:/products/"+productId;
+            productService.deleteProductColor(proId);
+            return "redirect:/products/"+productId;
+//        return "redirect:listproduct/"+productId;
     }
+
 }

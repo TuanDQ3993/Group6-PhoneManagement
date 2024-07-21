@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title>Gentelella Alela!</title>
     <base th:href="@{/}"/>
     <!-- Bootstrap -->
     <link th:href="@{vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
@@ -17,32 +15,30 @@
     <link th:href="@{vendors/nprogress/nprogress.css}" rel="stylesheet">
     <!-- iCheck -->
     <link th:href="@{vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
-
     <!-- Custom Theme Style -->
     <link th:href="@{build/css/custom.min.css}" rel="stylesheet">
 
     <style>
         /* Modal Background */
         .modal {
-            display: none; /* Ẩn modal theo mặc định */
+            display: none; /* Hidden by default */
             position: fixed;
-            z-index: 1; /* Đặt trên các phần tử khác */
+            z-index: 1; /* On top */
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto; /* Thêm thanh cuộn nếu cần */
-            background-color: rgb(0,0,0); /* Màu nền tối */
-            background-color: rgba(0,0,0,0.4); /* Để có hiệu ứng mờ */
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4); /* Black background with opacity */
         }
 
         /* Modal Content */
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto; /* Canh giữa modal */
+            margin: 15% auto; /* Centered */
             padding: 20px;
             border: 1px solid #888;
-            width: 50%; /* Đặt kích thước modal */
+            width: 80%; /* Could be more or less depending on screen size */
         }
 
         /* Close Button */
@@ -65,6 +61,7 @@
 <body class="nav-md">
 <div class="container body">
     <div class="main_container">
+        <!-- Sidebar and Top Navigation omitted for brevity -->
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
@@ -240,8 +237,7 @@
             </div>
         </div>
         <!-- /top navigation -->
-
-        <!-- page content -->
+        <!-- Page Content -->
         <div class="right_col" role="main">
             <div class="">
                 <div class="row">
@@ -250,15 +246,15 @@
                             <div class="x_title">
                                 <h2>Product Details</h2>
                                 <div class="title_right">
-                                    <div class="col-md-5 col-sm-5   form-group pull-right top_search"
+                                    <div class="col-md-5 col-sm-5 form-group pull-right top_search"
                                          style="right:0; position: absolute;">
                                         <form method="post">
                                             <div class="input-group">
                                                 <input type="text" name="search" class="form-control"
                                                        placeholder="Search for...">
                                                 <span class="input-group-btn">
-                      <button class="btn btn-secondary" type="button">Go!</button>
-                    </span>
+                                                    <button class="btn btn-secondary" type="button">Go!</button>
+                                                </span>
                                             </div>
                                         </form>
                                     </div>
@@ -267,10 +263,10 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button style="font-size: 17px; padding: 5px 20px; border: none; background: #cdc9c9" id="openModalBtn">Add</button>
+                                    <button style="font-size: 17px; padding: 5px 20px; border: none; background: #cdc9c9" id="openAddModalBtn">Add</button>
                                     <div class="x_panel">
                                         <div class="x_content">
-                                            <!-- start project list -->
+                                            <!-- Project List Table -->
                                             <table class="table table-striped projects">
                                                 <thead>
                                                 <tr>
@@ -284,14 +280,14 @@
                                                 <tbody>
                                                 <tr th:each="i : ${#numbers.sequence(0, size - 1)}">
                                                     <form th:action="@{/products/{productId}/update(productId=${product.productId})}"
-                                                          method="post">
-                                                        <input type="hidden" name="proColorId"
+                                                          method="post" id="update_form">
+                                                        <input type="hidden" name="proColorId" id="proId1"
                                                                th:value="${product.proColorId.get(i)}">
                                                         <input type="hidden" th:field="*{product.proColorId}"
                                                                th:value="${product.proColorId.get(i)}">
                                                         <td>
                                                             <span th:text="${product.productId}"></span>
-                                                            <input type="number" class="form-control" name="productId"
+                                                            <input type="number" class="form-control edit-input" name="productId"
                                                                    th:value="${product.productId}"
                                                                    style="display:none;"/>
                                                         </td>
@@ -307,13 +303,13 @@
                                                         </td>
                                                         <td>
                                                             <span th:text="${product.image.get(i)}"></span>
-                                                            <input type="file" class="form-control" name="image"
+                                                            <input type="file" class="form-control edit-input" name="image"
                                                                    th:value="${product.image.get(i)}"
                                                                    style="display:none;"/>
                                                         </td>
                                                         <td>
                                                             <span th:text="${product.quantity.get(i)}"></span>
-                                                            <input type="number" class="form-control" name="quantity"
+                                                            <input type="number" class="form-control edit-input" name="quantity"
                                                                    th:value="${product.quantity.get(i)}"
                                                                    style="display:none;"/>
                                                         </td>
@@ -323,17 +319,14 @@
                                                                     class="btn btn-primary btn-xs edit-btn"><i
                                                                     class="fa fa-folder"></i> View
                                                             </button>
-                                                            <button type="button" style="background: red; border: none;"
-                                                                    class="btn btn-primary btn-xs delete-btn "><i
-                                                                    class="fa fa-folder"></i> <a th:href="@{products/{productId}/delete(productId=${product.productId})}" style="color: white;">Delete</a>
-                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-xs delete-btn"><i class="fa fa-trash"></i> Delete</button>
                                                             <button type="submit"
                                                                     class="btn btn-success btn-xs save-btn"
                                                                     style="display:none;"><i class="fa fa-save"></i>
                                                                 Save
                                                             </button>
                                                             <button type="button"
-                                                                    class="btn btn-danger btn-xs cancel-btn"
+                                                                    class="btn btn-secondary btn-xs cancel-btn"
                                                                     style="display:none;"><i class="fa fa-times"></i>
                                                                 Cancel
                                                             </button>
@@ -342,7 +335,7 @@
                                                 </tr>
                                                 </tbody>
                                             </table>
-                                            <!-- end project list -->
+                                            <!-- Pagination -->
                                             <nav aria-label="...">
                                                 <ul class="pagination justify-content-end">
                                                     <li class="page-item disabled">
@@ -359,7 +352,6 @@
                                                     </li>
                                                 </ul>
                                             </nav>
-                                            <!-- Bootstrap Modal -->
                                         </div>
                                     </div>
                                 </div>
@@ -371,12 +363,25 @@
         </div>
     </div>
 
-
-    <div id="myModal" class="modal">
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="modal">
         <div class="modal-content">
-            <span class="close" id="closeModalBtn">&times;</span>
+            <form method="post" th:action="@{/products/{productId}/delete(productId=${product.productId})}" id="delete_form">
+                <span class="close" id="closeDeleteModal">&times;</span>
+                <input id="proId2" name="proColorId" hidden>
+                <p>Are you sure you want to delete this item?</p>
+                <button id="confirmDelete" type="submit" class="btn btn-danger">Delete</button>
+                <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeAddModal">&times;</span>
             <h5>Add Product</h5>
-            <form id="addProductForm" method="post" th:action="@{/products/{productId}/add (productId=${product.productId})}">
+            <form id="addProductForm" method="post" th:action="@{/products/add}">
                 <div class="form-group">
                     <label for="color">Color</label>
                     <select class="form-control" id="color" name="color" required>
@@ -391,61 +396,94 @@
                 </div>
                 <div class="form-group">
                     <label for="quantity">Quantity</label>
-                    <input type="text" class="form-control" id="quantity" name="quantity" required>
+                    <input type="number" class="form-control" id="quantity" name="quantity" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Product</button>
             </form>
         </div>
     </div>
+
     <!-- jQuery -->
     <script th:src="@{vendors/jquery/dist/jquery.min.js}"></script>
     <!-- Bootstrap -->
     <script th:src="@{vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
-    <!-- FastClick -->
-    <script th:src="@{vendors/fastclick/lib/fastclick.js}"></script>
-    <!-- NProgress -->
-    <script th:src="@{vendors/nprogress/nprogress.js}"></script>
-    <script>
-        $(document).ready(function () {
-            $('.edit-btn').click(function () {
-                var row = $(this).closest('tr');
-                row.find('span').hide();
-                row.find('input.form-control').show();
-                row.find('select.form-control').show();
-                row.find('.edit-btn').hide();
-                row.find('.delete-btn').hide();
-                row.find('.save-btn, .cancel-btn').show();
-            });
-
-            $('.cancel-btn').click(function () {
-                var row = $(this).closest('tr');
-                row.find('span').show();
-                row.find('input.form-control').hide();
-                row.find('select.form-control').hide();
-                row.find('.edit-btn').show();
-                row.find('.delete-btn').show();
-                row.find('.save-btn, .cancel-btn').hide();
-            });
-        });
-
-        // Lấy các phần tử modal và nút
-        var modal = document.getElementById("myModal");
-        var btn = document.getElementById("openModalBtn");
-        var span = document.getElementById("closeModalBtn");
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-        // Khi người dùng nhấn vào bất kỳ đâu ngoài modal, đóng modal
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
     <!-- Custom Theme Scripts -->
     <script th:src="@{build/js/custom.min.js}"></script>
+
+    <script>
+        // JavaScript for modals
+        document.getElementById('openAddModalBtn').onclick = function () {
+            document.getElementById('addProductModal').style.display = 'block';
+        };
+
+        document.getElementById('closeAddModal').onclick = function () {
+            document.getElementById('addProductModal').style.display = 'none';
+        };
+
+        document.getElementById('closeDeleteModal').onclick = function () {
+            document.getElementById('deleteModal').style.display = 'none';
+        };
+
+        var deleteBtns = document.querySelectorAll('.delete-btn');
+        deleteBtns.forEach(function (btn) {
+            btn.onclick = function () {
+                document.getElementById('deleteModal').style.display = 'block';
+                var productId = this.closest('form').querySelector('input[name="productId"]').value;
+                document.getElementById('confirmDelete').onclick = function () {
+                    // Implement delete logic here, e.g., sending an AJAX request
+                    console.log('Deleting product with ID: ' + productId);
+                    document.getElementById('deleteModal').style.display = 'none';
+                };
+                document.getElementById('cancelDelete').onclick = function () {
+                    document.getElementById('deleteModal').style.display = 'none';
+                };
+            };
+        });
+
+        var editBtns = document.querySelectorAll('.edit-btn');
+        editBtns.forEach(function (btn) {
+            btn.onclick = function () {
+                var row = this.closest('tr');
+                row.querySelectorAll('.edit-input').forEach(function (input) {
+                    input.style.display = 'block';
+                });
+                row.querySelectorAll('span').forEach(function (span) {
+                    span.style.display = 'none';
+                });
+                row.querySelector('.save-btn').style.display = 'inline';
+                row.querySelector('.cancel-btn').style.display = 'inline';
+                btn.style.display = 'none';
+                row.querySelector('.delete-btn').style.display = 'none';
+            };
+        });
+
+        var cancelBtns = document.querySelectorAll('.cancel-btn');
+        cancelBtns.forEach(function (btn) {
+            btn.onclick = function () {
+                var row = this.closest('tr');
+                row.querySelectorAll('.edit-input').forEach(function (input) {
+                    input.style.display = 'none';
+                });
+                row.querySelectorAll('span').forEach(function (span) {
+                    span.style.display = 'inline';
+                });
+                row.querySelector('.save-btn').style.display = 'none';
+                row.querySelector('.edit-btn').style.display = 'inline';
+                row.querySelector('.delete-btn').style.display = 'inline';
+                row.querySelector('.cancel-btn').style.display = 'none';
+                // document.getElementById('deleteModal').style.display = 'none';
+            };
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lấy giá trị từ form 1
+            var proColorIdValue = document.getElementById('proId1').value;
+            // Gán giá trị cho form 2
+            document.getElementById('proId2').value = proColorIdValue;
+            // Gửi cả hai biểu mẫu
+            // document.getElementById('update_form').submit();
+            // document.getElementById('delete_form').submit();
+        });
+    </script>
 </body>
 </html>
