@@ -1,5 +1,6 @@
-package com.example.PhoneManagement.service.imp;
+package com.example.PhoneManagement.service;
 
+import com.example.PhoneManagement.dto.request.ChangePasswordRequest;
 import com.example.PhoneManagement.dto.request.UserCreate;
 import com.example.PhoneManagement.dto.request.UserDTO;
 import com.example.PhoneManagement.dto.request.UserUpdateRequest;
@@ -7,22 +8,30 @@ import com.example.PhoneManagement.entity.Roles;
 import com.example.PhoneManagement.entity.Users;
 import com.example.PhoneManagement.repository.RoleRepository;
 import com.example.PhoneManagement.repository.UserRepository;
-import com.example.PhoneManagement.service.UserService;
+import com.example.PhoneManagement.service.imp.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImp implements UserService {
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     public List<UserDTO> getAllUser() {
         List<Users> users = userRepository.findAll();
         List<UserDTO> userDTOList = new ArrayList<>();
@@ -65,8 +74,7 @@ public class UserServiceImp implements UserService {
         user.setAddress(request.getAddress());
         user.setPhoneNumber(request.getPhoneNumber());
         userRepository.save(user);
-        UserDTO userDTO = new UserDTO(user.getUserId(),user.getUserName(),user.getPassword(),user.getFullName()
-                ,user.getAddress(),user.getPhoneNumber(),user.getCreatedAt(),user.getRole().getRoleId());
+        UserDTO userDTO = new UserDTO();
 
         return userDTO;
 
@@ -87,6 +95,7 @@ public class UserServiceImp implements UserService {
             userDTO.setAddress(user.getAddress());
             userDTO.setPhoneNumber(user.getPhoneNumber());
             userDTO.setAvatar(user.getAvatar());
+            userDTO.setRoleName(user.getRole().getRoleName());
             return Optional.of(userDTO);
         }
         return Optional.empty();
@@ -100,9 +109,25 @@ public class UserServiceImp implements UserService {
             user.setFullName(userDTO.getFullName());
             user.setAddress(userDTO.getAddress());
             user.setPhoneNumber(userDTO.getPhoneNumber());
-            user.setAvatar(userDTO.getAvatar());
+//            user.setAvatar(userDTO.getAvatar());
+            Roles role = roleRepository.findByRoleName(userDTO.getRoleName());
+            user.setRole(role);
             userRepository.save(user);
         }
+    }
+
+    public void changePassword(ChangePasswordRequest request, Authentication authentication){
+        var user = (Users) authentication.getPrincipal();
+
+        // check password
+        if(!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())){
+            throw new IllegalArgumentException("Current password is incorrect.");
+        }
+        if(!request.getNewPassword().equals(request.getConfirmPassword())){
+            throw new IllegalArgumentException("New password and confirmation do not match.");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
 }
