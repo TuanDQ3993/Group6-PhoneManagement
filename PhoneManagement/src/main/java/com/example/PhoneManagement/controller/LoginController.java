@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletResponse;
 
 
-
-
 @Controller
 @RequestMapping("/auth")
 public class LoginController {
@@ -29,8 +27,6 @@ public class LoginController {
     @Autowired
     AuthenticationRequest authenticationRequest;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     @Autowired
     JwtService jwtService;
@@ -44,14 +40,14 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login(Model model) {
-        model.addAttribute("loginRequest",new AuthenticationRequest());
+        model.addAttribute("loginRequest", new AuthenticationRequest());
         return "login";
     }
 
     @PostMapping("/login")
     public String checkLogin(@ModelAttribute("loginRequest") AuthenticationRequest request, Model model) {
         try {
-            AuthenticationResponse jwt=loginService.checklogin(request);
+            AuthenticationResponse jwt = loginService.checklogin(request);
 
             Cookie cookie = new Cookie("Authorization", jwt.getToken());
             cookie.setHttpOnly(true); // Bảo mật, ngăn JavaScript truy cập cookie này
@@ -70,6 +66,7 @@ public class LoginController {
             return "login";
         }
     }
+
     @GetMapping("/home")
     public String home(Model model, Authentication authentication) {
         model.addAttribute("username", authentication.getName());
@@ -77,7 +74,7 @@ public class LoginController {
     }
 
     @GetMapping("/logout")
-    public String logout( HttpServletResponse response) {
+    public String logout(HttpServletResponse response) {
 
         Cookie cookie = new Cookie("Authorization", null);
         cookie.setHttpOnly(true);
@@ -89,4 +86,6 @@ public class LoginController {
 
         return "redirect:/auth/login?logout";
     }
+
+
 }

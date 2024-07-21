@@ -30,7 +30,7 @@ public class LoginServiceImp implements LoginService {
 
     @Override
     public Users findByUserName(String username) {
-        return userRepository.findByUserName(username).orElseThrow(()->new UsernameNotFoundException("user not found"));
+        return userRepository.findByUserName(username).orElseThrow(() -> new UsernameNotFoundException("user not found"));
     }
 
     @Override

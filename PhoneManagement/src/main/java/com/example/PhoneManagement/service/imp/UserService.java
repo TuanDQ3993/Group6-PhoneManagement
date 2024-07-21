@@ -6,11 +6,21 @@ import com.example.PhoneManagement.dto.request.UserUpdateRequest;
 import com.example.PhoneManagement.entity.Users;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
-    public List<UserDTO> getAllUser();
-    public UserDTO CreateUser(UserCreate userRequest);
-    public Users getUserById(int userId);
-    public UserDTO updateUser(int id, UserUpdateRequest request);
-    public void deleteUser(int id);
+    List<UserDTO> getAllUser();
+
+    UserDTO CreateUser(UserCreate userRequest);
+
+    Users getUserById(int userId);
+
+    UserDTO updateUser(int id, UserUpdateRequest request);
+
+    void deleteUser(int id);
+
+    Optional<Users> findByEmail(String email);
+
+    void updatePassword(Users user, String password);
+
 }
