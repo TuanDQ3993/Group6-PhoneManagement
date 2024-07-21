@@ -32,6 +32,7 @@ public class UserServiceImp implements UserService {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     public List<UserDTO> getAllUser() {
         List<Users> users = userRepository.findAll();
         List<UserDTO> userDTOList = new ArrayList<>();
@@ -54,7 +55,7 @@ public class UserServiceImp implements UserService {
         user.setAddress(userRequest.getAddress());
         user.setPhoneNumber(userRequest.getPhoneNumber());
         user.setCreatedAt(new Date());
-        Roles role=roleRepository.findById(userRequest.getRoleId());
+        Roles role = roleRepository.findById(userRequest.getRoleId());
         user.setRole(role);
         userRepository.save(user);
         UserDTO userDTO = new UserDTO();
@@ -63,7 +64,7 @@ public class UserServiceImp implements UserService {
     }
 
     public Users getUserById(int userId) {
-        return userRepository.findById(userId).orElseThrow(()->new RuntimeException("User Not Found"));
+        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
     }
 
     public UserDTO updateUser(int id, UserUpdateRequest request) {
@@ -87,7 +88,7 @@ public class UserServiceImp implements UserService {
     @Override
     public Optional<UserDTO> getUserByUserName(String userName) {
         Optional<Users> userOpt = userRepository.findByUserName(userName);
-        if(userOpt.isPresent()){
+        if (userOpt.isPresent()) {
             Users user = userOpt.get(); //nếu userOpt trùng với csdl có trong Users thì gán vào user
             UserDTO userDTO = new UserDTO();
             userDTO.setUserName(user.getUserName());
@@ -104,7 +105,7 @@ public class UserServiceImp implements UserService {
     @Override
     public void updateUser(UserDTO userDTO) {
         Optional<Users> userOpt = userRepository.findByUserName(userDTO.getUserName());
-        if(userOpt.isPresent()){
+        if (userOpt.isPresent()) {
             Users user = userOpt.get();
             user.setFullName(userDTO.getFullName());
             user.setAddress(userDTO.getAddress());
@@ -116,18 +117,29 @@ public class UserServiceImp implements UserService {
         }
     }
 
-    public void changePassword(ChangePasswordRequest request, Authentication authentication){
+    public void changePassword(ChangePasswordRequest request, Authentication authentication) {
         var user = (Users) authentication.getPrincipal();
 
         // check password
-        if(!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())){
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Current password is incorrect.");
         }
-        if(!request.getNewPassword().equals(request.getConfirmPassword())){
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new IllegalArgumentException("New password and confirmation do not match.");
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
     }
 
+
+    @Override
+    public Optional<Users> findByEmail(String email) {
+        return userRepository.findByUserName(email);
+    }
+
+    @Override
+    public void updatePassword(Users user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
 }
