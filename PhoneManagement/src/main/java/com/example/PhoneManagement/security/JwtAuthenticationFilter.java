@@ -34,11 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt = null;
         final String authorizationHeader = request.getHeader("Authorization");
 
-        // Kiểm tra token trong header
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
         } else {
-            // Nếu không có trong header, kiểm tra trong cookie
+
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {

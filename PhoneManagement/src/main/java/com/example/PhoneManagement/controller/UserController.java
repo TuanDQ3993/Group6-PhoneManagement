@@ -3,8 +3,6 @@ package com.example.PhoneManagement.controller;
 import com.example.PhoneManagement.dto.request.ChangePasswordRequest;
 import com.example.PhoneManagement.dto.request.UserDTO;
 import com.example.PhoneManagement.dto.request.UserUpdateRequest;
-import com.example.PhoneManagement.entity.Users;
-import com.example.PhoneManagement.entity.request.LoginRequest;
 import com.example.PhoneManagement.service.imp.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
