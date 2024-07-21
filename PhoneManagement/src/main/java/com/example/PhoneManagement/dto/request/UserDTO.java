@@ -16,12 +16,11 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDTO {
 
-    @NotBlank(message = "Email khong duoc de trong")
-    @Email
     String userName;
     String fullName;
     String address;
     @Pattern(regexp = "^[0-9]{10}$", message = "Số điện thoại phải có 10 chữ số")
     String phoneNumber;
+    String roleName;
     String avatar;
 }

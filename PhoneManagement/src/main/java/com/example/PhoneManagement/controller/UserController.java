@@ -1,5 +1,6 @@
 package com.example.PhoneManagement.controller;
 
+import com.example.PhoneManagement.dto.request.ChangePasswordRequest;
 import com.example.PhoneManagement.dto.request.UserDTO;
 import com.example.PhoneManagement.dto.request.UserUpdateRequest;
 import com.example.PhoneManagement.entity.Users;
@@ -9,13 +10,15 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping ("/user")
 public class UserController {
 
@@ -48,15 +51,36 @@ public class UserController {
         }
     }
 
-   @PutMapping("/profile")
-    public UserDTO updateProfile(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult, Model model) {
-        if(bindingResult.hasErrors()) {
-            model.addAttribute("errors", bindingResult.getAllErrors());
-            return userDTO;
+   @PostMapping("/profile")
+   public String updateProfile(@Valid UserDTO userDTO, BindingResult bindingResult, Model model) {
+       if (bindingResult.hasErrors()) {
+           model.addAttribute("errors", bindingResult.getAllErrors());
+           return "profile";
+       }
+       userService.updateUser(userDTO);
+       model.addAttribute("user", userDTO);
+       model.addAttribute("success", "Update Profile Success");
+       return "profile";
+   }
+
+   @GetMapping("/change_password")
+   public String showChangePasswordForm(Model model) {
+        model.addAttribute("changePasswordRequest", new ChangePasswordRequest());
+        return "change_password";
+   }
+
+   @PostMapping("/change_password")
+   public String changePassword( ChangePasswordRequest request, BindingResult bindingResult, Authentication authentication, Model model){
+        if(bindingResult.hasErrors()){
+            return "change_password";
         }
-        userService.updateUser(userDTO);
-        model.addAttribute("success", "Update Profile Success");
-        return userDTO;
+        try{
+            userService.changePassword(request,authentication);
+            model.addAttribute("success", "Change Password Success");
+        }catch (IllegalArgumentException e){
+            model.addAttribute("errors", e.getMessage());
+        }
+        return "change_password";
    }
 
     @PutMapping("/{userid}")
