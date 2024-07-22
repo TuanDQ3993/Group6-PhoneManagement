@@ -85,17 +85,17 @@ public class ProductController {
         model.addAttribute("size",products.getImage().size()) ;
         return "e_commerce";
     }
-    //auddittable
     @PostMapping("/{productId}/update")
     public String updateProductColor(@PathVariable("productId") int productId,
                                      @RequestParam("proColorId") int proId,
                                      @RequestParam("colors") int colors,
-                                     @RequestParam("image") String image,
+                                     @RequestParam("image") MultipartFile image,
                                      @RequestParam("quantity") int quantity) {
+        String fileImage=productService.uploadFile(image);
         ProductColorUpdate request = new ProductColorUpdate();
         request.setProductId(productId);
         request.setColorId(colors);
-        request.setImage(image);
+        request.setImage(fileImage);
         request.setQuantity(quantity);
         productService.updateProductColor(proId, request);
         return "redirect:/admin/products/{productId}";

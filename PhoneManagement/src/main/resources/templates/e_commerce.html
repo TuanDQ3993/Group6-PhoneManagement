@@ -281,7 +281,7 @@
 <!--                                                <tr th:if="${size==0}">Not product exist</tr>-->
                                                 <tr  th:each="i : ${#numbers.sequence(0, size - 1)}">
                                                     <form th:action="@{/admin/products/{productId}/update(productId=${product.productId})}"
-                                                          method="post" id="update_form">
+                                                          method="post" id="update_form" enctype="multipart/form-data">
                                                         <input type="hidden" name="proColorId" id="proId1"
                                                                th:value="${product.proColorId.get(i)}">
                                                         <input type="hidden" th:field="*{product.proColorId}"
