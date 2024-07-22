@@ -278,8 +278,9 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr th:each="i : ${#numbers.sequence(0, size - 1)}">
-                                                    <form th:action="@{/products/{productId}/update(productId=${product.productId})}"
+<!--                                                <tr th:if="${size==0}">Not product exist</tr>-->
+                                                <tr  th:each="i : ${#numbers.sequence(0, size - 1)}">
+                                                    <form th:action="@{/admin/products/{productId}/update(productId=${product.productId})}"
                                                           method="post" id="update_form">
                                                         <input type="hidden" name="proColorId" id="proId1"
                                                                th:value="${product.proColorId.get(i)}">
@@ -366,7 +367,7 @@
     <!-- Delete Modal -->
     <div id="deleteModal" class="modal">
         <div class="modal-content">
-            <form method="post" th:action="@{/products/{productId}/delete(productId=${product.productId})}" id="delete_form">
+            <form method="post" th:action="@{/admin/products/{productId}/delete(productId=${product.productId})}" id="delete_form">
                 <span class="close" id="closeDeleteModal">&times;</span>
                 <input id="proId2" name="proColorId" hidden>
                 <p>Are you sure you want to delete this item?</p>

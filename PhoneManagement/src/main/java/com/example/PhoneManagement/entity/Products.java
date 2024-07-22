@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 
-@Entity(name = "Product")
+@Entity(name = "Products")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

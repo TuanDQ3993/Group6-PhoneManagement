@@ -1,9 +1,14 @@
 package com.example.PhoneManagement.controller;
 
 import com.example.PhoneManagement.dto.request.*;
-import com.example.PhoneManagement.service.CategoryService;
-import com.example.PhoneManagement.service.ColorService;
-import com.example.PhoneManagement.service.ProductService;
+import com.example.PhoneManagement.service.CategoryServiceImp;
+import com.example.PhoneManagement.service.ColorServiceImp;
+import com.example.PhoneManagement.service.ProductServiceImp;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,12 +20,12 @@ import java.math.BigDecimal;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/products")
+@RequestMapping("/admin/products")
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class ProductController {
-    ProductService productService;
-    CategoryService categoryService;
-    ColorService colorService;
+    ProductServiceImp productService;
+    CategoryServiceImp categoryService;
+    ColorServiceImp colorService;
     @GetMapping
     public String getAllProduct(Model model) {
         model.addAttribute("proList", productService.getAllProduct());
@@ -50,7 +55,7 @@ public class ProductController {
         request.setPrice(price);
         request.setWarrantyPeriod(warrantyPeriod);
         productService.updateProduct(proId, request);
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @PostMapping("/add")
@@ -68,7 +73,7 @@ public class ProductController {
         request.setWarrantyPeriod(warrantyPeriod);
         request.setQuantity(quantity);
         productService.addProduct(request);
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/{productId}")
@@ -77,10 +82,10 @@ public class ProductController {
         model.addAttribute("product",products);
         model.addAttribute("category",categoryService.findAllCategory());
         model.addAttribute("colors",colorService.getAllColor());
-        model.addAttribute("size", products.getImage().size());
+        model.addAttribute("size",products.getImage().size()) ;
         return "e_commerce";
     }
-
+    //auddittable
     @PostMapping("/{productId}/update")
     public String updateProductColor(@PathVariable("productId") int productId,
                                      @RequestParam("proColorId") int proId,
@@ -93,7 +98,7 @@ public class ProductController {
         request.setImage(image);
         request.setQuantity(quantity);
         productService.updateProductColor(proId, request);
-        return "redirect:/products/{productId}";
+        return "redirect:/admin/products/{productId}";
     }
 
     @PostMapping("/{productId}/add")
@@ -108,14 +113,13 @@ public class ProductController {
         request.setColorId(color);
 
         productService.addProductColor(request);
-        return "redirect:/products/{productId}";
+        return "redirect:/admin/products/{productId}";
     }
 
     @PostMapping("/{productId}/delete")
     public String deleteProductColor(@RequestParam("proColorId")int proId, @PathVariable("productId") int productId){
             productService.deleteProductColor(proId);
-            return "redirect:/products/"+productId;
-//        return "redirect:listproduct/"+productId;
+            return "redirect:/admin/products/"+productId;
     }
 
 }

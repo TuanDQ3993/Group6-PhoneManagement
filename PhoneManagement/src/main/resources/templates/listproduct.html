@@ -254,7 +254,7 @@
                     </div>
 
                     <div class="title_right">
-                        <form method="post" th:action="@{/products/search}">
+                        <form method="post" th:action="@{/admin/products/search}">
                             <div class="col-md-5 col-sm-5   form-group pull-right top_search">
                                 <div class="input-group">
                                     <input type="text" class="form-control" th:value="${search}" name="search"
@@ -288,8 +288,9 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="product : ${proList}">
-                                        <form method="post" th:action="@{/products/update}">
+<!--                                    <tr th:if="${proList.size()==0}">Not exist product</tr>-->
+                                    <tr  th:each="product : ${proList}">
+                                        <form method="post" th:action="@{/admin/products/update}">
                                             <input type="hidden" name="productId" th:value="${product.productId}">
                                             <td th:text="${product.productId}"></td>
                                             <td>
@@ -336,7 +337,7 @@
                                                         class="fa fa-folder"></i> Edit
                                                 </button>
                                                 <button type="button" class="btn btn-primary btn-xs view-btn"><i
-                                                        class="fa fa-folder"></i> <a style="color: white;" th:href="@{products/{productId}(productId=${product.productId})}">View</a>
+                                                        class="fa fa-folder"></i> <a style="color: white;" th:href="@{/admin/products/{productId}(productId=${product.productId})}">View</a>
                                                 </button>
                                                 <button type="submit" class="btn btn-success btn-xs save-btn"
                                                         style="display: none;"><i class="fa fa-save"></i> Save
@@ -378,7 +379,7 @@
     <div class="modal-content">
         <span class="close" id="closeModalBtn">&times;</span>
         <h5>Add Product</h5>
-        <form id="addProductForm" method="post" th:action="@{/products/add}">
+        <form id="addProductForm" method="post" th:action="@{/admin/products/add}">
             <div class="form-group">
                 <label for="productName">ProductName</label>
                 <input type="text" class="form-control" id="productName" name="productName" required>
