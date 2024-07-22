@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +30,7 @@ public class ProductServiceImp implements ProductService {
     ColorRepository colorRepository;
     CategoryRepository categoryRepository;
     ProductColorRepository productColorRepository;
+    FileStorageServiceImpl fileStorageService;
 
     @Override
     public List<ProductColorDTO> getAllProduct() {
@@ -183,8 +186,27 @@ public class ProductServiceImp implements ProductService {
         productColorRepository.delete(productColor);
     }
 
+    public String uploadFile(MultipartFile file) {
+        String message = "";
+        try{
+            String fileName = fileStorageService.storeFile(file);
+            String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/downloadFile/")
+                    .path(fileName).toUriString();
+//            return file.getOriginalFilename();
+            return fileDownloadUri;
+        }catch (Exception e){
+//            message = "Could not upload the file: " + file.getOriginalFilename() + ". Error: " +
+//                    e.getMessage();
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public Page<Products> findPaginated(PageableDTO pageableDTO) {
         return null;
     }
+
+
 }
