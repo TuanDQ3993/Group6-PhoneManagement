@@ -2,7 +2,7 @@ package com.example.PhoneManagement.controller;
 
 import com.example.PhoneManagement.dto.request.UserCreate;
 import com.example.PhoneManagement.dto.request.UserUpdateRequest;
-import com.example.PhoneManagement.service.UserService;
+import com.example.PhoneManagement.service.imp.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
