@@ -4,6 +4,9 @@ import com.example.PhoneManagement.dto.request.*;
 import com.example.PhoneManagement.service.CategoryServiceImp;
 import com.example.PhoneManagement.service.ColorServiceImp;
 import com.example.PhoneManagement.service.ProductServiceImp;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,9 +30,14 @@ public class ProductController {
     CategoryServiceImp categoryService;
     ColorServiceImp colorService;
     @GetMapping
-    public String getAllProduct(Model model) {
+    public String getAllProduct(Model model,@RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "5") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductColorDTO> productColorPage = productService.findPaginated(pageable);
         model.addAttribute("proList", productService.getAllProduct());
         model.addAttribute("category", categoryService.findAllCategory());
+        model.addAttribute("productColorPage", productColorPage);
+        model.addAttribute("pageSize", size);
         return "listproduct";
     }
 
@@ -97,22 +105,23 @@ public class ProductController {
         request.setColorId(colors);
         request.setImage(fileImage);
         request.setQuantity(quantity);
-        productService.updateProductColor(proId, request);
+        productService.updateProductColor(proId, request,productId);
         return "redirect:/admin/products/{productId}";
     }
 
     @PostMapping("/{productId}/add")
     public String addProductColor(@PathVariable("productId") int proId,
                                   @RequestParam("color") int color,
-                                  @RequestParam("image") String image,
+                                  @RequestParam("image") MultipartFile image,
                                   @RequestParam("quantity") int quantity){
+        String fileImage=productService.uploadFile(image);
         ProductColorCreateRequest request=new ProductColorCreateRequest();
         request.setProId(proId);
-        request.setImage(image);
+        request.setImage(fileImage);
         request.setQuantity(quantity);
         request.setColorId(color);
 
-        productService.addProductColor(request);
+        productService.addProductColor(request,proId);
         return "redirect:/admin/products/{productId}";
     }
 

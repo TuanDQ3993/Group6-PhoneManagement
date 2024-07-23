@@ -1,5 +1,6 @@
 package com.example.PhoneManagement.repository;
 
+import com.example.PhoneManagement.entity.ProductColor;
 import com.example.PhoneManagement.entity.Products;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +16,10 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Products, Integer> {
     @Override
     long count();
+
     @Query(value = "select n from Products n")
     List<Products> getListProduct();
+
     @Query(value = "select ten from Products where id=: id", nativeQuery = true)
     String getNameById(@Param("id") int id);
 }
