@@ -117,22 +117,19 @@ CREATE TABLE purchasedetail (
     FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 INSERT INTO Role (role_name) VALUES ('ADMIN'), ('SALER'),('TECHNICAL STAFF'),('WAREHOUSE STAFF'),('USER');
-INSERT INTO users (username, password, fullname, address, phone_number, role_id, active, avatar, created_at) VALUES
-('nguyenvana@gmail.com', '$2a$10$kvsUmBcD9sTXRU/y97CRYeLrhOL1jBvuSzDPpBpRGnWsb2SSr9cbO', 'Nguyen Van A', 'Address 2', '0912345678', 5, 0, NULL, NULL),
-('lethingoc@gmail.com', '$2a$10$NOtkUAz/pE7ymZq/DeLFTOh8KpAhZCRb6qyP53uG7m6DKof.quyHq', 'Le Thi Ngoc', 'Address 4', '0934567890', 5, 0, NULL, NULL),
-('ngothianh@gmail.com', '$2a$10$uO8iwtZA3L9ZG2smjmH7COcFGnYpq.lv9r3fitetlMqoLE2wNtRjO', 'Ngo Thi Anh', 'Address 6', '0956789012', 5, 0, NULL, NULL),
-('nguyenhoang@gmail.com', '$2a$10$A5.xmwG6yFPVjpBFzoWA.ega1BoA79vptTGhJoPLJIawzYcFAEH/S', 'Nguyen Hoang', 'Address 8', '0978901234', 5, 0, NULL, NULL),
-('damquocviet@gmail.com', '$2a$10$BvZSY0dtYv3ZC6R5cEYX/eKB8r42CDThzXYJ9ozTi0Wj3CGLdxOMq', 'Dam Quoc Viet', 'Address 10', '0990123456', 5, 0, NULL, NULL),
-('tranghiendu@gmail.com', '$2a$10$zZWgU5QlpItsWZCEyCqEpuJD66MQNTVXMDU3eqJJA8jCoRhbyMPxK', 'Tran Hien Du', 'Address 11', '0910123456', 5, 0, NULL, NULL),
-('tranthib@gmail.com', '$2a$10$3rsfAW5k0E449aL0zaiOEO9GjsLNEOmNb6U6kVtCE7yZ8rk54aXba', 'Tran Thi B', 'Address 3', '0923456789', 5, 0, NULL, NULL),
-('lequanghieu@gmail.com', '$2a$10$jd5BCw8k132iTX9sg/1gH.rTW98PYlIs3d7UJvxnkFrZ8M7R5fI5K', 'Le Quang Hieu', 'Address 15', '0945678902', 5, 0, NULL, NULL),
-('hoangthicuc@gmail.com', '$2a$10$wSo6R.191TVjMcFSw/x8teZ8.SY76BLp96lnVMSzk.iDAgtUmIDe.', 'Hoang Thi Cuc', 'Address 19', '0989012346', 3, 0, NULL, NULL),
-('tranminhchau@gmail.com', '$2a$10$Pm/6kLFPAua20cgCZ9h/vugGUrXP9HBzOn47IAt5LON.uGJVDLO.a', 'Tran Minh Chau', 'Address 21', '0910123457', 4, 0, NULL, NULL),
-('hoangminhtri@gmail.com', '$2a$10$P5esZ.wZFxKXXZACrIdAu.pwGwZrtheFVFYTsRpPdd2ldbP0F9rHy', 'Hoang Minh Tri', 'Address 29', '0988123456', 3, 0, NULL, NULL),
-('tranminhkhoa@gmail.com', '$2a$10$eWCqQFasUPkVxS1C8hfql.IlQJRy6xWDcUyGAjsbCu5wURGdblWFm', 'Tran Minh Khoa', 'Address 31', '0912123456', 2, 0, NULL, NULL),
-('Phananhquan@gmail.com', '$2a$10$PPNxFIMET68uiko6NdtnDOAh.t2c20dKvqyLt5qaBXKhq.pGNeb2C', 'Phan Anh Quan', 'Address 30', '0999123456', 2, 0, NULL, NULL),
-('quyendinhnam@gmail.com', '$2a$10$f0fQP2d1sGhmzqeLYfbp/.qh/BFWL2MSye5omCCbbf2X0HfCfNAP2', 'Quyen Dinh Nam', 'Address 28', '0977123456', 2, 0, NULL, NULL),
-('quangtuan3903@gmail.com', '$2a$10$c0zBKI./IHXIbP5aHoGwMe7QLMJAA0nqqDWKCg8llkvSw9.ptnC1e', 'Dinh Quang Tuan', 'Address 28', '09176427813', 1, 0, NULL, NULL),
-('nguyenhaoquang@gmail.com', '$2a$10$mbLv4pILsinIeRDHWYhFo.QChQ1DRzq.GPVj0dqjHi/a/xuqMPut2', 'Nguyen Hao Quang', 'Address 28', '01628849127', 3, 0, NULL, NULL),
-('hoangphihong@gmail.com', '$2a$10$dRDgRUtjIr8Qq3kiIUNXRePZErkZGoPCFaJ3xu9MbuxT0Nu3Vcjda', 'Hoang Phi Hong', 'Address 28', '0871682721', 4, 0, NULL, NULL);
+INSERT INTO useraccount (username, password, fullname, address, phone_number, role_id, active, avatar) VALUES
+('quangtuan3903@gmail.com', '$2a$10$c0zBKI./IHXIbP5aHoGwMe7QLMJAA0nqqDWKCg8llkvSw9.ptnC1e', 'Dinh Quang Tuan', 'Address 28', '09176427813', 1, 0, NULL),
+('tranminhkhoa@gmail.com', '$2a$10$eWCqQFasUPkVxS1C8hfql.IlQJRy6xWDcUyGAjsbCu5wURGdblWFm', 'Tran Minh Khoa', 'Address 31', '0912123456', 2, 0, NULL),
+('Phananhquan@gmail.com', '$2a$10$PPNxFIMET68uiko6NdtnDOAh.t2c20dKvqyLt5qaBXKhq.pGNeb2C', 'Phan Anh Quan', 'Address 30', '0999123456', 2, 0, NULL),
+('quyendinhnam@gmail.com', '$2a$10$f0fQP2d1sGhmzqeLYfbp/.qh/BFWL2MSye5omCCbbf2X0HfCfNAP2', 'Quyen Dinh Nam', 'Address 28', '0977123456', 2, 0, NULL),
+('hoangthicuc@gmail.com', '$2a$10$wSo6R.191TVjMcFSw/x8teZ8.SY76BLp96lnVMSzk.iDAgtUmIDe.', 'Hoang Thi Cuc', 'Address 19', '0989012346', 3, 0, NULL),
+('hoangminhtri@gmail.com', '$2a$10$P5esZ.wZFxKXXZACrIdAu.pwGwZrtheFVFYTsRpPdd2ldbP0F9rHy', 'Hoang Minh Tri', 'Address 29', '0988123456', 3, 0, NULL),
+('nguyenhaoquang@gmail.com', '$2a$10$mbLv4pILsinIeRDHWYhFo.QChQ1DRzq.GPVj0dqjHi/a/xuqMPut2', 'Nguyen Hao Quang', 'Address 28', '01628849127', 3, 0, NULL),
+('hoangphihong@gmail.com', '$2a$10$dRDgRUtjIr8Qq3kiIUNXRePZErkZGoPCFaJ3xu9MbuxT0Nu3Vcjda', 'Hoang Phi Hong', 'Address 28', '0871682721', 4, 0, NULL),
+('tranminhchau@gmail.com', '$2a$10$Pm/6kLFPAua20cgCZ9h/vugGUrXP9HBzOn47IAt5LON.uGJVDLO.a', 'Tran Minh Chau', 'Address 21', '0910123457', 4, 0, NULL),
+('tranthib@gmail.com', '$2a$10$3rsfAW5k0E449aL0zaiOEO9GjsLNEOmNb6U6kVtCE7yZ8rk54aXba', 'Tran Thi B', 'Address 3', '0923456789', 5, 0, NULL),
+('lethingoc@gmail.com', '$2a$10$NOtkUAz/pE7ymZq/DeLFTOh8KpAhZCRb6qyP53uG7m6DKof.quyHq', 'Le Thi Ngoc', 'Address 4', '0934567890', 5, 0, NULL),
+('ngothianh@gmail.com', '$2a$10$uO8iwtZA3L9ZG2smjmH7COcFGnYpq.lv9r3fitetlMqoLE2wNtRjO', 'Ngo Thi Anh', 'Address 6', '0956789012', 5, 0, NULL),
+('nguyenhoang@gmail.com', '$2a$10$A5.xmwG6yFPVjpBFzoWA.ega1BoA79vptTGhJoPLJIawzYcFAEH/S', 'Nguyen Hoang', 'Address 8', '0978901234', 5, 0, NULL);
+
 
