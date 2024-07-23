@@ -1,0 +1,159 @@
+{
+"userName": "nguyenvana@gmail.com",
+"password": "123456",
+"fullName": "Nguyen Van A",
+"address": "Address 2",
+"phoneNumber": "0912345678",
+"roleId": "5"
+}
+
+{
+"userName": "lethingoc@gmail.com",
+"password": "123456",
+"fullName": "Le Thi Ngoc",
+"address": "Address 4",
+"phoneNumber": "0934567890",
+"roleId": "5"
+}
+
+{
+"userName": "ngothianh@gmail.com",
+"password": "123456",
+"fullName": "Ngo Thi Anh",
+"address": "Address 6",
+"phoneNumber": "0956789012",
+"roleId": "5"
+}
+
+"userName": "nguyenhoang@gmail.com",
+"password": "123456",
+"fullName": "Nguyen Hoang",
+"address": "Address 8",
+"phoneNumber": "0978901234",
+"roleId": "5"
+}
+
+{
+"userName": "damquocviet@gmail.com",
+"password": "123456",
+"fullName": "Dam Quoc Viet",
+"address": "Address 10",
+"phoneNumber": "0990123456",
+"roleId": "5"
+}
+
+{
+    "userName": "tranghiendu@gmail.com",
+    "password": "123456",
+    "fullName": "Tran Hien Du",
+    "address": "Address 11",
+    "phoneNumber": "0910123456",
+    "roleId": "5"
+}
+
+
+
+{
+    "userName": "tranthib@gmail.com",
+    "password": "123456",
+    "fullName": "Tran Thi B",
+    "address": "Address 3",
+    "phoneNumber": "0923456789",
+    "roleId": "5"
+}
+
+{
+    "userName": "lequanghieu@gmail.com",
+    "password": "123456",
+    "fullName": "Le Quang Hieu",
+    "address": "Address 15",
+    "phoneNumber": "0945678902",
+    "roleId": "5"
+}
+
+
+{
+    "userName": "hoangthicuc@gmail.com",
+    "password": "123456",
+    "fullName": "Hoang Thi Cuc",
+    "address": "Address 19",
+    "phoneNumber": "0989012346",
+    "roleId": "3"
+}
+
+
+{
+    "userName": "tranminhchau@gmail.com",
+    "password": "123456",
+    "fullName": "Tran Minh Chau",
+    "address": "Address 21",
+    "phoneNumber": "0910123457",
+    "roleId": "4"
+}
+
+
+
+{
+    "userName": "hoangminhtri@gmail.com",
+    "password": "123456",
+    "fullName": "Hoang Minh Tri",
+    "address": "Address 29",
+    "phoneNumber": "0988123456",
+    "roleId": "3"
+}
+
+{
+    "userName": "tranminhkhoa@gmail.com",
+    "password": "123456",
+    "fullName": "Tran Minh Khoa",
+    "address": "Address 31",
+    "phoneNumber": "0912123456",
+    "roleId": "2"
+}
+
+
+"userName": "Phananhquan@gmail.com",
+"password": "123456",
+"fullName": "Phan Anh Quan",
+"address": "Address 30",
+"phoneNumber": "0999123456",
+"roleId": "2"
+} 
+
+{
+"userName": "quyendinhnam@gmail.com",
+"password": "123456",
+"fullName": "Quyen Dinh Nam",
+"address": "Address 28",
+"phoneNumber": "0977123456",
+"roleId": "2"
+}
+
+
+{
+"userName": "quangtuan3903@gmail.com",
+"password": "123456",
+"fullName": "Dinh Quang Tuan",
+"address": "Address 28",
+"phoneNumber": "09176427813",
+"roleId": "1"
+}
+
+
+{
+"userName": "nguyenhaoquang@gmail.com",
+"password": "123456",
+"fullName": "Nguyen Hao Quang",
+"address": "Address 28",
+"phoneNumber": "01628849127",
+"roleId": "3"
+}
+
+{
+"userName": "hoangphihong@gmail.com",
+"password": "123456",
+"fullName": "Hoang Phi Hong",
+"address": "Address 28",
+"phoneNumber": "0871682721",
+"roleId": "4"
+}
