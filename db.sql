@@ -116,3 +116,4 @@ CREATE TABLE purchasedetail (
     FOREIGN KEY (purchase_id) REFERENCES purchase(purchase_id),
     FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
+INSERT INTO Role (role_name) VALUES ('ADMIN'), ('SALER'),('TECHNICAL STAFF'),('WAREHOUSE STAFF'),('USER');
