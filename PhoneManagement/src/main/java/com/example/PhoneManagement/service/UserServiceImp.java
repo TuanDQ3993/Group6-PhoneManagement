@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -110,7 +111,7 @@ public class UserServiceImp implements UserService {
             user.setFullName(userDTO.getFullName());
             user.setAddress(userDTO.getAddress());
             user.setPhoneNumber(userDTO.getPhoneNumber());
-//            user.setAvatar(userDTO.getAvatar());
+            user.setAvatar(userDTO.getAvatar());
             Roles role = roleRepository.findByRoleName(userDTO.getRoleName());
             user.setRole(role);
             userRepository.save(user);
