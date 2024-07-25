@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gentelella Alela! | Users List</title>
+</head>
+<body>
+<h1>Users List</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Full Name</th>
+        <th>Address</th>
+        <th>Phone Number</th>
+        <th>Active</th>
+        <th>Created At</th>
+        <th>Role</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.userId}"></td>
+        <td th:text="${user.userName}"></td>
+        <td th:text="${user.fullName}"></td>
+        <td th:text="${user.address}"></td>
+        <td th:text="${user.phoneNumber}"></td>
+        <td th:text="${user.active}"></td>
+        <td th:text="${#dates.format(user.createdAt, 'yyyy-MM-dd')}"></td>
+        <td th:text="${user.role.roleName}"></td> <!-- Displaying the user's role -->
+        <!-- Role selection form -->
+        <td>
+            <form th:action="@{/admin/changeRole/{id}(id=${user.userId})}" method="post">
+                <select name="roleId">
+                    <option th:each="role : ${roles}"
+                            th:value="${role.roleId}"
+                            th:text="${role.roleName}">
+                    </option>
+                </select>
+                <button type="submit">Save Role</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
