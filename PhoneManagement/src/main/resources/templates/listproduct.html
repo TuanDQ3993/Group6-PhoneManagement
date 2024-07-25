@@ -333,7 +333,7 @@
                                     <tr>
                                         <th style="width: 1%">ProductId</th>
                                         <th style="width: 20%">ProductName</th>
-<!--                                        <th>Image</th>-->
+                                        <!--                                        <th>Image</th>-->
                                         <th>Quantity</th>
                                         <th>Price</th>
                                         <th>Category</th>
@@ -344,61 +344,61 @@
                                     </thead>
                                     <tbody>
 
-<tr  th:each="product : ${productColorPage.content}">
-    <form method="post" th:action="@{/admin/products/update}">
-        <input type="hidden" name="productId" th:value="${product.productId}">
-        <td th:text="${product.productId}"></td>
-        <td>
-            <span class="view-span" th:text="${product.productName}"></span>
-            <input type="text" class="form-control edit-input" name="productName"
-                   th:value="${product.productName}" style="display: none;">
-        </td>
-        <td>
-            <span class="view-span" th:text="${product.quantity}"></span>
-            <input type="number" class="form-control edit-input" name="quantity"
-                   th:value="${product.quantity}" style="display: none;">
-        </td>
-        <td>
-            <span class="view-span" th:text="${product.price}"></span>
-            <input type="text" class="form-control edit-input" name="price"
-                   th:value="${product.price}" style="display: none;">
-        </td>
-        <td>
-            <span class="view-span" th:each="category : ${category}" th:if="${category.categoryId == product.categoryId}" th:text="${category.categoryName}"></span>
-            <select class="form-control edit-input" name="cateId"
-                    style="display: none;">
-                <option th:each="category : ${category}"
-                        th:value="${category.categoryId}"
-                        th:text="${category.categoryName}"
-                        th:selected="${category.categoryId == product.categoryId}"></option>
-            </select>
-        </td>
-        <td>
-            <span class="view-span" th:text="${product.createAt}"></span>
-            <input type="text" class="form-control edit-input" name="createAt"
-                   th:value="${product.createAt}" readonly style="display: none;">
-        </td>
-        <td>
-            <span class="view-span" th:text="${product.warrantyPeriod}"></span>
-            <input type="text" class="form-control edit-input" name="warrantyPeriod"
-                   th:value="${product.warrantyPeriod}" style="display: none;">
-        </td>
-        <td>
-            <button type="button" class="btn btn-primary btn-xs edit-btn"><i
-                    class="fa fa-folder"></i> Edit
-            </button>
-            <button type="button" class="btn btn-primary btn-xs view-btn"><i
-                    class="fa fa-folder"></i> <a style="color: white;" th:href="@{/admin/products/{productId}(productId=${product.productId})}">View</a>
-            </button>
-            <button type="submit" class="btn btn-success btn-xs save-btn"
-                    style="display: none;"><i class="fa fa-save"></i> Save
-            </button>
-            <button type="button" class="btn btn-warning btn-xs cancel-btn"
-                    style="display: none;"><i class="fa fa-times"></i> Cancel
-            </button>
-        </td>
-    </form>
-</tr>
+                                    <tr  th:each="product : ${productColorPage.content}">
+                                        <form method="post" th:action="@{/admin/products/update}">
+                                            <input type="hidden" name="productId" th:value="${product.productId}">
+                                            <td th:text="${product.productId}"></td>
+                                            <td>
+                                                <span class="view-span" th:text="${product.productName}"></span>
+                                                <input type="text" class="form-control edit-input" name="productName"
+                                                       th:value="${product.productName}" style="display: none;">
+                                            </td>
+                                            <td>
+                                                <span class="view-span" th:text="${product.quantity}"></span>
+                                                <input type="number" class="form-control edit-input" name="quantity"
+                                                       th:value="${product.quantity}" style="display: none;">
+                                            </td>
+                                            <td>
+                                                <span class="view-span" th:text="${product.price}"></span>
+                                                <input type="text" class="form-control edit-input" name="price"
+                                                       th:value="${product.price}" style="display: none;">
+                                            </td>
+                                            <td>
+                                                <span class="view-span" th:each="category : ${category}" th:if="${category.categoryId == product.categoryId}" th:text="${category.categoryName}"></span>
+                                                <select class="form-control edit-input" name="cateId"
+                                                        style="display: none;">
+                                                    <option th:each="category : ${category}"
+                                                            th:value="${category.categoryId}"
+                                                            th:text="${category.categoryName}"
+                                                            th:selected="${category.categoryId == product.categoryId}"></option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="view-span" th:text="${product.createAt}"></span>
+                                                <input type="text" class="form-control edit-input" name="createAt"
+                                                       th:value="${product.createAt}" readonly style="display: none;">
+                                            </td>
+                                            <td>
+                                                <span class="view-span" th:text="${product.warrantyPeriod}"></span>
+                                                <input type="text" class="form-control edit-input" name="warrantyPeriod"
+                                                       th:value="${product.warrantyPeriod}" style="display: none;">
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary btn-xs edit-btn"><i
+                                                        class="fa fa-folder"></i> Edit
+                                                </button>
+                                                <button type="button" class="btn btn-primary btn-xs view-btn"><i
+                                                        class="fa fa-folder"></i> <a style="color: white;" th:href="@{/admin/products/{productId}(productId=${product.productId})}">View</a>
+                                                </button>
+                                                <button type="submit" class="btn btn-success btn-xs save-btn"
+                                                        style="display: none;"><i class="fa fa-save"></i> Save
+                                                </button>
+                                                <button type="button" class="btn btn-warning btn-xs cancel-btn"
+                                                        style="display: none;"><i class="fa fa-times"></i> Cancel
+                                                </button>
+                                            </td>
+                                        </form>
+                                    </tr>
                                     </tbody>
                                 </table>
                                 <!-- end project list -->
