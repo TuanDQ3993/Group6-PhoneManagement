@@ -36,39 +36,37 @@ public class ProductServiceImp implements ProductService {
     FileStorageServiceImpl fileStorageService;
 
     @Override
-    public List<ProductColorDTO> getAllProduct() {
-        try {
-            List<Products> products = productRepository.findAll();
-            List<Category> categories = categoryRepository.findAll();
-            List<ProductColor> productColorList = productColorRepository.findAll();
-            List<ProductColorDTO> productColorDTOS = new ArrayList<>();
+    public void saveProduct(ProductDTO productDTO) {
+        Products product = new Products();
+        product.setProductName(productDTO.getProductName());
+        product.setDescription(productDTO.getDescription());
+        product.setQuantity(productDTO.getQuantity());
+        product.setPrice(productDTO.getPrice());
+        product.setWarrantyPeriod(productDTO.getWarrantyPeriod());
+        product.setCreatedAt(new Date());
 
-            for (Products product : products) {
-                ProductColorDTO dto = new ProductColorDTO();
-                dto.setProductId(product.getProductId());
-                dto.setProductName(product.getProductName());
-                dto.setCategoryId(product.getCategory().getCategoryId());
-                dto.setCateName(product.getCategory().getCategoryName());
-                Category category = categories.stream()
-                        .filter(cat -> cat.getCategoryId() == product.getCategory().getCategoryId())
-                        .findFirst()
-                        .orElse(null);
-                ProductColor productColor = productColorList.stream()
-                        .filter(i -> i.getProducts().getProductId() == product.getProductId())
-                        .findFirst().orElse(null);
-//            dto.setImage(productColor.getImage());
-                dto.setPrice(product.getPrice());
-                dto.setQuantity(product.getQuantity());
-                dto.setWarrantyPeriod(product.getWarrantyPeriod());
-                dto.setCreatedAt(product.getCreatedAt());
+        Category category = new Category();
+        category.setCategoryId(productDTO.getCategoryId());
+        product.setCategory(category);
 
-                productColorDTOS.add(dto);
-            }
-            return productColorDTOS;
-        }catch (Exception e){
-            e.printStackTrace();
+        if (product.getProductColorList() == null) {
+            product.setProductColorList(new ArrayList<>());
         }
-        return null;
+
+        for (ProductColorDTO colorDTO : productDTO.getColors()) {
+            ProductColor productColor = new ProductColor();
+            Colors color = new Colors();
+            color.setColorId(colorDTO.getColorId());
+            productColor.setColors(color);
+            productColor.setQuantity(colorDTO.getQuantity());
+            String image=uploadFile(colorDTO.getImage());
+            productColor.setImage(image);
+            productColor.setProducts(product);
+
+            product.getProductColorList().add(productColor);
+        }
+
+        productRepository.save(product);
     }
 
     @Override
@@ -220,19 +218,19 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductColorDTO> findPaginated(Pageable pageable) {
+    public Page<ProductDTO> findPaginated(Pageable pageable) {
             try {
                 Page<Products> productPage = productRepository.findAll(pageable);
                 List<Category> categories = categoryRepository.findAll();
                 List<ProductColor> productColorList = productColorRepository.findAll();
-                List<ProductColorDTO> productColorDTOS = new ArrayList<>();
+                List<ProductDTO> productColorDTOS = new ArrayList<>();
 
                 for (Products product : productPage.getContent()) {
-                    ProductColorDTO dto = new ProductColorDTO();
+                    ProductDTO dto = new ProductDTO();
                     dto.setProductId(product.getProductId());
                     dto.setProductName(product.getProductName());
                     dto.setCategoryId(product.getCategory().getCategoryId());
-                    dto.setCateName(product.getCategory().getCategoryName());
+                    dto.setCategoryId(product.getCategory().getCategoryId());
 
                     Category category = categories.stream()
                             .filter(cat -> cat.getCategoryId() == product.getCategory().getCategoryId())
@@ -245,11 +243,10 @@ public class ProductServiceImp implements ProductService {
                     dto.setPrice(product.getPrice());
                     dto.setQuantity(product.getQuantity());
                     dto.setWarrantyPeriod(product.getWarrantyPeriod());
-                    dto.setCreatedAt(product.getCreatedAt());
+                    dto.setCreateAt(product.getCreatedAt());
 
                     productColorDTOS.add(dto);
                 }
-
                 return new PageImpl<>(productColorDTOS, pageable, productPage.getTotalElements());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -257,5 +254,9 @@ public class ProductServiceImp implements ProductService {
             return Page.empty();
     }
 
+    @Override
+    public List<ProductColor> findAllProductColor(){
+        return productColorRepository.findAll();
+    }
 
 }

@@ -6,6 +6,7 @@ import com.example.PhoneManagement.entity.Products;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -16,14 +17,7 @@ import java.util.Date;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductColorDTO {
-    int productId;
-    String productName;
-    int categoryId;
-    String cateName;
-    String image;
-    BigDecimal price;
-    int quantity;
-    int warrantyPeriod;
-//    Date lastUpdated;
-    Date createdAt;
+    Integer colorId;
+    Integer quantity;
+    MultipartFile image;
 }

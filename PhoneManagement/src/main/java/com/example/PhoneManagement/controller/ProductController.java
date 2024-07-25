@@ -33,20 +33,21 @@ public class ProductController {
     public String getAllProduct(Model model,@RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<ProductColorDTO> productColorPage = productService.findPaginated(pageable);
-        model.addAttribute("proList", productService.getAllProduct());
+        Page<ProductDTO> productColorPage = productService.findPaginated(pageable);
         model.addAttribute("category", categoryService.findAllCategory());
+        model.addAttribute("colors",colorService.getAllColor());
+        model.addAttribute("productDTO", new ProductDTO());
         model.addAttribute("productColorPage", productColorPage);
         model.addAttribute("pageSize", size);
         return "listproduct";
     }
 
-    @PostMapping("/search")
-    public String searchProduct(@RequestParam("search") String search, Model model){
-        model.addAttribute("proList", productService.getAllProduct().stream().filter(pro -> pro.getProductName().contains(search)).toList());
-        model.addAttribute("category", categoryService.findAllCategory());
-        return "listproduct";
-    }
+//    @PostMapping("/search")
+//    public String searchProduct(@RequestParam("search") String search, Model model){
+//        model.addAttribute("proList", productService.getAllProduct().stream().filter(pro -> pro.getProductName().contains(search)).toList());
+//        model.addAttribute("category", categoryService.findAllCategory());
+//        return "listproduct";
+//    }
 
     @PostMapping("/update")
     public String updateProduct(@RequestParam("productId") int proId,
@@ -67,20 +68,8 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public String addProduct(@RequestParam("productName") String proName,
-                             @RequestParam("description") String des,
-                             @RequestParam("price") BigDecimal price,
-                             @RequestParam("category") int category,
-                             @RequestParam("warrantyPeriod") int warrantyPeriod,
-                             @RequestParam("quantity") int quantity){
-        ProductCreateRequest request=new ProductCreateRequest();
-        request.setProductName(proName);
-        request.setDescription(des);
-        request.setCategory(category);
-        request.setPrice(price);
-        request.setWarrantyPeriod(warrantyPeriod);
-        request.setQuantity(quantity);
-        productService.addProduct(request);
+    public String addProduct(@ModelAttribute("productDTO") ProductDTO productDTO) {
+        productService.saveProduct(productDTO);
         return "redirect:/admin/products";
     }
 
