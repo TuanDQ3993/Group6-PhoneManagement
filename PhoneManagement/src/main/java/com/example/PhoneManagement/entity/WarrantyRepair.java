@@ -21,22 +21,27 @@ public class WarrantyRepair {
     @Column(name="warranty_id")
     int warrantyId;
 
-    @Column(name="issue_description")
+    @Column(name="product_name", length = 50)
+    String productName;
+
+    @Column(name="image", columnDefinition = "TEXT")
+    String image;
+
+    @Column(name="status", length = 50)
+    String status;
+
+    @Column(name="issue_description", length = 255)
     String issueDescription;
 
     @Column(name="repair_date")
+    @Temporal(TemporalType.TIMESTAMP)
     Date repairDate;
+
+    @ManyToOne
+    @JoinColumn(name="user_id", referencedColumnName = "user_id")
+    Users user;
 
     @Column(name="technical_id")
     int technicalId;
-
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    Users user;
-
-    @ManyToOne
-    @JoinColumn(name="product_id")
-    Products products;
-
 
 }
