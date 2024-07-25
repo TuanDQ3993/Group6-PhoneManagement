@@ -11,7 +11,7 @@ CREATE TABLE role (
 CREATE TABLE useraccount (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(50) NOT NULL,
     fullname VARCHAR(50) NOT NULL,
     address VARCHAR(50) NOT NULL,
     phone_number VARCHAR(50) NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE category (
 );
 
 -- Table to manage products
-CREATE TABLE product (
+CREATE TABLE products (
     product_id INT AUTO_INCREMENT PRIMARY KEY,
     product_name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -56,7 +56,7 @@ CREATE TABLE productcolor (
     quantity INT,
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
 --     PRIMARY KEY (product_id, color_id),
-    FOREIGN KEY (product_id) REFERENCES product(product_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id),
     FOREIGN KEY (color_id) REFERENCES color(color_id)
 );
 
@@ -85,13 +85,13 @@ CREATE TABLE orderdetail (
 -- Table to manage warranty and repair
 CREATE TABLE warrantyrepair (
     warranty_id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT,
+    product_id INT, -- this is product detail
     user_id INT,   -- Nguoi can sua
     technical_id INT, -- Nguoi sua
     issue_description VARCHAR(255),
     repair_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50),
-    FOREIGN KEY (product_id) REFERENCES product(product_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id),
     FOREIGN KEY (user_id) REFERENCES useraccount(user_id)
 );  
 
@@ -110,11 +110,11 @@ CREATE TABLE purchase (
 CREATE TABLE purchasedetail (
     purchase_detail_id INT AUTO_INCREMENT PRIMARY KEY,
     purchase_id INT,
-    product_id INT,
+    product_color_id INT,
     quantity INT NOT NULL,
     price DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (purchase_id) REFERENCES purchase(purchase_id),
-    FOREIGN KEY (product_id) REFERENCES product(product_id)
+    FOREIGN KEY (product_color_id) REFERENCES productcolor(product_color_id)
 );
 INSERT INTO Role (role_name) VALUES ('ADMIN'), ('SALER'),('TECHNICAL STAFF'),('WAREHOUSE STAFF'),('USER');
 INSERT INTO useraccount (username, password, fullname, address, phone_number, role_id, active, avatar) VALUES
