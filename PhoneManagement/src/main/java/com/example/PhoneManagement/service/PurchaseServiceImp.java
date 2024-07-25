@@ -1,7 +1,6 @@
 package com.example.PhoneManagement.service;
 
 import com.example.PhoneManagement.dto.request.PageableDTO;
-import com.example.PhoneManagement.dto.request.PurchaseCreateRequest;
 import com.example.PhoneManagement.dto.request.PurchaseDTO;
 import com.example.PhoneManagement.dto.request.PurchaseDetailsDTO;
 import com.example.PhoneManagement.entity.*;
@@ -53,18 +52,6 @@ public class PurchaseServiceImp implements PurchaseService {
             e.printStackTrace();
             return Page.empty();
         }
-    }
-
-    @Override
-    public void addProduct(PurchaseCreateRequest request) {
-        Purchase purchase = new Purchase();
-        purchase.setPurchaseDate(new Date());
-        Users users = new Users();
-        users.setUserId(request.getUserId());
-        purchase.setUser(users);
-        purchase.setOrigin(request.getOrigin());
-        purchase.setStatus(request.getStatus());
-        purchaseRepository.save(purchase);
     }
 
     public Purchase createPurchase(PurchaseDTO purchaseDTO) {
