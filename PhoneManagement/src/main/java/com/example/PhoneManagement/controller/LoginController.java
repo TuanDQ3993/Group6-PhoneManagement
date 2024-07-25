@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Collection;
 
 
 @Controller
@@ -59,6 +62,9 @@ public class LoginController {
 
             if (user.getRole().getRoleName().equals("ADMIN")) {
                 return "redirect:/auth/home";
+            }
+            else if(user.getRole().getRoleName().equals("SALER")) {
+                return "redirect:/saler/dashboard";
             }
             return "login";
         } catch (Exception e) {
