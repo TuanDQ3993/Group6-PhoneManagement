@@ -11,7 +11,7 @@ CREATE TABLE role (
 CREATE TABLE useraccount (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     fullname VARCHAR(50) NOT NULL,
     address VARCHAR(50) NOT NULL,
     phone_number VARCHAR(50) NOT NULL,
@@ -131,5 +131,3 @@ INSERT INTO useraccount (username, password, fullname, address, phone_number, ro
 ('lethingoc@gmail.com', '$2a$10$NOtkUAz/pE7ymZq/DeLFTOh8KpAhZCRb6qyP53uG7m6DKof.quyHq', 'Le Thi Ngoc', 'Address 4', '0934567890', 5, 0, NULL),
 ('ngothianh@gmail.com', '$2a$10$uO8iwtZA3L9ZG2smjmH7COcFGnYpq.lv9r3fitetlMqoLE2wNtRjO', 'Ngo Thi Anh', 'Address 6', '0956789012', 5, 0, NULL),
 ('nguyenhoang@gmail.com', '$2a$10$A5.xmwG6yFPVjpBFzoWA.ega1BoA79vptTGhJoPLJIawzYcFAEH/S', 'Nguyen Hoang', 'Address 8', '0978901234', 5, 0, NULL);
-
-
