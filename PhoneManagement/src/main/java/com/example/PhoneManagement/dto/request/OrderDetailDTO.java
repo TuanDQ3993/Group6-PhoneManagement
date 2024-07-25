@@ -8,11 +8,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RegisterRequest {
-    String userName;
-    String password;
-    String fullName;
-    String address;
-    String phoneNumber;
-    int roleId;
+public class OrderDetailDTO {
+    int orderId;
+    int productId;
+    String productName;
+    String image;
+    int quantity;
+    double price;
 }
