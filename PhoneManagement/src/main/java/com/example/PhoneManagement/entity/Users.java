@@ -52,7 +52,6 @@ public class Users implements UserDetails {
     @JoinColumn(name="role_id")
     Roles role;
 
-
     @OneToMany(mappedBy = "user")
     List<WarrantyRepair> warrantyRepairList;
 
