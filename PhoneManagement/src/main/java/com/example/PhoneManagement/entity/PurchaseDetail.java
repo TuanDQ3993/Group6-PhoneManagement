@@ -15,22 +15,23 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PurchaseDetail {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="purchase_detail_id")
-    int purchaseDetailId;
+    @Column(name = "purchase_detail_id")
+    private int purchaseDetailId;
 
-    @Column(name="quantity", nullable=false)
-    int quantity;
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
 
-    @Column(name="price",nullable=false,precision = 10, scale = 2)
-    BigDecimal price;
-
-    @ManyToOne
-    @JoinColumn(name="purchase_id")
-    Purchase purchase;
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name="product_id")
-    Products products;
+    @JoinColumn(name = "purchase_id", nullable = false)
+    private Purchase purchase;
+
+    @ManyToOne
+    @JoinColumn(name = "product_color_id", nullable = false)
+    private ProductColor productColor;
 }
