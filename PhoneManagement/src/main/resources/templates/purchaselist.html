@@ -95,104 +95,13 @@
                             <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="index.html">Dashboard</a></li>
-                                    <li><a href="index2.html">Dashboard2</a></li>
+                                    <li><a href="/warehouse/purchase">Purchase</a></li>
                                     <li><a href="index3.html">Dashboard3</a></li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="form.html">General Form</a></li>
-                                    <li><a href="form_advanced.html">Advanced Components</a></li>
-                                    <li><a href="form_validation.html">Form Validation</a></li>
-                                    <li><a href="form_wizards.html">Form Wizard</a></li>
-                                    <li><a href="form_upload.html">Form Upload</a></li>
-                                    <li><a href="form_buttons.html">Form Buttons</a></li>
-                                </ul>
-                            </li>
-                            <li><a><i class="fa fa-desktop"></i> UI Elements <span
-                                    class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="general_elements.html">General Elements</a></li>
-                                    <li><a href="media_gallery.html">Media Gallery</a></li>
-                                    <li><a href="typography.html">Typography</a></li>
-                                    <li><a href="icons.html">Icons</a></li>
-                                    <li><a href="glyphicons.html">Glyphicons</a></li>
-                                    <li><a href="widgets.html">Widgets</a></li>
-                                    <li><a href="invoice.html">Invoice</a></li>
-                                    <li><a href="inbox.html">Inbox</a></li>
-                                    <li><a href="calendar.html">Calendar</a></li>
-                                </ul>
-                            </li>
-                            <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="tables.html">Tables</a></li>
-                                    <li><a href="tables_dynamic.html">Table Dynamic</a></li>
-                                </ul>
-                            </li>
-                            <li><a><i class="fa fa-bar-chart-o"></i> Data Presentation <span
-                                    class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="chartjs.html">Chart JS</a></li>
-                                    <li><a href="chartjs2.html">Chart JS2</a></li>
-                                    <li><a href="morisjs.html">Moris JS</a></li>
-                                    <li><a href="echarts.html">ECharts</a></li>
-                                    <li><a href="other_charts.html">Other Charts</a></li>
-                                </ul>
-                            </li>
-                            <li><a><i class="fa fa-clone"></i>Layouts <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
-                                    <li><a href="fixed_footer.html">Fixed Footer</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="menu_section">
-                        <h3>Live On</h3>
-                        <ul class="nav side-menu">
-                            <li><a><i class="fa fa-bug"></i> Additional Pages <span
-                                    class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="e_commerce.html">E-commerce</a></li>
-                                    <li><a href="accountlist.html">Projects</a></li>
-                                    <li><a href="project_detail.html">Project Detail</a></li>
-                                    <li><a href="contacts.html">Contacts</a></li>
-                                    <li><a href="profile.html">Profile</a></li>
-                                </ul>
-                            </li>
-                            <li><a><i class="fa fa-windows"></i> Extras <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="page_403.html">403 Error</a></li>
-                                    <li><a href="page_404.html">404 Error</a></li>
-                                    <li><a href="page_500.html">500 Error</a></li>
-                                    <li><a href="plain_page.html">Plain Page</a></li>
-                                    <li><a href="login.html">Login Page</a></li>
-                                    <li><a href="pricing_tables.html">Pricing Tables</a></li>
-                                </ul>
-                            </li>
-                            <li><a><i class="fa fa-sitemap"></i> Multilevel Menu <span
-                                    class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="#level1_1">Level One</a>
-                                    <li><a>Level One<span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu">
-                                            <li class="sub_menu"><a href="level2.html">Level Two</a>
-                                            </li>
-                                            <li><a href="#level2_1">Level Two</a>
-                                            </li>
-                                            <li><a href="#level2_2">Level Two</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="#level1_2">Level One</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li><a href="javascript:void(0)"><i class="fa fa-laptop"></i> Landing Page <span
-                                    class="label label-success pull-right">Coming Soon</span></a></li>
-                        </ul>
-                    </div>
 
+                        </ul>
+                    </div>
                 </div>
                 <!-- /sidebar menu -->
 
@@ -273,7 +182,7 @@
                         <div class="x_panel">
                             <div class="x_content">
                                 <!-- start project list -->
-                                <form method="get" action="#" th:action="@{/purchase}" style="float:right; margin-bottom: 14px;">
+                                <form method="get" action="#" th:action="@{/warehouse/purchase}" style="float:right; margin-bottom: 14px;">
                                     <div class="form-group">
                                         <label for="size">Products per page:</label>
                                         <select id="size" name="size" class="form-control" onchange="this.form.submit()">
@@ -298,13 +207,9 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="purchase : ${purchasePage.content}">
-                                        <form method="post" th:action="@{/purchase/update}">
+                                        <form method="post" th:action="@{/warehouse/purchase/update/{purchaseId}(purchaseId=${purchase.purchaseId})}">
                                             <td th:text="${purchase.purchaseId}"></td>
-                                            <td>
-                                                <span class="view-span" th:text="${purchase.totalAmount}"></span>
-                                                <input type="text" class="form-control edit-input" name="totalAmount"
-                                                       th:value="${purchase.totalAmount}" style="display: none;">
-                                            </td>
+                                            <td th:text="${purchase.totalAmount}"></td>
                                             <td>
                                                 <span class="view-span" th:text="${purchase.origin}"></span>
                                                 <input type="text" class="form-control edit-input" name="origin"
@@ -312,18 +217,17 @@
                                             </td>
                                             <td>
                                                 <span class="view-span" th:text="${purchase.status}"></span>
-                                                <input type="text" class="form-control edit-input" name="status"
-                                                       th:value="${purchase.status}" style="display: none;">
+                                                <select name="status" class="form-control edit-input" required style="display: none;">
+                                                    <option th:value="Progress">Progress</option>
+                                                    <option th:value="Cancel">Cancel</option>
+                                                    <option th:value="Done">Done</option>
+                                                </select>
                                             </td>
-                                            <td>
-                                                <span class="view-span" th:text="${purchase.purchaseDate}"></span>
-                                                <input type="text" class="form-control edit-input" name="purchaseDate"
-                                                       th:value="${purchase.purchaseDate}" style="display: none;">
-                                            </td>
+                                            <td th:text="${purchase.purchaseDate}"></td>
                                             <td>
                                                 <button type="button" class="btn btn-primary btn-xs edit-btn">Edit</button>
                                                 <button type="submit" class="btn btn-success btn-xs save-btn" style="display: none;">Save</button>
-                                                <button type="button" class="btn btn-success btn-xs view-btn" ><a th:href="@{/purchase/{purchaseId}(purchaseId=${purchase.purchaseId})}">View</a></button>
+                                                <button type="button" class="btn btn-success btn-xs view-btn" ><a th:href="@{/warehouse/purchase/{purchaseId}(purchaseId=${purchase.purchaseId})}">View</a></button>
                                                 <button type="button" class="btn btn-warning btn-xs cancel-btn" style="display: none;">Cancel</button>
                                             </td>
                                         </form>
@@ -334,13 +238,13 @@
                                 <div>
                                     <ul class="pagination">
                                         <li th:if="${purchasePage.hasPrevious()}" class="page-item">
-                                            <a th:href="@{|/purchase?page=${purchasePage.number - 1}&size=${purchasePage.size}|}" class="page-link">Previous</a>
+                                            <a th:href="@{|/warehouse/purchase?page=${purchasePage.number - 1}&size=${purchasePage.size}|}" class="page-link">Previous</a>
                                         </li>
                                         <li th:each="pageNum : ${#numbers.sequence(0, purchasePage.totalPages - 1)}" class="page-item" th:classappend="${pageNum == purchasePage.number} ? 'active' : ''">
-                                            <a th:href="@{|/purchase?page=${pageNum}&size=${purchasePage.size}|}" class="page-link" th:text="${pageNum + 1}"></a>
+                                            <a th:href="@{|/warehouse/purchase?page=${pageNum}&size=${purchasePage.size}|}" class="page-link" th:text="${pageNum + 1}"></a>
                                         </li>
                                         <li th:if="${purchasePage.hasNext()}" class="page-item">
-                                            <a th:href="@{|/purchase?page=${purchasePage.number + 1}&size=${purchasePage.size}|}" class="page-link">Next</a>
+                                            <a th:href="@{|/warehouse/purchase?page=${purchasePage.number + 1}&size=${purchasePage.size}|}" class="page-link">Next</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -356,25 +260,29 @@
     <div class="modal-content">
         <span class="close" id="closeModalBtn">&times;</span>
         <h2>Add Purchase</h2>
-        <form th:action="@{/purchase/add}" th:object="${purchaseDTO}" method="post">
-            <div class="form-group">
-                <label for="totalAmount">Total Amount:</label>
-                <input type="text" th:field="*{totalAmount}" class="form-control" id="totalAmount" required />
-            </div>
+        <form th:action="@{/warehouse/purchase/add}" th:object="${purchaseDTO}" method="post">
             <div class="form-group">
                 <label for="origin">Origin:</label>
                 <input type="text" th:field="*{origin}" class="form-control" id="origin" required />
             </div>
             <div class="form-group">
                 <label for="status">Status:</label>
-                <input type="text" th:field="*{status}" class="form-control" id="status" required />
+                <select th:field="*{status}" class="form-control" id="status" required>
+                    <option th:value="Progress">Progress</option>
+                    <option th:value="Cancel">Cancel</option>
+                    <option th:value="Done">Done</option>
+                </select>
             </div>
 
             <div id="purchaseDetailsContainer">
                 <div class="purchase-detail" data-index="0" style="margin-bottom: 15px;">
                     <div class="form-group">
-                        <label for="productId">Product ID:</label>
-                        <input id="productId" type="text" name="purchaseDetails[0].productId" class="form-control" required />
+                        <label for="productId">Product:</label>
+                        <select id="productId" class="form-control" required name="purchaseDetails[0].productId">
+                            <option th:each="pro: ${product}"
+                                    th:value="${pro.productId}"
+                                    th:text="${pro.productName}"></option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="quantity">Quantity:</label>
@@ -410,10 +318,13 @@
 
 <!-- Custom Theme Scripts -->
 <script th:src="@{build/js/custom.min.js}"></script>
-<script>
+<script type="text/javascript" th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
+        var products = /*[[${product}]]*/ [];
         let detailIndex = 1;
-
+        const productOptions = products.map(pro =>
+            `<option value="${pro.productId}">${pro.productName}</option>`
+        ).join('');
         document.getElementById('addDetailButton').addEventListener('click', function() {
             const container = document.getElementById('purchaseDetailsContainer');
 
@@ -425,7 +336,9 @@
             detailDiv.innerHTML = `
                     <div class="form-group">
                         <label for="productId">Product ID:</label>
-                        <input type="text" name="purchaseDetails[${detailIndex}].productId" class="form-control" required />
+                        <select name="purchaseDetails[${detailIndex}].productId" class="form-control" required >
+                            ${productOptions}
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="quantity">Quantity:</label>
@@ -467,6 +380,37 @@
             modal.style.display = "none";
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButtons = document.querySelectorAll('.edit-btn');
+        const cancelButtons = document.querySelectorAll('.cancel-btn');
+        const saveButtons = document.querySelectorAll('.save-btn');
+
+        editButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                toggleEdit(index, true);
+            });
+        });
+
+        cancelButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                toggleEdit(index, false);
+            });
+        });
+
+        function toggleEdit(index, isEditing) {
+            const row = editButtons[index].closest('tr');
+            row.querySelectorAll('.view-span').forEach(span => {
+                span.style.display = isEditing ? 'none' : '';
+            });
+            row.querySelectorAll('.edit-input').forEach(input => {
+                input.style.display = isEditing ? '' : 'none';
+            });
+            editButtons[index].style.display = isEditing ? 'none' : '';
+            saveButtons[index].style.display = isEditing ? '' : 'none';
+            cancelButtons[index].style.display = isEditing ? '' : 'none';
+        }
+    });
 </script>
 </body>
 </html>

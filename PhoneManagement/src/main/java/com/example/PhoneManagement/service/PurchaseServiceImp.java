@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,14 +37,25 @@ public class PurchaseServiceImp implements PurchaseService {
             PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
 
             Page<Purchase> purchasePage = purchaseRepository.findByUserId(userId, pageRequest);
+
             List<PurchaseDTO> purchaseDTOS = purchasePage.getContent().stream().map(purchase -> {
                 PurchaseDTO purchaseDTO = new PurchaseDTO();
+                PurchaseDTO pur = getPurchaseDetail(purchase.getPurchaseId());
+
+                BigDecimal total = BigDecimal.ZERO;
+
+                for (PurchaseDetailsDTO detail : pur.getPurchaseDetails()) {
+                    BigDecimal quantity = BigDecimal.valueOf(detail.getQuantity());
+                    BigDecimal price = detail.getPrice();
+                    total = total.add(quantity.multiply(price));
+                }
                 purchaseDTO.setPurchaseId(purchase.getPurchaseId());
                 purchaseDTO.setUserId(userId);
                 purchaseDTO.setOrigin(purchase.getOrigin());
                 purchaseDTO.setPurchaseDate(purchase.getPurchaseDate());
-                purchaseDTO.setTotalAmount(purchase.getTotalAmount());
+                purchaseDTO.setTotalAmount(total);
                 purchaseDTO.setStatus(purchase.getStatus());
+
                 return purchaseDTO;
             }).collect(Collectors.toList());
 
@@ -59,10 +71,9 @@ public class PurchaseServiceImp implements PurchaseService {
 
         Users users = new Users();
 //        users.setUserId(purchaseDTO.getUserId());
-        users.setUserId(5);
+        users.setUserId(3);
         purchase.setUser(users);
         purchase.setPurchaseDate(new Date());
-        purchase.setTotalAmount(purchaseDTO.getTotalAmount());
         purchase.setOrigin(purchaseDTO.getOrigin());
         purchase.setStatus(purchaseDTO.getStatus());
 
@@ -85,6 +96,13 @@ public class PurchaseServiceImp implements PurchaseService {
         }
 
         return purchaseRepository.save(purchase);
+    }
+
+    public void updatePurchase(PurchaseDTO purchaseDTO, int purchaseId){
+        Purchase purchase=purchaseRepository.findById(purchaseId).orElseThrow(()->new RuntimeException("Purchase not exist"));
+        purchase.setOrigin(purchaseDTO.getOrigin());
+        purchase.setStatus(purchaseDTO.getStatus());
+        purchaseRepository.save(purchase);
     }
 
     public PurchaseDTO getPurchaseDetail(int purchaseId) {
