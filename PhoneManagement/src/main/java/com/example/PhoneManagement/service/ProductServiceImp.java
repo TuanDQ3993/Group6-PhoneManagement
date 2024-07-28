@@ -218,40 +218,45 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductDTO> findPaginated(Pageable pageable) {
-            try {
-                Page<Products> productPage = productRepository.findAll(pageable);
-                List<Category> categories = categoryRepository.findAll();
-                List<ProductColor> productColorList = productColorRepository.findAll();
-                List<ProductDTO> productColorDTOS = new ArrayList<>();
-
-                for (Products product : productPage.getContent()) {
-                    ProductDTO dto = new ProductDTO();
-                    dto.setProductId(product.getProductId());
-                    dto.setProductName(product.getProductName());
-                    dto.setCategoryId(product.getCategory().getCategoryId());
-                    dto.setCategoryId(product.getCategory().getCategoryId());
-
-                    Category category = categories.stream()
-                            .filter(cat -> cat.getCategoryId() == product.getCategory().getCategoryId())
-                            .findFirst()
-                            .orElse(null);
-                    ProductColor productColor = productColorList.stream()
-                            .filter(i -> i.getProducts().getProductId() == product.getProductId())
-                            .findFirst()
-                            .orElse(null);
-                    dto.setPrice(product.getPrice());
-                    dto.setQuantity(product.getQuantity());
-                    dto.setWarrantyPeriod(product.getWarrantyPeriod());
-                    dto.setCreateAt(product.getCreatedAt());
-
-                    productColorDTOS.add(dto);
-                }
-                return new PageImpl<>(productColorDTOS, pageable, productPage.getTotalElements());
-            } catch (Exception e) {
-                e.printStackTrace();
+    public Page<ProductDTO> findPaginated(Pageable pageable, Integer categoryId) {
+        try {
+            Page<Products> productPage;
+            if (categoryId != null) {
+                productPage = productRepository.findByCategoryCategoryId(categoryId, pageable);
+            } else {
+                productPage = productRepository.findAll(pageable);
             }
-            return Page.empty();
+
+            List<Category> categories = categoryRepository.findAll();
+            List<ProductColor> productColorList = productColorRepository.findAll();
+            List<ProductDTO> productDTOS = new ArrayList<>();
+
+            for (Products product : productPage.getContent()) {
+                ProductDTO dto = new ProductDTO();
+                dto.setProductId(product.getProductId());
+                dto.setProductName(product.getProductName());
+                dto.setCategoryId(product.getCategory().getCategoryId());
+                dto.setPrice(product.getPrice());
+                dto.setQuantity(product.getQuantity());
+                dto.setWarrantyPeriod(product.getWarrantyPeriod());
+                dto.setCreateAt(product.getCreatedAt());
+
+                Category category = categories.stream()
+                        .filter(cat -> cat.getCategoryId() == product.getCategory().getCategoryId())
+                        .findFirst()
+                        .orElse(null);
+                ProductColor productColor = productColorList.stream()
+                        .filter(i -> i.getProducts().getProductId() == product.getProductId())
+                        .findFirst()
+                        .orElse(null);
+
+                productDTOS.add(dto);
+            }
+            return new PageImpl<>(productDTOS, pageable, productPage.getTotalElements());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Page.empty();
     }
 
     @Override
@@ -259,4 +264,11 @@ public class ProductServiceImp implements ProductService {
         return productColorRepository.findAll();
     }
 
+    @Override
+    public List<ProductDTO> findAllProduct(){
+        return productRepository.findAll()
+                .stream()
+                .map(product -> new ProductDTO(product.getProductId(), product.getProductName()))
+                .collect(Collectors.toList());
+    }
 }
