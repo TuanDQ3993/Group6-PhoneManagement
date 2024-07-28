@@ -18,8 +18,46 @@
     <!-- iCheck -->
     <link th:href="@{/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
 
+    <link th:href="@{/build/css/app.css}" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
+    <style>
+        .table {
+            margin: 20px;
+            border: 1px solid #ddd;
+        }
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table img {
+            max-width: 100px;
+            height: auto;
+        }
+        .table thead th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        .d-none.d-xl-table-cell {
+            display: table-cell;
+        }
+        .d-none.d-md-table-cell {
+            display: table-cell;
+        }
+        .d-xl-table-cell {
+            display: table-cell;
+        }
+        .d-md-table-cell {
+            display: table-cell;
+        }
+    </style>
+
 </head>
 
 <body class="nav-md">
@@ -53,13 +91,10 @@
                     <div class="menu_section">
                         <h3>General</h3>
                         <ul class="nav side-menu">
-                            <li><a href="#"><i class="fa fa-home"></i> DashBoard</a>
-
+                            <li><a href="/saler/dashboard"><i class="fa fa-home"></i> DashBoard</a>
                             </li>
-                            <li><a><i class="fa fa-edit"></i> OrderList </a>
+                            <li><a href="/saler/orders"><i class="fa fa-edit"></i> OrderList </a>
                             </li>
-
-
                         </ul>
                     </div>
 
@@ -120,103 +155,145 @@
         <!-- page content -->
         <div class="right_col" role="main">
             <div class="">
-                <div class="page-title">
-                    <div class="title_left">
-                        <h3>Orders List</h3>
-                    </div>
+                <main class="content">
+                    <div class="container-fluid p-0">
 
-                    <div class="title_right">
-                        <div class="col-md-5 col-sm-5   form-group pull-right top_search">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search for...">
-                                <span class="input-group-btn">
-                      <button class="btn btn-secondary" type="button">Go!</button>
-                    </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        <h1 class="h3 mb-3"><strong>Saler</strong> Dashboard</h1>
 
+                        <div class="row">
+                            <div class="col-xl-6 col-xxl-5 d-flex">
+                                <div class="w-100">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col mt-0">
+                                                            <h5 class="card-title">Sales this month</h5>
+                                                        </div>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="x_panel">
-                            <div class="x_content">
-                                <!-- start project list -->
-                                <table class="table table-striped projects">
-                                    <thead>
-                                    <tr>
-                                        <th style="width: 1%">Id</th>
-                                        <th style="width: 20%">Products</th>
-                                        <th style="width: 20%">Image</th>
-                                        <th>Total amount</th>
-                                        <th>Order date</th>
-                                        <th>Purchaser</th>
+                                                        <div class="col-auto">
+                                                            <div class="stat text-primary">
+                                                                <i class="align-middle" data-feather="truck"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <h1 class="mt-1 mb-3" th:text="${sale}"></h1>
 
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="order :${orderlist}">
-                                        <td>
-                                            <a th:href="@{/saler/orders/orderdetails/{id}(id=${order.orderID})}" th:text="${order.orderID}"></a>
-                                        </td>
-                                        <td>
-                                            <a th:text="${order.productName}"></a>
-                                            <a th:if="${order.countP > 0}" th:text="'and ' + ${order.countP} + ' Products'"></a>
+                                                </div>
+                                            </div>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col mt-0">
+                                                            <h5 class="card-title">Number of customers this month</h5>
+                                                        </div>
 
-                                        </td>
-                                        <td>
-                                            <img style="width: 38%;"
-                                                 th:src="${order.image}">
-                                        </td>
-                                        <td class="project_progress">
-                                            <p th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'COMMA', 0, 'POINT')}"></p>
-                                        </td>
-                                        <td class="project_progress">
-                                            <p th:text="${order.orderDate}"></p>
-                                        </td>
-                                        <td>
-                                            <p th:text="${order.username}"></p>
-                                        </td>
-                                    </tr>
+                                                        <div class="col-auto">
+                                                            <div class="stat text-primary">
+                                                                <i class="align-middle" data-feather="users"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <h1 class="mt-1 mb-3" th:text="${customer}"></h1>
 
-                                    </tbody>
-                                </table>
-                                <!-- end project list -->
-                                <nav aria-label="...">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <form id="paginationForm" action="/saler/dashboard" method="GET" class="mb-0">
-                                            <label for="size">Items per page:</label>
-                                            <select name="size" id="size" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
-                                                <option value="5" th:selected="${size == 5}">5</option>
-                                                <option value="10" th:selected="${size == 10}">10</option>
-                                                <option value="15" th:selected="${size == 15}">15</option>
-                                            </select>
-                                        </form>
-                                        <ul class="pagination mb-0">
-                                            <li class="page-item" th:classappend="${orderlist.hasPrevious()} ? '': 'disabled'">
-                                                <a class="page-link" th:href="@{/saler/dashboard(page=${orderlist.number}, size=${size})}" aria-label="Previous">
-                                                    <span aria-hidden="true">&laquo;</span>
-                                                </a>
-                                            </li>
-                                            <li class="page-item" th:each="i : ${#numbers.sequence(1, orderlist.totalPages)}" th:classappend="${orderlist.number +1 == i} ? 'active'">
-                                                <a class="page-link" th:href="@{/saler/dashboard(page=${i}, size=${size})}" th:text="${i}"></a>
-                                            </li>
-                                            <li class="page-item" th:classappend="${orderlist.hasNext()} ? '': 'disabled'">
-                                                <a class="page-link" th:href="@{/saler/dashboard(page=${orderlist.number +2 }, size=${size})}" aria-label="Next">
-                                                    <span aria-hidden="true">&raquo;</span>
-                                                </a>
-                                            </li>
-                                        </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col mt-0">
+                                                            <h5 class="card-title">Earnings this month</h5>
+                                                        </div>
 
+                                                        <div class="col-auto">
+                                                            <div class="stat text-primary">
+                                                                <i class="align-middle" data-feather="dollar-sign"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <h1 class="mt-1 mb-3" th:text="${totalamount}+ ' $'"></h1>
 
+                                                </div>
+                                            </div>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col mt-0">
+                                                            <h5 class="card-title">Orders this month</h5>
+                                                        </div>
+
+                                                        <div class="col-auto">
+                                                            <div class="stat text-primary">
+                                                                <i class="align-middle"
+                                                                   data-feather="shopping-cart"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <h1 class="mt-1 mb-3" th:text="${order}">64</h1>
+
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </nav>
+                                </div>
+                            </div>
 
+                            <div class="col-xl-6 col-xxl-7">
+                                <div class="card flex-fill w-100">
+                                    <div class="card-header">
+
+                                        <h5 class="card-title mb-0">Recent Movement</h5>
+                                    </div>
+                                    <div class="card-body py-3">
+                                        <div class="chart chart-sm">
+                                            <canvas id="chartjs-dashboard-line"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+
+
+                        <div class="row">
+                            <div class="col-12 col-lg-12 col-xxl-12 d-flex">
+                                <div class="card flex-fill">
+                                    <div class="card-header">
+
+                                        <h5 class="card-title mb-0">Top sellers this month</h5>
+                                    </div>
+                                    <table class="table table-hover my-0">
+                                        <thead>
+                                        <tr>
+                                            <th>Product ID</th>
+                                            <th class="d-none d-xl-table-cell">Product Name</th>
+                                            <th class="d-none d-xl-table-cell">Image</th>
+                                            <th class="d-none d-md-table-cell">Quantity Sold</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="product : ${topseller}">
+                                            <td th:text="${product.productId}"></td>
+                                            <td class="d-none d-xl-table-cell" th:text="${product.productName}"></td>
+                                            <td class="d-none d-xl-table-cell">
+                                                <img th:src="${product.image}" alt="Product Image">
+                                            </td>
+                                            <td class="d-none d-md-table-cell" th:text="${product.quantitySold}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
-                </div>
+                </main>
+
+
             </div>
         </div>
     </div>
@@ -233,13 +310,72 @@
 <!-- bootstrap-progressbar -->
 <script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
 
-<!-- Custom Theme Scripts -->
-<script th:src="@{/build/js/custom.min.js}"></script>
+
+<script th:src="@{/build/js/app.js}"></script>
+
+<script th:inline="javascript">
+
+    var totalAmounts = /*[[${totalAmounts}]]*/ [];
+
+</script>
 
 <script>
-    function submitForm() {
-        document.getElementById('paginationForm').submit();
-    }
+    document.addEventListener("DOMContentLoaded", function() {
+        var ctx = document.getElementById("chartjs-dashboard-line").getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 225);
+        gradient.addColorStop(0, "rgba(215, 227, 244, 1)");
+        gradient.addColorStop(1, "rgba(215, 227, 244, 0)");
+        // Line chart
+        new Chart(document.getElementById("chartjs-dashboard-line"), {
+            type: "line",
+            data: {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                datasets: [{
+                    label: "Sales ($)",
+                    fill: true,
+                    backgroundColor: gradient,
+                    borderColor: window.theme.primary,
+                    data: totalAmounts
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    intersect: false
+                },
+                hover: {
+                    intersect: true
+                },
+                plugins: {
+                    filler: {
+                        propagate: false
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        reverse: true,
+                        gridLines: {
+                            color: "rgba(0,0,0,0.0)"
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            stepSize: 1000
+                        },
+                        display: true,
+                        borderDash: [3, 3],
+                        gridLines: {
+                            color: "rgba(0,0,0,0.0)"
+                        }
+                    }]
+                }
+            }
+        });
+    });
 </script>
+
 </body>
 </html>

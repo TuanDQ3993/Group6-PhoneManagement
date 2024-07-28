@@ -63,10 +63,9 @@
                     <div class="menu_section">
                         <h3>General</h3>
                         <ul class="nav side-menu">
-                            <li><a href="#"><i class="fa fa-home"></i> DashBoard</a>
-
+                            <li><a href="/saler/dashboard"><i class="fa fa-home"></i> DashBoard</a>
                             </li>
-                            <li><a><i class="fa fa-edit"></i> OrderList </a>
+                            <li><a href="/saler/orders"><i class="fa fa-edit"></i> OrderList </a>
                             </li>
 
 
@@ -167,7 +166,7 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="orderdetail :${orderdetail}">
-                                        <td >
+                                        <td>
                                             <p th:text="${orderdetail.productId}"></p>
                                         </td>
                                         <td>
@@ -179,13 +178,13 @@
                                                  th:src="${orderdetail.image}">
                                         </td>
                                         <td class="project_progress">
-                                            <p th:text="${#numbers.formatDecimal(orderdetail.price, 1, 'COMMA', 0, 'POINT')}"></p>
+                                            <p th:text="${orderdetail.price}"></p>
                                         </td>
                                         <td class="project_progress">
                                             <p th:text="${orderdetail.quantity}"></p>
                                         </td>
                                         <td>
-                                            <p th:text="${#numbers.formatDecimal(orderdetail.quantity*orderdetail.price, 1, 'COMMA', 0, 'POINT')}" ></p>
+                                            <p th:text="${orderdetail.quantity*orderdetail.price}"></p>
                                         </td>
                                     </tr>
 
@@ -195,7 +194,8 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <div class="total text-right">
-                                            Total: <span class="original-price" th:text="${#numbers.formatDecimal(orderinfo.totalAmount, 1, 'COMMA', 0, 'POINT')}"></span>
+                                            Total: <span class="original-price"
+                                                         th:text="${#numbers.formatDecimal(orderinfo.totalAmount, 1, 'COMMA', 0, 'POINT')}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -205,35 +205,32 @@
                                     <div class="col-lg-2 col-md-2 col-sm-2"></div>
                                     <div class="col-lg-8 col-md-8 col-sm-8">
 
-                                            <table border="1" style="width: 100%;">
-                                                <input type="hidden" name="oid" value="${o.oid}">
-                                                <tr>
-                                                    <td>Receiver:</td>
+                                        <table border="1" style="width: 100%;">
+                                            <input type="hidden" name="oid" value="${o.oid}">
+                                            <tr>
+                                                <td>Receiver:</td>
 
-                                                    <td th:text="${orderinfo.customerName}"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Ordered At:</td>
-                                                    <td th:text="${orderinfo.orderDate}"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Address:</td>
-                                                    <td th:text="${orderinfo.address}"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Phone Number:</td>
-                                                    <td th:text="${orderinfo.phoneNumber}"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Payment:</td>
-                                                    <td>COD</td>
-                                                </tr>
-
-
-
-                                            </table>
+                                                <td th:text="${orderinfo.customerName}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ordered At:</td>
+                                                <td th:text="${orderinfo.orderDate}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Address:</td>
+                                                <td th:text="${orderinfo.address}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Phone Number:</td>
+                                                <td th:text="${orderinfo.phoneNumber}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Payment:</td>
+                                                <td>COD</td>
+                                            </tr>
 
 
+                                        </table>
 
 
                                     </div>

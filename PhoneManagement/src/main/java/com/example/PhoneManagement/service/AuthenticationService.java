@@ -14,6 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -44,6 +46,8 @@ public class AuthenticationService {
                 .address(registerRequest.getAddress())
                 .phoneNumber(registerRequest.getPhoneNumber())
                 .role(roleRepository.findById(registerRequest.getRoleId()))
+                .active(true)
+                .createdAt(new Date())
                 .build();
 
         userRepository.save(user);
