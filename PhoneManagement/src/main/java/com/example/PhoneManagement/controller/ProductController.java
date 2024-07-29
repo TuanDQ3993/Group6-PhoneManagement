@@ -4,13 +4,16 @@ package com.example.PhoneManagement.controller;
 import com.example.PhoneManagement.dto.request.*;
 import com.example.PhoneManagement.service.CategoryServiceImp;
 import com.example.PhoneManagement.service.ColorServiceImp;
+import com.example.PhoneManagement.service.FileStorageServiceImpl;
 import com.example.PhoneManagement.service.ProductServiceImp;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Controller
@@ -32,6 +36,7 @@ public class ProductController {
     ProductServiceImp productService;
     CategoryServiceImp categoryService;
     ColorServiceImp colorService;
+    FileStorageServiceImpl fileStorageService;
     @GetMapping
     public String getAllProduct(Model model,
                                 @RequestParam(name = "page", defaultValue = "0") int page,
@@ -100,15 +105,56 @@ public class ProductController {
                                      @RequestParam("proColorId") int proId,
                                      @RequestParam("colors") int colors,
                                      @RequestParam("image") MultipartFile image,
-                                     @RequestParam("quantity") int quantity) {
-        String fileImage=productService.uploadFile(image);
+                                     @RequestParam("quantity") int quantity,
+                                     Model model) {
+        Path uploadDir = Paths.get("uploads/");
+
+        if (!Files.exists(uploadDir)) {
+            try {
+                Files.createDirectories(uploadDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+                model.addAttribute("errors", "Failed to create upload directory");
+                return "product-update";
+            }
+        }
+
+        String fileImage = null;
+        if (image != null && !image.isEmpty()) {
+            try {
+                String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+                Path filePath = uploadDir.resolve(fileName);
+
+                try (InputStream inputStream = image.getInputStream()) {
+                    Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                fileImage = "/uploads/" + fileName.toLowerCase();
+            } catch (IOException e) {
+                e.printStackTrace();
+                model.addAttribute("errors", "Failed to upload image");
+                return "product-update";
+            }
+        }
+
+        // Tạo đối tượng ProductColorUpdate
         ProductColorUpdate request = new ProductColorUpdate();
         request.setProductId(productId);
         request.setColorId(colors);
         request.setImage(fileImage);
         request.setQuantity(quantity);
-        productService.updateProductColor(proId, request,productId);
-        return "redirect:/admin/products/{productId}";
+
+        // Cập nhật thông tin màu sắc sản phẩm
+        try {
+            productService.updateProductColor(proId, request, productId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errors", "Failed to update product color");
+            return "product-update";
+        }
+
+        model.addAttribute("success", "Product color updated successfully");
+        return "redirect:/admin/products/" + productId;
     }
 
     @PostMapping("/{productId}/add")
