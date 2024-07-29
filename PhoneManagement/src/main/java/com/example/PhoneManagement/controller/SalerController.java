@@ -68,7 +68,7 @@ public class SalerController {
             @RequestParam("status") Optional<String> status,
             @RequestParam("searchQuery") Optional<String> searchQuery,
             Model model, Principal principal
-            ) {
+    ) {
         String userName = principal.getName();
         Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
         model.addAttribute("user", userDTO.get());
@@ -118,7 +118,7 @@ public class SalerController {
                                @RequestParam("oid") int oid,
                                @RequestParam("status") String status,
                                @RequestParam("value") int value
-                               ){
+    ){
         if(value==2){
             orderService.changeStatusOrder(oid,"Confirm and Shipping");
         }
@@ -135,11 +135,11 @@ public class SalerController {
 
     @GetMapping("/export")
     public void exportToExcel(HttpServletResponse response,
-                                @RequestParam("startDate") Optional<String> startDate,
-                                @RequestParam("endDate") Optional<String> endDate,
-                                @RequestParam("status") String status,
-                                @RequestParam("searchQuery") String searchQuery,
-                                Principal principal) throws IOException {
+                              @RequestParam("startDate") Optional<String> startDate,
+                              @RequestParam("endDate") Optional<String> endDate,
+                              @RequestParam("status") String status,
+                              @RequestParam("searchQuery") String searchQuery,
+                              Principal principal) throws IOException {
         response.setContentType("application/octet-stream");
         String headerKey="Content-Disposition";
 

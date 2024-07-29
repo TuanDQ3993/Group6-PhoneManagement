@@ -1,3 +1,4 @@
+
 package com.example.PhoneManagement.controller;
 
 import com.example.PhoneManagement.dto.request.*;
@@ -63,11 +64,11 @@ public class ProductController {
 
     @PostMapping("/update")
     public String updateProduct(@RequestParam("productId") int proId,
-                @RequestParam("productName") String productName,
-                @RequestParam("cateId") int cateId,
-                @RequestParam("quantity") int quantity,
-                @RequestParam("price") BigDecimal price,
-                @RequestParam("warrantyPeriod") int warrantyPeriod
+                                @RequestParam("productName") String productName,
+                                @RequestParam("cateId") int cateId,
+                                @RequestParam("quantity") int quantity,
+                                @RequestParam("price") BigDecimal price,
+                                @RequestParam("warrantyPeriod") int warrantyPeriod
     ) {
         ProductUpdateRequest request=new ProductUpdateRequest();
         request.setProductName(productName);
@@ -128,8 +129,8 @@ public class ProductController {
 
     @PostMapping("/{productId}/delete")
     public String deleteProductColor(@RequestParam("proColorId")int proId, @PathVariable("productId") int productId){
-            productService.deleteProductColor(proId);
-            return "redirect:/admin/products/"+productId;
+        productService.deleteProductColor(proId);
+        return "redirect:/admin/products/"+productId;
     }
 
 }
