@@ -6,11 +6,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PageDTO<T> {
-
     Integer PageSize;
-
     Integer PageNumber;
-
     public PageDTO(int currentPage, int pageSize) {
         this.PageNumber = currentPage;
         this.PageSize = pageSize;

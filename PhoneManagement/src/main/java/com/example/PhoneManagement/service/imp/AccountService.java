@@ -17,7 +17,16 @@ public interface AccountService {
 
     Users getUserById(int userId);
 
-    List<Users> searchUsers(String text);
+
+    boolean isPhoneExist(String phone);
+
+    boolean isEmailExist(String email);
+
+    void createUser(Users user);
+
+    Page<Users> searchAndFilterUsers(String userName, PageDTO pageDTO,int role);
+    Page<Users> searchUsers(String query, PageDTO pageDTO);
+    Page<Users> filterRole(int roleId, PageDTO pageDTO);
 
 
 }

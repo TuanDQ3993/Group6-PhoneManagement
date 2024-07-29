@@ -20,25 +20,26 @@ public class Purchase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="purchase_id")
-    int purchaseId;
+    @Column(name = "purchase_id")
+    private int purchaseId;
 
-    @Column(name="purchase_date")
-    Date purchaseDate;
+    @Column(name = "purchase_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date purchaseDate;
 
-    @Column(name="total_amount", precision = 10, scale = 2)
-    BigDecimal totalAmount;
+    @Column(name = "total_amount", precision = 10, scale = 2)
+    private BigDecimal totalAmount;
 
-    @Column(name="origin",length = 50)
-    String origin;
+    @Column(name = "origin", length = 50)
+    private String origin;
 
-    @Column(name="status",length = 50)
-    String status;
+    @Column(name = "status", length = 50)
+    private String status;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
-    Users user;
+    @JoinColumn(name = "user_id", nullable = false)
+    private Users user;
 
-    @OneToMany(mappedBy = "purchase")
-    List<PurchaseDetail> purchaseDetailList;
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseDetail> purchaseDetailList;
 }

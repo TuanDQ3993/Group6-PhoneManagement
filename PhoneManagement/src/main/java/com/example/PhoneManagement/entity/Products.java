@@ -8,11 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
-@Entity(name = "Product")
+@Entity(name = "Products")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,25 +43,16 @@ public class Products {
     @Column(name="created_at")
     Date createdAt;
 
-
     @ManyToOne
     @JoinColumn(name="category_id")
     Category category;
 
-    @OneToMany(mappedBy = "products")
-    List<ProductColor> productColorList;
+    @OneToMany(mappedBy = "products", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<ProductColor> productColorList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "products")
-    List<WarrantyRepair> warrantyRepairList;
 
     @OneToMany(mappedBy = "products")
     List<OrderDetail> orderDetailList;
-
-    @OneToMany(mappedBy = "products")
-    List<PurchaseDetail> purchaseDetailList;
-
-
-
 
 
 }

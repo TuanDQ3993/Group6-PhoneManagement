@@ -5,9 +5,11 @@ import com.example.PhoneManagement.entity.Roles;
 import com.example.PhoneManagement.entity.Users;
 import com.example.PhoneManagement.service.RoleServiceImp;
 import com.example.PhoneManagement.service.AccountServiceImp;
-import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -30,27 +32,22 @@ public class AccountController {
     private AccountServiceImp accountServiceImp;
     @Autowired
     private RoleServiceImp roleServiceImp;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     //Show all user with paging
     @GetMapping("/users")
-    public String getAllUser(Model model, @RequestParam(defaultValue = "0") int page,
-                             @RequestParam(defaultValue = "5") int pageRecord) {
-        PageDTO pageDTO = new PageDTO();
-        pageDTO.setPageNumber(page);
-        pageDTO.setPageSize(pageRecord);
-
-        Page<Users> userPage = accountServiceImp.findPaginated(pageDTO);
-        model.addAttribute("userPage", userPage);
-//        int userSessionID = 10;
-//        model.addAttribute("userSession", userSessionID);
-        int totalPages = userPage.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-        model.addAttribute("size", pageRecord);
+    public String listOrSearchUsers(Model model,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "5") int pageSize,
+                                    @RequestParam(required = false) String query,
+                                    @RequestParam(required = false) Integer role,
+                                    Authentication authentication) {
+        Users users = (Users) authentication.getPrincipal();
+        int userId = users.getUserId();
+        addUserPageAttributes(model, page, pageSize, query, role, userId);
         return "accountlist";
     }
+
 
 
     // View details each user
@@ -60,7 +57,7 @@ public class AccountController {
         List<Roles> roles = roleServiceImp.getAllRoles();
         model.addAttribute("roles", roles);
         model.addAttribute("users", theUser);
-        return "users";
+        return "accountdetails";
     }
 
     // Ban user
@@ -78,13 +75,7 @@ public class AccountController {
         return ("redirect:/admin/users");
     }
 
-    // Search user by their full name
-    @GetMapping("/searchUser")
-    public String searchUser(@RequestParam("query") String text, Model model) {
-        List<Users> searchResults = accountServiceImp.searchUsers(text);
-        model.addAttribute("userPage", searchResults);
-        return "accountlist";
-    }
+
 
     // Change role of account
     @PostMapping("/changeRole/{id}")
@@ -92,23 +83,67 @@ public class AccountController {
         roleServiceImp.changeUserRole(id, roleId);
         return ("redirect:/admin/users");
     }
+    private void addUserPageAttributes(Model model, int page, int pageSize, String query, Integer role, int userId) {
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setPageNumber(page);
+        pageDTO.setPageSize(pageSize);
+        Page<Users> userPage = null;
 
-    @GetMapping("/export/excel")
-    public void exportToExcel(HttpServletResponse response) throws IOException {
-        response.setContentType("application/octet-stream");
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        String currentDateTime = dateFormatter.format(new Date());
+        if ((query != null && !query.isEmpty()) && (role != null && role > 0)) {
+            // Tìm kiếm và lọc theo vai trò đồng thời
+            userPage = accountServiceImp.searchAndFilterUsers(query, pageDTO, role);
+        } else if (query != null && !query.isEmpty()) {
+            // Chỉ tìm kiếm
+            userPage = accountServiceImp.searchUsers(query, pageDTO);
+        } else if (role != null && role > 0) {
+            // Chỉ lọc theo vai trò
+            userPage = accountServiceImp.filterRole(role, pageDTO);
+        } else {
+            // Không có tìm kiếm hay lọc, hiển thị tất cả
+            userPage = accountServiceImp.findPaginated(pageDTO);
+        }
 
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Account_List-" + currentDateTime + ".xlsx";
-        response.setHeader(headerKey, headerValue);
-
-        List<Users> listUsers = accountServiceImp.getAll();
-
-        AccountExcelController excelExporter = new AccountExcelController(listUsers);
-
-        excelExporter.export(response);
+        model.addAttribute("userPage", userPage);
+        model.addAttribute("query", query);
+        model.addAttribute("role", role);
+        model.addAttribute("userId", userId);
+        if (userPage != null) {
+            int totalPages = userPage.getTotalPages();
+            if (totalPages > 0) {
+                List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                        .boxed()
+                        .collect(Collectors.toList());
+                model.addAttribute("pageNumbers", pageNumbers);
+            }
+        }
+        model.addAttribute("size", pageSize);
+        model.addAttribute("userForm", new Users());
+        model.addAttribute("rolesFilter", roleServiceImp.getAllRoles());
     }
+
+    @PostMapping("/saveAccount")
+    public String saveAccount(@ModelAttribute("userForm") Users user, Model model, Authentication authentication) {
+        if (accountServiceImp.isPhoneExist(user.getPhoneNumber()) || accountServiceImp.isEmailExist(user.getUsername())) {
+            model.addAttribute("phoneExistsError", "Số điện thoại đã tồn tại. Vui lòng nhập số điện thoại khác.");
+            model.addAttribute("emailExistsError", "Email đã tồn tại. Vui lòng nhập emails khác.");
+
+            Users currentUser = (Users) authentication.getPrincipal();
+            addUserPageAttributes(model, 0, 5, "", null, currentUser.getUserId());
+
+            return "accountlist";
+
+        }
+        user.setCreatedAt(new Date());
+        user.setActive(true);
+        user.setRole(roleServiceImp.getRoleByName("USER")); // Giả sử bạn có roleService để lấy thông tin role
+        user.setPassword(passwordEncoder.encode("123456")); // Giả sử bạn có passwordEncoder để mã hóa mật khẩu
+
+        accountServiceImp.createUser(user);
+        return "redirect:/admin/users";
+    }
+
+
+
 
 
 }

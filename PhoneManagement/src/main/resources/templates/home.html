@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Thay đổi đường dẫn nếu cần -->
+
+</head>
+<body>
+<header>
+    <h1>Welcome to the Home Page!</h1>
+    <nav>
+        <ul>
+            <li><a href="/auth/home">Home</a></li>
+            <li><a href="/auth/logout">Logout</a></li>
+            <li><a href="/user/profile">Profile</a></li>
+            <li><a href="/user/change_password">Change Password</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <p>Hello, <span th:text="${username}">User</span>!</p>
+
+</main>
+
+</body>
+</html>

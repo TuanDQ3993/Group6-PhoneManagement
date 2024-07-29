@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+
+    <!-- Bootstrap -->
+    <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link th:href="@{/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+    <!-- NProgress -->
+    <link th:href="@{/vendors/nprogress/nprogress.css}" rel="stylesheet">
+    <!-- iCheck -->
+    <link th:href="@{/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
+
+    <style>
+        .total {
+            text-align: right;
+            margin: 0;
+            font-size: 20px;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a th:href="@{/vendors/bootstrap-daterangepicker/example/amd/index.html}" class="site_title"><i
+                            class="fa fa-paw"></i> <span>Phone Manager</span></a>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <!-- menu profile quick info -->
+                <div class="profile clearfix">
+                    <div class="profile_pic">
+                        <img th:src="@{/images/img.jpg}" alt="..." class="img-circle profile_img">
+                    </div>
+                    <div class="profile_info">
+                        <span>Welcome,</span>
+                        <h2 th:text="${user.fullName}"></h2>
+                    </div>
+                </div>
+                <!-- /menu profile quick info -->
+
+                <br/>
+
+                <!-- sidebar menu -->
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <h3>General</h3>
+                        <ul class="nav side-menu">
+                            <li><a href="#"><i class="fa fa-home"></i> DashBoard</a>
+
+                            </li>
+                            <li><a><i class="fa fa-edit"></i> OrderList </a>
+                            </li>
+
+
+                        </ul>
+                    </div>
+
+
+                </div>
+                <!-- /sidebar menu -->
+
+                <!-- /menu footer buttons -->
+                <div class="sidebar-footer hidden-small">
+                    <a data-toggle="tooltip" data-placement="top" title="Settings">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="Lock">
+                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                    </a>
+                </div>
+                <!-- /menu footer buttons -->
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <div class="nav toggle">
+                    <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                </div>
+                <nav class="nav navbar-nav">
+                    <ul class=" navbar-right">
+                        <li class="nav-item dropdown open" style="padding-left: 15px;">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true"
+                               id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                                <img th:src="@{${user.avatar}}" alt="">
+                                <span th:text="${user.fullName}"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/user/profile"> Profile</a>
+                                <a class="dropdown-item" href="/user/change_password">
+
+                                    <span>Change Password</span>
+                                </a>
+
+                                <a class="dropdown-item" href="/auth/logout"><i class="fa fa-sign-out pull-right"></i>
+                                    Log Out</a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Orders Details</h3>
+                    </div>
+
+                    <div class="title_right">
+                        <div class="col-md-5 col-sm-5   form-group pull-right top_search">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search for...">
+                                <span class="input-group-btn">
+                      <button class="btn btn-secondary" type="button">Go!</button>
+                    </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <!-- start project list -->
+                                <table class="table table-striped projects">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 1%">Id</th>
+                                        <th style="width: 20%">Products</th>
+                                        <th style="width: 20%">Image</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="orderdetail :${orderdetail}">
+                                        <td >
+                                            <p th:text="${orderdetail.productId}"></p>
+                                        </td>
+                                        <td>
+                                            <a th:text="${orderdetail.productName}"></a>
+
+                                        </td>
+                                        <td>
+                                            <img style="width: 38%;"
+                                                 th:src="${orderdetail.image}">
+                                        </td>
+                                        <td class="project_progress">
+                                            <p th:text="${#numbers.formatDecimal(orderdetail.price, 1, 'COMMA', 0, 'POINT')}"></p>
+                                        </td>
+                                        <td class="project_progress">
+                                            <p th:text="${orderdetail.quantity}"></p>
+                                        </td>
+                                        <td>
+                                            <p th:text="${#numbers.formatDecimal(orderdetail.quantity*orderdetail.price, 1, 'COMMA', 0, 'POINT')}" ></p>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                                <!-- end project list -->
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <div class="total text-right">
+                                            Total: <span class="original-price" th:text="${#numbers.formatDecimal(orderinfo.totalAmount, 1, 'COMMA', 0, 'POINT')}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-lg-2 col-md-2 col-sm-2"></div>
+                                    <div class="col-lg-8 col-md-8 col-sm-8">
+
+                                            <table border="1" style="width: 100%;">
+                                                <input type="hidden" name="oid" value="${o.oid}">
+                                                <tr>
+                                                    <td>Receiver:</td>
+
+                                                    <td th:text="${orderinfo.customerName}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Ordered At:</td>
+                                                    <td th:text="${orderinfo.orderDate}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Address:</td>
+                                                    <td th:text="${orderinfo.address}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Phone Number:</td>
+                                                    <td th:text="${orderinfo.phoneNumber}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Payment:</td>
+                                                    <td>COD</td>
+                                                </tr>
+
+
+
+                                            </table>
+
+
+
+
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-2"></div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{/vendors/nprogress/nprogress.js}"></script>
+<!-- bootstrap-progressbar -->
+<script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+
+<!-- Custom Theme Scripts -->
+<script th:src="@{/build/js/custom.min.js}"></script>
+
+
+</body>
+</html>
