@@ -106,4 +106,17 @@ class OrderDetailRepositoryTest {
         assertEquals(2, orderDetail[4]);
         assertEquals(new BigDecimal("50.00"), orderDetail[5]);
     }
+
+    @Test
+    void findTop5Sellers() {
+        List<Object[]> topSellers = orderDetailRepository.findTop5Sellers();
+        assertNotNull(topSellers);
+        assertFalse(topSellers.isEmpty());
+
+        Object[] topSeller = topSellers.get(0);
+        assertEquals(1, ((Number) topSeller[0]).intValue()); // ProductID
+        assertEquals("Product A", topSeller[1]); // ProductName
+        assertEquals("image.png", topSeller[2]); // Image
+        assertEquals(2, ((Number) topSeller[3]).intValue()); // TotalQuantitySold
+    }
 }
