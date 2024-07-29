@@ -164,8 +164,6 @@ VALUES ('quangtuan3903@gmail.com', '$2a$10$c0zBKI./IHXIbP5aHoGwMe7QLMJAA0nqqDWKC
 INSERT INTO phonemanagement.category (category_name)
 VALUES ('Smartphones'),('Laptops'),('Accessories');
 
-INSERT INTO phonemanagement.products (brand_name)
-VALUES ('Apple'),('SamSung'),('Sony');
 
 INSERT INTO products (product_name, description, quantity, category_id, price, warranty_period, created_at, brand_name)
 VALUES
