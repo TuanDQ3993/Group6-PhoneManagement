@@ -51,8 +51,4 @@ public class Products {
     List<ProductColor> productColorList = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "products")
-    List<OrderDetail> orderDetailList;
-
-
 }
