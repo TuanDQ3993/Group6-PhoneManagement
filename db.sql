@@ -42,6 +42,7 @@ CREATE TABLE products
     price           DECIMAL(10, 2) NOT NULL,
     warranty_period INT, -- Warranty period (months)
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+    brand_name       VARCHAR(50),
     FOREIGN KEY (category_id) REFERENCES category (category_id)
 );
 
