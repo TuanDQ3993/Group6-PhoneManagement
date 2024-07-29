@@ -106,29 +106,6 @@ CREATE TABLE warrantyrepair (
     FOREIGN KEY (technical_id) REFERENCES useraccount(user_id)
 );
 
--- Table to manage purchases (hàng nhập)
-CREATE TABLE purchase
-(
-    purchase_id   INT AUTO_INCREMENT PRIMARY KEY,
-    user_id       INT, -- Nguoi nhap hang
-    purchase_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    total_amount  DECIMAL(10, 2),
-    origin        VARCHAR(50),
-    status        VARCHAR(50),
-    FOREIGN KEY (user_id) REFERENCES useraccount (user_id)
-);
-
--- Table to manage purchase details (chi tiết hàng nhập)
-CREATE TABLE purchasedetail
-(
-    purchase_detail_id INT AUTO_INCREMENT PRIMARY KEY,
-    purchase_id        INT,
-    product_color_id   INT,
-    quantity           INT            NOT NULL,
-    price              DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (purchase_id) REFERENCES purchase (purchase_id),
-    FOREIGN KEY (product_color_id) REFERENCES productcolor (product_color_id)
-);
 INSERT INTO Role (role_name)
 VALUES ('ADMIN'),
        ('SALER'),
