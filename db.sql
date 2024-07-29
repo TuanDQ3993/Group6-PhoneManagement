@@ -92,17 +92,18 @@ CREATE TABLE orderdetail
 );
 
 -- Table to manage warranty and repair
-CREATE TABLE warrantyrepair
-(
-    warranty_id       INT AUTO_INCREMENT PRIMARY KEY,
-    product_name      varchar(50),
-    image             Text,
-    status            varchar(50),
-    user_id           INT, -- Nguoi can sua
-    technical_id      INT, -- Nguoi sua
+CREATE TABLE warrantyrepair (
+    warranty_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_name VARCHAR(50),
+    image TEXT,
+    status VARCHAR(50),
+    user_id INT,   -- Người cần sửa
+    technical_id INT, -- Người sửa
     issue_description VARCHAR(255),
-    repair_date       DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES useraccount (user_id)
+    is_deleted BIT,
+    repair_date DATE ,
+    FOREIGN KEY (user_id) REFERENCES useraccount(user_id),
+    FOREIGN KEY (technical_id) REFERENCES useraccount(user_id)
 );
 
 -- Table to manage purchases (hàng nhập)
