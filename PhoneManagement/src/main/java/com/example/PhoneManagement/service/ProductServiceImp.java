@@ -204,17 +204,17 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public String uploadFile(MultipartFile file) {
-        String message = "";
-        try{
+        try {
             String fileName = fileStorageService.storeFile(file);
             String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/downloadFile/")
-                    .path(fileName).toUriString();
-            return file.getOriginalFilename();
-        }catch (Exception e){
+                    .path("/uploads/")
+                    .path(fileName)
+                    .toUriString();
+            return fileDownloadUri;
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override
