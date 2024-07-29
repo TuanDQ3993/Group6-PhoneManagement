@@ -67,10 +67,10 @@ public class LoginController {
             response.addCookie(cookie);
 
             if (user.getRole().getRoleName().equals("ADMIN")) {
-                return "redirect:/auth/home";
+                return "redirect:/admin/products";
             }
             else if(user.getRole().getRoleName().equals("SALER")) {
-                return "redirect:/saler/orders";
+                return "redirect:/saler/dashboard";
             }
             else if(user.getRole().getRoleName().equals("WAREHOUSE STAFF")) {
                 return "redirect:/warehouse/dashboard";
