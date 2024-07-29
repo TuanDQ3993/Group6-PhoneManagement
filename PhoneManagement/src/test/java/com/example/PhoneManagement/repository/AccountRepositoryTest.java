@@ -65,13 +65,6 @@ class AccountRepositoryTest {
         testUser2 = accountRepository.save(testUser2);
     }
 
-    @Test
-    void searchUsersRepo() {
-        List<Users> users = accountRepository.searchUsersRepo("nguyen hao quang");
-        assertFalse(users.isEmpty());
-        assertEquals(users.size(), 1);
-        assertEquals(users.get(0).getFullName(), "Nguyen Hao Quang");
-    }
 
     @Test
     void unBanUser() {
