@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Gentelella Alela! | </title>
+
+  <link th:href="@{https://fonts.googleapis.com/css?family=Lato:300,400,700,900&display=swap}" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}">
+
+  <link rel="stylesheet" th:href="@{/build/css/style.css}">
+</head>
+<body>
+<section class="ftco-section">
+  <div class="container">
+
+    <div class="row justify-content-center">
+      <div class="col-md-12 col-lg-10">
+        <div class="wrap d-md-flex">
+          <div class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last">
+            <div class="text w-100">
+              <h2>Welcome to login</h2>
+              <p>If you forgot your account?</p>
+              <a href="/password/forgot" class="btn btn-white btn-outline-white">Forgot password</a>
+            </div>
+          </div>
+          <div class="login-wrap p-4 p-lg-5">
+            <div class="d-flex">
+              <div class="w-100">
+                <h3 class="mb-4">Sign In</h3>
+              </div>
+
+            </div>
+            <form th:action="@{/auth/login}" th:object="${loginRequest}" method="post">
+              <div class="form-group mb-3">
+                <label class="label" for="username">Username</label>
+                <input type="email" id = "username" class="form-control" name="username"  placeholder="Username" required="" />
+              </div>
+              <div class="form-group mb-3">
+                <label class="label" for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password"  placeholder="Password" required="" />
+              </div>
+              <div>
+                <div th:if="${error}">
+                  <p th:text="${error}" class="text-danger"></p>
+                </div>
+                <div th:if="${message}">
+                  <p th:text="${message}" class="text-success"></p>
+                </div>
+
+              </div>
+              <div class="form-group">
+                <button th:type="submit" class="form-control btn btn-primary submit px-3">Sign In</button>
+              </div>
+
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+</body>
+</html>

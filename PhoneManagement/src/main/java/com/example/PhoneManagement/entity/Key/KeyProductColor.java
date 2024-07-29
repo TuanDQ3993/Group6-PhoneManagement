@@ -20,5 +20,4 @@ public class KeyProductColor implements Serializable {
     @Column(name="color_id")
     int colorId;
 
-
 }

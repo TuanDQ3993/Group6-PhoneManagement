@@ -40,4 +40,9 @@ public class RoleServiceImp implements RoleService {
             throw new RuntimeException("User not found with id: " + userId);
         }
     }
+
+    @Override
+    public Roles getRoleByName(String roleName) {
+        return roleRepository.findByRoleName(roleName);
+    }
 }
