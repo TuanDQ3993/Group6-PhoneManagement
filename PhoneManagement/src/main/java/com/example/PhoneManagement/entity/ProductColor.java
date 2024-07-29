@@ -43,8 +43,5 @@ public class ProductColor {
     private Date lastUpdated;
 
     @OneToMany(mappedBy = "productColor")
-    private List<PurchaseDetail> purchaseDetailList;
-
-    @OneToMany(mappedBy = "productColor")
     private List<OrderDetail> orderDetailList;
 }
