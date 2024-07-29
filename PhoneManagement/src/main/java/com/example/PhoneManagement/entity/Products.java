@@ -43,6 +43,9 @@ public class Products {
     @Column(name="created_at")
     Date createdAt;
 
+    @Column(name="brand_name")
+    String brandName;
+
     @ManyToOne
     @JoinColumn(name="category_id")
     Category category;
@@ -50,9 +53,6 @@ public class Products {
     @OneToMany(mappedBy = "products", cascade = CascadeType.ALL, orphanRemoval = true)
     List<ProductColor> productColorList = new ArrayList<>();
 
-
-    @OneToMany(mappedBy = "products")
-    List<OrderDetail> orderDetailList;
-
-
+//    @OneToMany(mappedBy = "products")
+//    List<OrderDetail> orderDetailList;
 }
