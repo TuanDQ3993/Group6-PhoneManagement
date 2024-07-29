@@ -59,7 +59,7 @@ public class ProductServiceImp implements ProductService {
             color.setColorId(colorDTO.getColorId());
             productColor.setColors(color);
             productColor.setQuantity(colorDTO.getQuantity());
-            String image=uploadFile(colorDTO.getImage());
+            String image = uploadFile(colorDTO.getImage());
             productColor.setImage(image);
             productColor.setProducts(product);
 
@@ -127,7 +127,7 @@ public class ProductServiceImp implements ProductService {
             products.setPrice(request.getPrice());
             products.setWarrantyPeriod(request.getWarrantyPeriod());
             productRepository.save(products);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -137,10 +137,10 @@ public class ProductServiceImp implements ProductService {
         ProductColor productColor = productColorRepository.findById(proId).orElseThrow(() -> new RuntimeException("Product not exist"));
         Products products = productRepository.findById(request.getProductId()).orElseThrow(() -> new RuntimeException("product not exist"));
         Colors colors = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
-        ProductViewRequest productViewRequest=getProduct(productId);
-        int c=productViewRequest.getColorId().stream().filter(color -> color==colors.getColorId()).findFirst().orElse(-1);
-        if(request.getQuantity()<0) return;
-        if(c!=-1) return;
+        ProductViewRequest productViewRequest = getProduct(productId);
+        int c = productViewRequest.getColorId().stream().filter(color -> color == colors.getColorId()).findFirst().orElse(-1);
+        if (request.getQuantity() < 0) return;
+        if (c != -1) return;
         productColor.setProducts(products);
         productColor.setColors(colors);
         productColor.setImage(request.getImage());
@@ -151,67 +151,67 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public void addProduct(ProductCreateRequest request){
-       try{
-           Products products=new Products();
-           Category category = categoryRepository.findById(request.getCategory()).orElseThrow(() -> new RuntimeException("Category not exist"));
-           List<Products> pro=productRepository.findAll();
-           for(Products product:pro){
-               if(product.getProductName().equals(request.getProductName()))
-                   return;
-           }
-           products.setProductName(request.getProductName());
-           products.setCategory(category);
-           products.setDescription(request.getDescription());
-           products.setPrice(request.getPrice());
-           products.setWarrantyPeriod(request.getWarrantyPeriod());
-           products.setCreatedAt(new Date());
-           products.setQuantity(request.getQuantity());
+    public void addProduct(ProductCreateRequest request) {
+        try {
+            Products products = new Products();
+            Category category = categoryRepository.findById(request.getCategory()).orElseThrow(() -> new RuntimeException("Category not exist"));
+            List<Products> pro = productRepository.findAll();
+            for (Products product : pro) {
+                if (product.getProductName().equals(request.getProductName()))
+                    return;
+            }
+            products.setProductName(request.getProductName());
+            products.setCategory(category);
+            products.setDescription(request.getDescription());
+            products.setPrice(request.getPrice());
+            products.setWarrantyPeriod(request.getWarrantyPeriod());
+            products.setCreatedAt(new Date());
+            products.setQuantity(request.getQuantity());
 
-           productRepository.save(products);
-       }catch (Exception e){
-           e.printStackTrace();
-       }
+            productRepository.save(products);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void addProductColor(ProductColorCreateRequest request, int productId){
-       try{
-           ProductColor productColor = new ProductColor();
-           Products products = productRepository.findById(request.getProId()).orElseThrow(() -> new RuntimeException("product not exist"));
-           Colors colors = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
-           ProductViewRequest productViewRequest=getProduct(productId);
-           int c=productViewRequest.getColorId().stream().filter(color -> color==colors.getColorId()).findFirst().orElse(-1);
-           if(request.getQuantity()<0) return;
-           if(c!=-1) return;
-           productColor.setProducts(products);
-           productColor.setColors(colors);
-           productColor.setImage(request.getImage());
-           productColor.setQuantity(request.getQuantity());
-           productColor.setLastUpdated(new Date());
+    public void addProductColor(ProductColorCreateRequest request, int productId) {
+        try {
+            ProductColor productColor = new ProductColor();
+            Products products = productRepository.findById(request.getProId()).orElseThrow(() -> new RuntimeException("product not exist"));
+            Colors colors = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
+            ProductViewRequest productViewRequest = getProduct(productId);
+            int c = productViewRequest.getColorId().stream().filter(color -> color == colors.getColorId()).findFirst().orElse(-1);
+            if (request.getQuantity() < 0) return;
+            if (c != -1) return;
+            productColor.setProducts(products);
+            productColor.setColors(colors);
+            productColor.setImage(request.getImage());
+            productColor.setQuantity(request.getQuantity());
+            productColor.setLastUpdated(new Date());
 
-           productColorRepository.save(productColor);
-       }catch (Exception e){
-           e.printStackTrace();
-       }
+            productColorRepository.save(productColor);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void deleteProductColor(int proId){
-        ProductColor productColor=productColorRepository.findById(proId).orElseThrow(()-> new RuntimeException(("Product not exist")));
+    public void deleteProductColor(int proId) {
+        ProductColor productColor = productColorRepository.findById(proId).orElseThrow(() -> new RuntimeException(("Product not exist")));
         productColorRepository.delete(productColor);
     }
 
     @Override
     public String uploadFile(MultipartFile file) {
         String message = "";
-        try{
+        try {
             String fileName = fileStorageService.storeFile(file);
             String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/downloadFile/")
                     .path(fileName).toUriString();
             return file.getOriginalFilename();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -260,12 +260,12 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<ProductColor> findAllProductColor(){
+    public List<ProductColor> findAllProductColor() {
         return productColorRepository.findAll();
     }
 
     @Override
-    public List<ProductDTO> findAllProduct(){
+    public List<ProductDTO> findAllProduct() {
         return productRepository.findAll()
                 .stream()
                 .map(product -> new ProductDTO(product.getProductId(), product.getProductName()))

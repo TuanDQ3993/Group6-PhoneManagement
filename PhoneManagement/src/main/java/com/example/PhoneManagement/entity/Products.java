@@ -53,6 +53,10 @@ public class Products {
     @OneToMany(mappedBy = "products", cascade = CascadeType.ALL, orphanRemoval = true)
     List<ProductColor> productColorList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "products")
+    List<OrderDetail> orderDetailList;
+
+
 //    @OneToMany(mappedBy = "products")
 //    List<OrderDetail> orderDetailList;
 }

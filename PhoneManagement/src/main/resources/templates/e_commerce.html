@@ -168,7 +168,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-<!--                                                <tr th:if="${size==0}">Not product exist</tr>-->
+                                                <!--                                                <tr th:if="${size==0}">Not product exist</tr>-->
                                                 <tr  th:each="i : ${#numbers.sequence(0, size - 1)}">
                                                     <form th:action="@{/admin/products/{productId}/update(productId=${product.productId})}"
                                                           method="post" id="update_form" enctype="multipart/form-data">
@@ -193,7 +193,7 @@
                                                             </select>
                                                         </td>
                                                         <td style="width: 30%;">
-<!--                                                            <span th:text="${product.image.get(i)}"></span>-->
+                                                            <!--                                                            <span th:text="${product.image.get(i)}"></span>-->
                                                             <span><img style="width: 20%;" th:src="@{uploads/{image}(image=${product.image.get(i)})}" /></span>
                                                             <input type="file" class="form-control edit-input" name="image"
                                                                    th:value="${product.image.get(i)}"
@@ -228,22 +228,22 @@
                                                 </tbody>
                                             </table>
                                             <!-- Pagination -->
-<!--                                            <nav aria-label="...">-->
-<!--                                                <ul class="pagination justify-content-end">-->
-<!--                                                    <li class="page-item disabled">-->
-<!--                                                        <a class="page-link" href="#" tabindex="-1"-->
-<!--                                                           aria-disabled="true">Previous</a>-->
-<!--                                                    </li>-->
-<!--                                                    <li class="page-item"><a class="page-link" href="#">1</a></li>-->
-<!--                                                    <li class="page-item active" aria-current="page">-->
-<!--                                                        <a class="page-link" href="#">2</a>-->
-<!--                                                    </li>-->
-<!--                                                    <li class="page-item"><a class="page-link" href="#">3</a></li>-->
-<!--                                                    <li class="page-item">-->
-<!--                                                        <a class="page-link" href="#">Next</a>-->
-<!--                                                    </li>-->
-<!--                                                </ul>-->
-<!--                                            </nav>-->
+                                            <!--                                            <nav aria-label="...">-->
+                                            <!--                                                <ul class="pagination justify-content-end">-->
+                                            <!--                                                    <li class="page-item disabled">-->
+                                            <!--                                                        <a class="page-link" href="#" tabindex="-1"-->
+                                            <!--                                                           aria-disabled="true">Previous</a>-->
+                                            <!--                                                    </li>-->
+                                            <!--                                                    <li class="page-item"><a class="page-link" href="#">1</a></li>-->
+                                            <!--                                                    <li class="page-item active" aria-current="page">-->
+                                            <!--                                                        <a class="page-link" href="#">2</a>-->
+                                            <!--                                                    </li>-->
+                                            <!--                                                    <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+                                            <!--                                                    <li class="page-item">-->
+                                            <!--                                                        <a class="page-link" href="#">Next</a>-->
+                                            <!--                                                    </li>-->
+                                            <!--                                                </ul>-->
+                                            <!--                                            </nav>-->
                                         </div>
                                     </div>
                                 </div>
@@ -294,6 +294,7 @@
             </form>
         </div>
     </div>
+</div>
 
     <!-- jQuery -->
     <script th:src="@{vendors/jquery/dist/jquery.min.js}"></script>

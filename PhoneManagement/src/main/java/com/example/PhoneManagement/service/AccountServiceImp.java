@@ -1,6 +1,8 @@
 package com.example.PhoneManagement.service;
 
 import com.example.PhoneManagement.dto.request.PageDTO;
+import com.example.PhoneManagement.entity.Roles;
+import com.example.PhoneManagement.repository.RoleRepository;
 import com.example.PhoneManagement.service.imp.AccountService;
 
 import com.example.PhoneManagement.entity.Users;
@@ -10,16 +12,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class AccountServiceImp implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
-
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Get list of all account
     @Override
@@ -35,9 +43,10 @@ public class AccountServiceImp implements AccountService {
             int pageSize = pageable.getPageSize();
             int startItem = currentPage * pageSize;
             List<Users> list = accountRepository.findAllOrderByCreatedAt();
-            List<Users> pagedList = List.of();
+            List<Users> pagedList;
+
             if (list.size() < startItem) {
-                list = Collections.emptyList();
+                pagedList = Collections.emptyList();
             } else {
                 int toIndex = Math.min(startItem + pageSize, list.size());
                 pagedList = list.subList(startItem, toIndex);
@@ -49,32 +58,54 @@ public class AccountServiceImp implements AccountService {
         return null;
     }
 
-    // Ban account user
     @Override
     @Transactional
     public void banUser(int userId) {
         accountRepository.banUser(userId);
     }
 
-    //Unban account user
     @Override
     @Transactional
     public void unBanUser(int userId) {
         accountRepository.unBanUser(userId);
     }
 
-    // Get single user
     @Override
     public Users getUserById(int userId) {
         return accountRepository.findById(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
     }
 
-    // Search account by name
     @Override
-    public List<Users> searchUsers(String text) {
-        return accountRepository.searchUsersRepo(text);
+    public boolean isPhoneExist(String phone) {
+        return accountRepository.existsByPhoneNumber(phone);
     }
 
+    @Override
+    public boolean isEmailExist(String email) {
+        return accountRepository.existsByUserName(email);
+    }
+
+    @Override
+    public void createUser(Users user) {
+        accountRepository.save(user);
+    }
+
+
+
+    @Override
+    public Page<Users> searchAndFilterUsers(String query, PageDTO pageDTO, int role) {
+        return accountRepository.findByRoleAndFullName(query, role, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+    }
+
+    @Override
+    public Page<Users> searchUsers(String query, PageDTO pageDTO) {
+        return accountRepository.findByFullName(query, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+    }
+
+    @Override
+    public Page<Users> filterRole(int roleId, PageDTO pageDTO) {
+        return accountRepository.findByRole(roleId, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+    }
 
 
 }

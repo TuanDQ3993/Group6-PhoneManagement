@@ -1,19 +1,26 @@
 package com.example.PhoneManagement.repository;
 
+import com.example.PhoneManagement.dto.request.PageDTO;
 import com.example.PhoneManagement.entity.WarrantyRepair;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface WarrantyRepairRepository  extends JpaRepository<WarrantyRepair, Integer> {
 
-    // Get warranty list by id technical staff
-    @Query("select w from warrantyrepair  w where w.technicalId =: technicalId order by w.repairDate")
-    List<WarrantyRepair> findAllById(@Param("technicalId") int technicalId);
+    Page<WarrantyRepair> findAllBy(Pageable pageable);
 
-    // Search by name
-    @Query("select w from  warrantyrepair  w where lower(w.user.fullName) like  lower((concat('%', :text, '%')))")
-    List<WarrantyRepair> searchWarrantyRepairByName(@Param("text") String text);
+    @Query("SELECT w FROM warrantyrepair w WHERE w.technical.userId = :technicalId")
+    Page<WarrantyRepair> findPaginated(@Param("technicalId") int technicalId, Pageable pageable);
+
+    @Query("SELECT w FROM warrantyrepair w WHERE w.technical.userId = :technicalId AND w.repairDate = :repairDate")
+    List<WarrantyRepair> findAllByTechnicalUserIdAndRepairDate(@Param("technicalId") int technicalId, @Param("repairDate") Date repairDate);
+
+    boolean existsWarrantyRepairsByRepairDate(Date repairDate);
+
 }
