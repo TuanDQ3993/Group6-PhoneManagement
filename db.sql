@@ -161,3 +161,39 @@ VALUES ('quangtuan3903@gmail.com', '$2a$10$c0zBKI./IHXIbP5aHoGwMe7QLMJAA0nqqDWKC
         'Address 6', '0956789012', 5, 0, NULL),
        ('nguyenhoang@gmail.com', '$2a$10$A5.xmwG6yFPVjpBFzoWA.ega1BoA79vptTGhJoPLJIawzYcFAEH/S', 'Nguyen Hoang',
         'Address 8', '0978901234', 5, 0, NULL);
+
+INSERT INTO products (product_name, description, quantity, category_id, price, warranty_period, created_at, brand_name)
+VALUES
+ ('iPhone 15 Pro Max 256GB', 'iPhone 15 Pro Max là một chiếc điện thoại thông minh cao cấp được mong đợi nhất năm 2023. Với nhiều tính năng mới và cải tiến, iPhone 15 Pro Max chắc chắn sẽ là một lựa chọn tuyệt vời cho những người dùng đang tìm kiếm một chiếc điện thoại có hiệu năng mạnh mẽ, camera chất lượng và thiết kế sang trọng.', 111, 1, 1999, 12, '2023-07-29', 'Iphone');
+INSERT INTO products (product_name, description, quantity, category_id, price, warranty_period, created_at, brand_name)
+VALUES
+-- Smartphone Category
+('Samsung Galaxy S23 Ultra 512GB', 'Samsung Galaxy S23 Ultra là một chiếc điện thoại thông minh cao cấp với màn hình AMOLED lớn, hiệu năng mạnh mẽ và camera sắc nét.', 50, 1, 1199, 12, '2024-01-15', 'Samsung'),
+('Sony Xperia 1 IV 256GB', 'Sony Xperia 1 IV mang đến trải nghiệm giải trí tuyệt vời với màn hình 4K và hệ thống camera tiên tiến.', 40, 1, 1099, 12, '2024-01-15', 'Sony'),
+('iPhone 15 Pro 128GB', 'iPhone 15 Pro mang đến hiệu năng vượt trội với nhiều tính năng mới, phù hợp cho người dùng cao cấp.', 90, 1, 1499, 12, '2024-01-15', 'Apple'),
+('Samsung Galaxy Z Fold 4 1TB', 'Samsung Galaxy Z Fold 4 là chiếc điện thoại gập cao cấp với màn hình lớn và tính năng đa nhiệm.', 20, 1, 1799, 12, '2024-01-15', 'Samsung'),
+('iPhone 14 Pro Max 512GB', 'iPhone 14 Pro Max với dung lượng lưu trữ lớn và nhiều cải tiến về camera và hiệu năng.', 80, 1, 1299, 12, '2024-01-15', 'Apple'),
+
+-- Laptops Category
+('Dell XPS 13 9310', 'Dell XPS 13 với hiệu năng mạnh mẽ và thiết kế mỏng nhẹ, lý tưởng cho người dùng chuyên nghiệp.', 30, 2, 1499, 24, '2024-01-15', 'Dell'),
+('MacBook Air M2 2023', 'MacBook Air M2 với bộ xử lý mới và thiết kế mỏng nhẹ, mang đến hiệu suất cao và thời lượng pin lâu.', 45, 2, 1299, 24, '2024-01-15', 'Apple'),
+
+-- Accessories Category
+('Apple AirPods Pro', 'Apple AirPods Pro với tính năng chống ồn chủ động và chất lượng âm thanh tuyệt vời.', 120, 3, 249, 12, '2024-01-15', 'Apple'),
+('Sony WH-1000XM4', 'Sony WH-1000XM4 là tai nghe chống ồn chủ động với chất lượng âm thanh cao và khả năng kết nối không dây.', 70, 3, 349, 12, '2024-01-15', 'Sony');
+
+INSERT INTO color(color_name)
+VALUES('Xanh'),('Vàng'),('Đen'),('Hồng'),('Trắng');
+
+INSERT INTO productcolor (product_id, image, color_id, quantity, last_updated)
+VALUES
+(1, 'iphone-15-pro-max-blue-1-1.jpg', 1, 55, '2023-07-29'),
+(2,'samsung-galaxy-s23-ultra-1-1.jpg',3,55,'2023-07-23'),
+(3,'sony-xperia-1-iv-1-600x600.jpg',3,55,'2024-02-23'),
+(4,'iphone-15-pro-max-blue-1-1.jpg', 2, 55, '2023-03-29'),
+(5,'samsung-galaxy-z-fold-3-silver-1-600x600.jpg',4,55,'2023-03-29'),
+(6,'2023_3_7_638138235534641283_iphone-14-vang-1.jpg',2,44,'2023-03-21'),
+(7,'dell-xps-13-9310-i7-jgnh61-2-org.jpg',3,54, '2023-05-12'),
+(8,'macbook-air-15-inch-m2-2023-70w-1.jpg',5, 89, '2023-07-21'),
+(9, 'tai-nghe-bluetooth-airpods-pro-2nd-gen-usb-c-charge-apple-1.jpg',5,91,'2023-08-12'),
+(10, 'pdp_wh-1000xm4.jpg', 3, 43, '2024-01-29');
