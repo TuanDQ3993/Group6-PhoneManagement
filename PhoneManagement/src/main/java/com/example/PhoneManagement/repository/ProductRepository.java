@@ -20,6 +20,4 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     @Query(value = "select n from Products n")
     List<Products> getListProduct();
 
-    @Query(value = "select ten from Products where id=: id", nativeQuery = true)
-    String getNameById(@Param("id") int id);
 }
