@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductDTO {
      Integer productId;
@@ -24,4 +23,8 @@ public class ProductDTO {
      Date createAt;
      List<ProductColorDTO> colors=new ArrayList<>();
 
+     public ProductDTO(Integer productId, String productName) {
+          this.productId = productId;
+          this.productName = productName;
+     }
 }

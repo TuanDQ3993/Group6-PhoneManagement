@@ -1,3 +1,4 @@
+
 package com.example.PhoneManagement.controller;
 
 import com.example.PhoneManagement.dto.request.*;
@@ -7,6 +8,7 @@ import com.example.PhoneManagement.service.ProductServiceImp;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,15 +33,25 @@ public class ProductController {
     CategoryServiceImp categoryService;
     ColorServiceImp colorService;
     @GetMapping
-    public String getAllProduct(Model model,@RequestParam(defaultValue = "0") int page,
-                                @RequestParam(defaultValue = "5") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDTO> productColorPage = productService.findPaginated(pageable);
-        model.addAttribute("category", categoryService.findAllCategory());
-        model.addAttribute("colors",colorService.getAllColor());
-        model.addAttribute("productDTO", new ProductDTO());
-        model.addAttribute("productColorPage", productColorPage);
+    public String getAllProduct(Model model,
+                                @RequestParam(name = "page", defaultValue = "0") int page,
+                                @RequestParam(name = "size", defaultValue = "5") int size,
+                                @RequestParam(name = "sortField", defaultValue = "productId") String sortField,
+                                @RequestParam(name = "sortDir", defaultValue = "desc") String sortDir,
+                                @RequestParam(name = "categoryId", required = false) Integer categoryId) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<ProductDTO> productColorPage = productService.findPaginated(pageable, categoryId);
+
+        model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("productColorPage", productColorPage);
+        model.addAttribute("category", categoryService.findAllCategory());
+        model.addAttribute("colors", colorService.getAllColor());
+        model.addAttribute("productDTO", new ProductDTO());
         return "listproduct";
     }
 
@@ -51,11 +64,11 @@ public class ProductController {
 
     @PostMapping("/update")
     public String updateProduct(@RequestParam("productId") int proId,
-                @RequestParam("productName") String productName,
-                @RequestParam("cateId") int cateId,
-                @RequestParam("quantity") int quantity,
-                @RequestParam("price") BigDecimal price,
-                @RequestParam("warrantyPeriod") int warrantyPeriod
+                                @RequestParam("productName") String productName,
+                                @RequestParam("cateId") int cateId,
+                                @RequestParam("quantity") int quantity,
+                                @RequestParam("price") BigDecimal price,
+                                @RequestParam("warrantyPeriod") int warrantyPeriod
     ) {
         ProductUpdateRequest request=new ProductUpdateRequest();
         request.setProductName(productName);
@@ -116,8 +129,8 @@ public class ProductController {
 
     @PostMapping("/{productId}/delete")
     public String deleteProductColor(@RequestParam("proColorId")int proId, @PathVariable("productId") int productId){
-            productService.deleteProductColor(proId);
-            return "redirect:/admin/products/"+productId;
+        productService.deleteProductColor(proId);
+        return "redirect:/admin/products/"+productId;
     }
 
 }
