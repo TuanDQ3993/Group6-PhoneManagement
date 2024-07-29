@@ -20,5 +20,6 @@ public interface ProductService {
      void deleteProductColor(int proId);
      String uploadFile(MultipartFile file);
      List<ProductColor> findAllProductColor();
-     Page<ProductDTO> findPaginated(Pageable pageable);
+     Page<ProductDTO> findPaginated(Pageable pageable,Integer categoryId);
+     List<ProductDTO> findAllProduct();
 }
