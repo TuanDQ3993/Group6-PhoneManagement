@@ -1,6 +1,9 @@
 package com.example.PhoneManagement.repository;
 
 import com.example.PhoneManagement.entity.OrderDetail;
+import com.example.PhoneManagement.entity.Products;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,4 +32,12 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
             "LIMIT 5;", nativeQuery = true)
     List<Object[]> findTop5Sellers();
 
+    @Query("SELECT p FROM Products p JOIN orderdetail  od ON p.productId = od.productColor.products.productId " +
+            "GROUP BY p.productId, p.productName ORDER BY SUM(od.quantity) DESC")
+    Page<Products> findTopSelling(Pageable pageable);
+
+    @Query("SELECT p FROM Products p JOIN orderdetail od ON p.productId = od.productColor.products.productId " +
+            "WHERE p.category.categoryId = :categoryId " +
+            "GROUP BY p.productId, p.productName ORDER BY SUM(od.quantity) DESC")
+    Page<Products> findTopSellingByCategory(@Param("categoryId") int categoryId, Pageable pageable);
 }

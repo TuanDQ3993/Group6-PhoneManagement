@@ -5,16 +5,14 @@ import com.example.PhoneManagement.entity.Category;
 import com.example.PhoneManagement.entity.Colors;
 import com.example.PhoneManagement.entity.ProductColor;
 import com.example.PhoneManagement.entity.Products;
-import com.example.PhoneManagement.repository.CategoryRepository;
-import com.example.PhoneManagement.repository.ColorRepository;
-import com.example.PhoneManagement.repository.ProductColorRepository;
-import com.example.PhoneManagement.repository.ProductRepository;
+import com.example.PhoneManagement.repository.*;
 import com.example.PhoneManagement.service.imp.ProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +32,7 @@ public class ProductServiceImp implements ProductService {
     CategoryRepository categoryRepository;
     ProductColorRepository productColorRepository;
     FileStorageServiceImpl fileStorageService;
+    OrderDetailRepository orderDetailRepository;
 
     @Override
     public void saveProduct(ProductDTO productDTO) {
@@ -284,4 +283,29 @@ public class ProductServiceImp implements ProductService {
                 .map(product -> new ProductDTO(product.getProductId(), product.getProductName()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Products> getNewProducts() {
+        Pageable pageable = PageRequest.of(0, 8); // Top 8 sản phẩm mới nhất
+        return productRepository.findTop8ByOrderByCreatedAtDesc(pageable).getContent();
+    }
+
+    @Override
+    public List<Products> getNewProductsByCategory(int categoryId) {
+        Pageable pageable = PageRequest.of(0, 8); // Top 8 sản phẩm mới nhất theo danh mục
+        return productRepository.findTop8ByCategoryIdOrderByCreatedAtDesc(categoryId, pageable).getContent();
+    }
+
+    @Override
+    public List<Products> getTopSellingProduct() {
+        Pageable pageable = PageRequest.of(0, 8);
+        return orderDetailRepository.findTopSelling(pageable).getContent();
+    }
+
+    @Override
+    public List<Products> getTopSellingProductsByCategory(int categoryId) {
+        Pageable pageable = PageRequest.of(0, 8);
+        return orderDetailRepository.findTopSellingByCategory(categoryId, pageable).getContent();
+    }
+
 }
