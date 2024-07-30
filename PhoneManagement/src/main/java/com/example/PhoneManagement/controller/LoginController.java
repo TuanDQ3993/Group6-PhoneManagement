@@ -74,8 +74,10 @@ public class LoginController {
                 return "redirect:/warehouse/dashboard";
             } else if (user.getRole().getRoleName().equals("TECHNICAL")) {
                 return "redirect:/technical/dashboard";
+            }else{
+                return "redirect:/home/hompage";
             }
-            return "login";
+
         } catch (Exception e) {
             model.addAttribute("error", "Login unsuccessful. Please check the information again.");
             return "login";

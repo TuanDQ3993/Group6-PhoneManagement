@@ -32,4 +32,12 @@ public interface ProductService {
     Page<ProductDTO> findPaginated(Pageable pageable, Integer categoryId);
 
     List<ProductDTO> findAllProduct();
+
+    public List<Products> getNewProducts();
+
+    public List<Products> getNewProductsByCategory(int categoryId);
+
+    public List<Products> getTopSellingProduct();
+
+    public List<Products> getTopSellingProductsByCategory(int categoryId);
 }
