@@ -305,7 +305,7 @@
                                 <div class="product" th:each="product : ${products}"
                                      style="width: 263px; height: 343.06px">
                                     <div class="product-img" style="width: 100%; height: 175.33px">
-                                        <img th:src="@{/uploads/{image}(image=${product.productColorList[0].image})}"
+                                        <img th:src="@{/uploads/{image}(image=${product.productInfoList[0].image})}"
                                              style="width: 100%; height: 100%" alt="Product Image">
 
 
@@ -318,7 +318,7 @@
                                             Category</p>
                                         <h3 class="product-name"><a href="#" th:text="${product.productName}">Product
                                             Name</a></h3>
-                                        <h4 class="product-price" th:text="${product.price}">Price</h4>
+                                        <h4 class="product-price" th:text="${product.productInfoList[0].price}">Price</h4>
                                         <div class="product-btns">
                                             <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span>
                                             </button>
@@ -428,7 +428,7 @@
                                 <div class="product" th:each="product : ${productTS}"
                                      style="width: 263px; height: 343.06px">
                                     <div class="product-img" style="width: 100%; height: 175.33px">
-                                        <img th:src="@{/uploads/{image}(image=${product.productColorList[0].image})}"
+                                        <img th:src="@{/uploads/{image}(image=${product.productInfoList[0].image})}"
                                              style="width: 100%; height: 100%"
                                              alt="Product Image">
                                     </div>
@@ -437,7 +437,7 @@
                                             Category</p>
                                         <h3 class="product-name"><a href="#" th:text="${product.productName}">Product
                                             Name</a></h3>
-                                        <h4 class="product-price" th:text="${product.price}">Price</h4>
+                                        <h4 class="product-price" th:text="${product.productInfoList[0].price}">Price</h4>
                                         <div class="product-btns">
                                             <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span>
                                             </button>
