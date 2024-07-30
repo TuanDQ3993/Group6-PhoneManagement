@@ -138,15 +138,7 @@
                                 <div class="title_right">
                                     <div class="col-md-5 col-sm-5 form-group pull-right top_search"
                                          style="right:0; position: absolute;">
-                                        <form method="post">
-                                            <div class="input-group">
-                                                <input type="text" name="search" class="form-control"
-                                                       placeholder="Search for...">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-secondary" type="button">Go!</button>
-                                                </span>
-                                            </div>
-                                        </form>
+
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -155,6 +147,15 @@
                                 <div class="col-md-12">
                                     <button style="font-size: 17px; padding: 5px 20px; border: none; background: #cdc9c9" id="openAddModalBtn">Add</button>
                                     <div class="x_panel">
+                                        <form method="post" class="text-right" style="width: 400px;float: right;">
+                                            <div class="input-group">
+                                                <input type="text" name="search" class="form-control"
+                                                       placeholder="Search for...">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-secondary" type="button">Go!</button>
+                                                </span>
+                                            </div>
+                                        </form>
                                         <p th:if="${size==0}">Not exist product</p>
                                         <div class="x_content" th:unless="${size==0}">
                                             <!-- Project List Table -->
@@ -165,7 +166,7 @@
                                                     <th>Color</th>
                                                     <th>Image</th>
                                                     <th>Quantity</th>
-                                                    <th>Edit</th>
+                                                    <th>Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -214,8 +215,7 @@
                                                         <td>
                                                             <input type="hidden" name="index" th:value="${i}"/>
                                                             <button type="button"
-                                                                    class="btn btn-primary btn-xs edit-btn"><i
-                                                                    class="fa fa-folder"></i> View
+                                                                    class="btn btn-primary btn-xs edit-btn"><i class="fa fa-edit"></i> Edit
                                                             </button>
                                                             <button type="button" class="btn btn-danger btn-xs delete-btn" th:data-procolorid="${product.proColorId.get(i)}"><i class="fa fa-trash"></i> Delete</button>
                                                             <button type="submit"
