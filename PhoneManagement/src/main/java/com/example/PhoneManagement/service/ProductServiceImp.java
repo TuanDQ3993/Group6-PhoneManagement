@@ -133,22 +133,34 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public void updateProductColor(int proId, ProductColorUpdate request, int productId) {
-        ProductColor productColor = productColorRepository.findById(proId).orElseThrow(() -> new RuntimeException("Product not exist"));
-        Products products = productRepository.findById(request.getProductId()).orElseThrow(() -> new RuntimeException("product not exist"));
-        Colors colors = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
-        ProductViewRequest productViewRequest=getProduct(productId);
-        int c=productViewRequest.getColorId().stream().filter(color -> color==colors.getColorId()).findFirst().orElse(-1);
-        if(request.getQuantity()<0) return;
-        if(c!=-1) return;
-        productColor.setProducts(products);
-        productColor.setColors(colors);
+    public void updateProductColor(int proColorId, ProductColorUpdate request) {
+        ProductColor productColor = productColorRepository.findById(proColorId)
+                .orElseThrow(() -> new RuntimeException("ProductColor not exist"));
+
+//        Products product = productRepository.findById(request.getProductId())
+//                .orElseThrow(() -> new RuntimeException("Product not exist"));
+
+        Colors color = colorRepository.findById(request.getColorId())
+                .orElseThrow(() -> new RuntimeException("Color not exist"));
+
+        ProductViewRequest productViewRequest = getProduct(request.getProductId());
+        boolean colorExists = productViewRequest.getColorId().stream().anyMatch(id -> id == color.getColorId());
+        if (request.getQuantity() < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative");
+        }
+        if (colorExists) {
+            throw new IllegalArgumentException("Color already exists for the product");
+        }
+
+//        productColor.setProducts(product);
+        productColor.setColors(color);
         productColor.setImage(request.getImage());
         productColor.setQuantity(request.getQuantity());
         productColor.setLastUpdated(new Date());
 
         productColorRepository.save(productColor);
     }
+
 
     @Override
     public void addProduct(ProductCreateRequest request){
@@ -237,6 +249,7 @@ public class ProductServiceImp implements ProductService {
                 dto.setProductName(product.getProductName());
                 dto.setCategoryId(product.getCategory().getCategoryId());
                 dto.setPrice(product.getPrice());
+                dto.setBrandName(product.getBrandName());
                 dto.setQuantity(product.getQuantity());
                 dto.setWarrantyPeriod(product.getWarrantyPeriod());
                 dto.setCreateAt(product.getCreatedAt());
