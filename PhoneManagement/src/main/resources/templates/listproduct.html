@@ -80,6 +80,9 @@
                     <label for="colors${colorIndex}.quantity" style="display: block; margin-top: 5px;">Quantity:</label>
                     <input type="number" id="colors${colorIndex}.quantity" name="colors[${colorIndex}].quantity" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
 
+                    <label for="colors${colorIndex}.price" style="display: block; margin-top: 5px;">Quantity:</label>
+                    <input type="number" id="colors${colorIndex}.price" name="colors[${colorIndex}].price" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
+
                     <label for="colors${colorIndex}.image" style="display: block; margin-top: 5px;">Image URL:</label>
                     <input type="file" id="colors${colorIndex}.image" name="colors[${colorIndex}].image" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
 
@@ -222,7 +225,6 @@
                                         <select id="sortField" name="sortField">
                                             <option value="productId" th:text="'ID'" th:selected="${sortField == 'productId'}"></option>
                                             <option value="productName" th:text="'Name'" th:selected="${sortField == 'productName'}"></option>
-                                            <option value="price" th:text="'Price'" th:selected="${sortField == 'price'}"></option>
                                         </select>
                                     </div>
                                     <div style="display: inline-block;">
@@ -277,11 +279,6 @@
                                                 <span class="view-span" th:text="${product.quantity}"></span>
                                                 <input type="number" class="form-control edit-input" name="quantity"
                                                        th:value="${product.quantity}" style="display: none;">
-                                            </td>
-                                            <td>
-                                                <span class="view-span" th:text="${product.price}"></span>
-                                                <input type="text" class="form-control edit-input" name="price"
-                                                       th:value="${product.price}" style="display: none;">
                                             </td>
                                             <td>
                                                 <span class="view-span" th:each="category : ${category}" th:if="${category.categoryId == product.categoryId}" th:text="${category.categoryName}"></span>
@@ -357,9 +354,6 @@
 
             <label for="description" style="display: block; margin-top: 10px;">Description:</label>
             <textarea id="description" th:field="*{description}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" required></textarea>
-
-            <label for="quantity" style="display: block; margin-top: 10px;">Quantity:</label>
-            <input type="number" id="quantity" th:field="*{quantity}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" required/>
 
             <label for="price" style="display: block; margin-top: 10px;">Price:</label>
             <input type="number" id="price" th:field="*{price}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"required />

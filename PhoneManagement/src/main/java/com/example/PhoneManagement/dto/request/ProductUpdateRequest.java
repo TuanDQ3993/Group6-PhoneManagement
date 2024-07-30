@@ -16,6 +16,7 @@ public class ProductUpdateRequest {
     int category;
     BigDecimal price;
     String description;
+    String brandName;
     int quantity;
     int warrantyPeriod;
 }

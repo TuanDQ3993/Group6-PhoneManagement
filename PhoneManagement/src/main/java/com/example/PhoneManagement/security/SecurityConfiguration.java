@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                 .permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/saler/**").hasRole("SALER")
-                .requestMatchers("/technical/**").hasAnyRole("TECHNICAL", "ADMIN")
+                .requestMatchers("/technical/**").hasAnyRole( "ADMIN","TECHNICAL STAFF")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
