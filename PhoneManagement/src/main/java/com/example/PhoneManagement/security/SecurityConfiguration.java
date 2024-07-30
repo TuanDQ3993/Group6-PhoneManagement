@@ -33,7 +33,6 @@ public class SecurityConfiguration {
                 .permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/saler/**").hasRole("SALER")
-                .requestMatchers("/warehouse/**").hasAnyRole("ADMIN", "WAREHOUSE STAFF")
                 .requestMatchers("/technical/**").hasAnyRole("TECHNICAL", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
