@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/saler/**").hasRole("SALER")
                 .requestMatchers("/warehouse/**").hasAnyRole("ADMIN", "WAREHOUSE STAFF")
-                .requestMatchers("/technical/**").hasAnyRole("TECHNICAL", "ADMIN")
+                .requestMatchers("/technical/**").hasAnyRole("TECHNICAL STAFF", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
