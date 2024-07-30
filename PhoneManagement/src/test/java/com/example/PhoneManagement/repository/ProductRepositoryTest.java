@@ -35,7 +35,7 @@ class ProductRepositoryTest {
 
         Products product1 = new Products();
         product1.setProductName("Product 1");
-        product1.setPrice(BigDecimal.valueOf(100.00));
+//        product1.setPrice(BigDecimal.valueOf(100.00));
         product1.setQuantity(10);
         product1.setCreatedAt(new Date());
         product1.setCategory(category);
@@ -43,7 +43,7 @@ class ProductRepositoryTest {
 
         Products product2 = new Products();
         product2.setProductName("Product 2");
-        product2.setPrice(BigDecimal.valueOf(200.00));
+//        product2.setPrice(BigDecimal.valueOf(200.00));
         product2.setQuantity(20);
         product2.setCategory(category);
         product2.setCreatedAt(new Date());
