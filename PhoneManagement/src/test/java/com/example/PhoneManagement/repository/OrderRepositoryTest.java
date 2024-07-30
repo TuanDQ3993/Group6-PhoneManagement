@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +35,7 @@ class OrderRepositoryTest {
     private ColorRepository colorsRepository;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws ParseException {
         orderDetailRepository.deleteAll();
         orderRepository.deleteAll();
         productColorRepository.deleteAll();
@@ -41,7 +43,7 @@ class OrderRepositoryTest {
         userRepository.deleteAll();
         colorsRepository.deleteAll();
 
-        // Tạo người dùng
+        // Create user
         Users user = new Users();
         user.setUserName("haoquang@example.com");
         user.setPassword("123");
@@ -50,12 +52,12 @@ class OrderRepositoryTest {
         user.setPhoneNumber("1234567890");
         userRepository.save(user);
 
-        // Tạo màu sắc
+        // Create color
         Colors color = new Colors();
         color.setColorName("Red");
         colorsRepository.save(color);
 
-        // Tạo sản phẩm
+        // Create product
         Products product = new Products();
         product.setProductName("Product A");
         product.setDescription("Description of Product A");
@@ -65,7 +67,7 @@ class OrderRepositoryTest {
         product.setCreatedAt(new Date());
         productsRepository.save(product);
 
-        // Tạo màu sắc của sản phẩm
+        // Create product color
         ProductColor productColor = new ProductColor();
         productColor.setProducts(product);
         productColor.setColors(color);
@@ -74,16 +76,16 @@ class OrderRepositoryTest {
         productColor.setLastUpdated(new Date());
         productColorRepository.save(productColor);
 
-        // Tạo đơn hàng
+        // Create order
         Orders order = new Orders();
         order.setSalerId(1);
-        order.setOrderDate(new Date());
+        order.setOrderDate(new SimpleDateFormat("yyyy-MM-dd").parse("2024-07-01"));
         order.setTotalAmount(new BigDecimal("200.00"));
-        order.setStatus("Pending");
+        order.setStatus("Completed");
         order.setUser(user);
         orderRepository.save(order);
 
-        // Tạo chi tiết đơn hàng
+        // Create order detail
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.setOrder(order);
         orderDetail.setProductColor(productColor);
@@ -120,5 +122,34 @@ class OrderRepositoryTest {
         assertEquals("Vinh Test", info[2]);
         assertEquals("Quang Test", info[3]);
         assertEquals("1234567890", info[4]);
+    }
+
+    @Test
+    void countByOrderDateBetween() throws ParseException {
+        Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse("2024-06-01");
+        Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2024-07-31");
+        long count = orderRepository.countByOrderDateBetween(startDate, endDate);
+        assertEquals(1, count);
+    }
+
+    @Test
+    void countByOrderDateBetweenAndStatus() throws ParseException {
+        Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse("2024-06-01");
+        Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2024-07-31");
+        long count = orderRepository.countByOrderDateBetweenAndStatus(startDate, endDate, "Pending");
+        assertEquals(1, count);
+    }
+
+    @Test
+    void sumTotalAmountByMonthAndStatus() {
+        Double totalAmount = orderRepository.sumTotalAmountByMonthAndStatus(7);
+        assertNotNull(totalAmount);
+        assertEquals(200.00, totalAmount);
+    }
+
+    @Test
+    void countDistinctUserId() {
+        long count = orderRepository.countDistinctUserId(7);
+        assertEquals(1, count);
     }
 }

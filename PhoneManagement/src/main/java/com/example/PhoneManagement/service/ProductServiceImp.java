@@ -152,48 +152,48 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public void addProduct(ProductCreateRequest request){
-       try{
-           Products products=new Products();
-           Category category = categoryRepository.findById(request.getCategory()).orElseThrow(() -> new RuntimeException("Category not exist"));
-           List<Products> pro=productRepository.findAll();
-           for(Products product:pro){
-               if(product.getProductName().equals(request.getProductName()))
-                   return;
-           }
-           products.setProductName(request.getProductName());
-           products.setCategory(category);
-           products.setDescription(request.getDescription());
-           products.setPrice(request.getPrice());
-           products.setWarrantyPeriod(request.getWarrantyPeriod());
-           products.setCreatedAt(new Date());
-           products.setQuantity(request.getQuantity());
+        try{
+            Products products=new Products();
+            Category category = categoryRepository.findById(request.getCategory()).orElseThrow(() -> new RuntimeException("Category not exist"));
+            List<Products> pro=productRepository.findAll();
+            for(Products product:pro){
+                if(product.getProductName().equals(request.getProductName()))
+                    return;
+            }
+            products.setProductName(request.getProductName());
+            products.setCategory(category);
+            products.setDescription(request.getDescription());
+            products.setPrice(request.getPrice());
+            products.setWarrantyPeriod(request.getWarrantyPeriod());
+            products.setCreatedAt(new Date());
+            products.setQuantity(request.getQuantity());
 
-           productRepository.save(products);
-       }catch (Exception e){
-           e.printStackTrace();
-       }
+            productRepository.save(products);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void addProductColor(ProductColorCreateRequest request, int productId){
-       try{
-           ProductColor productColor = new ProductColor();
-           Products products = productRepository.findById(request.getProId()).orElseThrow(() -> new RuntimeException("product not exist"));
-           Colors colors = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
-           ProductViewRequest productViewRequest=getProduct(productId);
-           int c=productViewRequest.getColorId().stream().filter(color -> color==colors.getColorId()).findFirst().orElse(-1);
-           if(request.getQuantity()<0) return;
-           if(c!=-1) return;
-           productColor.setProducts(products);
-           productColor.setColors(colors);
-           productColor.setImage(request.getImage());
-           productColor.setQuantity(request.getQuantity());
-           productColor.setLastUpdated(new Date());
+        try{
+            ProductColor productColor = new ProductColor();
+            Products products = productRepository.findById(request.getProId()).orElseThrow(() -> new RuntimeException("product not exist"));
+            Colors colors = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
+            ProductViewRequest productViewRequest=getProduct(productId);
+            int c=productViewRequest.getColorId().stream().filter(color -> color==colors.getColorId()).findFirst().orElse(-1);
+            if(request.getQuantity()<0) return;
+            if(c!=-1) return;
+            productColor.setProducts(products);
+            productColor.setColors(colors);
+            productColor.setImage(request.getImage());
+            productColor.setQuantity(request.getQuantity());
+            productColor.setLastUpdated(new Date());
 
-           productColorRepository.save(productColor);
-       }catch (Exception e){
-           e.printStackTrace();
-       }
+            productColorRepository.save(productColor);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -204,17 +204,17 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public String uploadFile(MultipartFile file) {
-        String message = "";
-        try{
+        try {
             String fileName = fileStorageService.storeFile(file);
             String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/downloadFile/")
-                    .path(fileName).toUriString();
-            return file.getOriginalFilename();
-        }catch (Exception e){
+                    .path("/uploads/")
+                    .path(fileName)
+                    .toUriString();
+            return fileDownloadUri;
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override
