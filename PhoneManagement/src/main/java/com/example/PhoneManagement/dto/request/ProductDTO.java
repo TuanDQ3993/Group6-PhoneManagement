@@ -18,6 +18,7 @@ public class ProductDTO {
      String description;
      Integer quantity;
      BigDecimal price;
+     String brandName;
      Integer warrantyPeriod;
      Integer categoryId;
      Date createAt;
