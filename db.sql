@@ -102,7 +102,6 @@ CREATE TABLE warrantyrepair (
     issue_description VARCHAR(255),
     is_deleted BIT,
     repair_date DATE ,
-    FOREIGN KEY (user_id) REFERENCES useraccount(user_id),
     FOREIGN KEY (technical_id) REFERENCES useraccount(user_id)
 );
 

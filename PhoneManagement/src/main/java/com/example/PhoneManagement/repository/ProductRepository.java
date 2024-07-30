@@ -22,4 +22,10 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
 
     Page<Products> findByCategoryCategoryId(int categoryId, Pageable pageable);
 
+    @Query("SELECT p FROM Products p ORDER BY p.createdAt DESC")
+    Page<Products> findTop8ByOrderByCreatedAtDesc(Pageable pageable);
+
+    @Query("SELECT p FROM Products p WHERE p.category.categoryId = :categoryId ORDER BY p.createdAt DESC")
+    Page<Products> findTop8ByCategoryIdOrderByCreatedAtDesc(@Param("categoryId") int categoryId, Pageable pageable);
+
 }

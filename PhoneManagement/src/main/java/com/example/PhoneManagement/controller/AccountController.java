@@ -135,7 +135,6 @@ public class AccountController {
         }
         user.setCreatedAt(new Date());
         user.setActive(true);
-        user.setRole(roleServiceImp.getRoleByName("USER")); // Giả sử bạn có roleService để lấy thông tin role
         user.setPassword(passwordEncoder.encode("123456")); // Giả sử bạn có passwordEncoder để mã hóa mật khẩu
 
         accountServiceImp.createUser(user);
