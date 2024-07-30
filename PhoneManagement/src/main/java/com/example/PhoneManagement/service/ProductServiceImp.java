@@ -263,7 +263,7 @@ public class ProductServiceImp implements ProductService {
                 dto.setQuantity(product.getQuantity());
                 dto.setWarrantyPeriod(product.getWarrantyPeriod());
                 dto.setCreateAt(product.getCreatedAt());
-
+                dto.setDescription(product.getDescription());
                 Category category = categories.stream()
                         .filter(cat -> cat.getCategoryId() == product.getCategory().getCategoryId())
                         .findFirst()
