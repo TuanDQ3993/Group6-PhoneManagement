@@ -60,19 +60,19 @@ class OrderDetailRepositoryTest {
         product.setProductName("Product A");
         product.setDescription("Description of Product A");
         product.setQuantity(10);
-        product.setPrice(new BigDecimal("100.00"));
+//        product.setPrice(new BigDecimal("100.00"));
         product.setWarrantyPeriod(12);
         product.setCreatedAt(new Date());
         productsRepository.save(product);
 
         // Tạo màu sắc của sản phẩm
-        ProductColor productColor = new ProductColor();
-        productColor.setProducts(product);
-        productColor.setColors(color);
-        productColor.setImage("image.png");
-        productColor.setQuantity(5);
-        productColor.setLastUpdated(new Date());
-        productColorRepository.save(productColor);
+        ProductInfo productInfo = new ProductInfo();
+        productInfo.setProducts(product);
+        productInfo.setColors(color);
+        productInfo.setImage("image.png");
+        productInfo.setQuantity(5);
+        productInfo.setLastUpdated(new Date());
+        productColorRepository.save(productInfo);
 
         // Tạo đơn hàng
         Orders order = new Orders();
@@ -86,7 +86,7 @@ class OrderDetailRepositoryTest {
         // Tạo chi tiết đơn hàng
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.setOrder(order);
-        orderDetail.setProductColor(productColor);
+        orderDetail.setProductInfo(productInfo);
         orderDetail.setQuantity(2);
         orderDetail.setPrice(new BigDecimal("50.00"));
         orderDetailRepository.save(orderDetail);
