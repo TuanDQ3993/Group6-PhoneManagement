@@ -17,7 +17,7 @@ public interface ProductService {
 
     void updateProduct(int productId, ProductUpdateRequest request);
 
-    void updateProductColor(int proId, ProductColorUpdate request, int productId);
+    void updateProductColor(int proId, ProductColorUpdate request);
 
     void addProduct(ProductCreateRequest request);
 
