@@ -166,6 +166,7 @@
                                                     <th>Color</th>
                                                     <th>Image</th>
                                                     <th>Quantity</th>
+                                                    <th>Price</th>
                                                     <th>Action</th>
                                                 </tr>
                                                 </thead>
@@ -196,9 +197,10 @@
                                                         </td>
                                                         <td style="width: 30%;">
                                                             <span><img style="width: 20%;" th:src="${product.image.get(i)}" /></span>
-                                                            <input type="file" class="form-control edit-input" name="image"
+                                                            <input type="file" class="form-control edit-input fileInput" name="image"
                                                                    th:value="${product.image.get(i)}"
                                                                    style="display:none;"/>
+                                                            <img id="preview" src="#" alt="Image Preview" style="display:none; width: 200px;" />
                                                         </td>
                                                         <td>
                                                             <span th:text="${product.quantity.get(i)}"></span>
@@ -206,12 +208,12 @@
                                                                    th:value="${product.quantity.get(i)}"
                                                                    style="display:none;" required/>
                                                         </td>
-<!--                                                        <td>-->
-<!--                                                            <span th:text="${product.price.get}"></span>-->
-<!--                                                            <input type="number" class="form-control edit-input" name="price"-->
-<!--                                                                   th:value="${product.price.get(i)}"-->
-<!--                                                                   style="display:none;" required/>-->
-<!--                                                        </td>-->
+                                                        <td>
+                                                            <span th:text="${product.price.get(i)}"></span>
+                                                            <input type="text" class="form-control edit-input" name="price"
+                                                                   th:value="${product.price.get(i)}"
+                                                                   style="display:none;" required/>
+                                                        </td>
                                                         <td>
                                                             <input type="hidden" name="index" th:value="${i}"/>
                                                             <button type="button"
@@ -260,6 +262,21 @@
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div id="messageModal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.5);">
+        <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 50%;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h5 style="margin: 0;">Message</h5>
+                <span class="close" style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            </div>
+            <div>
+                <p id="modalMessage"></p>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary close" style="font-size: 16px;padding: 10px 20px; border: none; background-color: #6c757d; color: white; cursor: pointer;">Close</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Delete Modal -->
     <div id="deleteModal" class="modal">
@@ -298,7 +315,7 @@
                 </div>
                 <div class="form-group">
                     <label for="price">Price</label>
-                    <input type="number" class="form-control" id="price" name="price" required>
+                    <input type="text" class="form-control" id="price" name="price" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Product</button>
             </form>
@@ -313,7 +330,7 @@
     <!-- Custom Theme Scripts -->
     <script th:src="@{build/js/custom.min.js}"></script>
 
-    <script>
+    <script  type="text/javascript" th:inline="javascript">
         // JavaScript for modals
         document.getElementById('openAddModalBtn').onclick = function () {
             document.getElementById('addProductModal').style.display = 'block';
@@ -406,6 +423,44 @@
                     deleteModal.style.display = 'none';
                 }
             });
+        });
+
+        $(document).ready(function () {
+            // Function to show the modal with a message
+            function showModal(message) {
+                $('#modalMessage').text(message);
+                $('#messageModal').show(); // Hiển thị modal
+            }
+
+            // Function to hide the modal
+            function hideModal() {
+                $('#messageModal').hide(); // Ẩn modal
+            }
+
+            // Close modal when clicking on the close button
+            $('#messageModal .close').on('click', function() {
+                hideModal();
+            });
+
+            // Close modal when clicking outside the modal content
+            $(window).on('click', function(event) {
+                if ($(event.target).is('#messageModal')) {
+                    hideModal();
+                }
+            });
+
+            // Retrieve messages from Thymeleaf
+            var successMessage = /*[[${successMessage} ?: '']]*/ '';
+            var errorMessage = /*[[${errorMessage} ?: '']]*/ '';
+
+            // Show modal with messages if they exist
+            if (successMessage) {
+                showModal(successMessage);
+            }
+
+            if (errorMessage) {
+                showModal(errorMessage);
+            }
         });
     </script>
 </body>

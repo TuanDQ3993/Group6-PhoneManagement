@@ -6,6 +6,10 @@ import com.example.PhoneManagement.service.CategoryServiceImp;
 import com.example.PhoneManagement.service.ColorServiceImp;
 import com.example.PhoneManagement.service.FileStorageServiceImpl;
 import com.example.PhoneManagement.service.ProductServiceImp;
+import com.example.PhoneManagement.service.imp.CategoryService;
+import com.example.PhoneManagement.service.imp.ColorService;
+import com.example.PhoneManagement.service.imp.FileStorageService;
+import com.example.PhoneManagement.service.imp.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +27,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.nio.file.StandardCopyOption;
@@ -33,20 +38,21 @@ import java.util.List;
 @RequestMapping("/admin/products")
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class ProductController {
-    ProductServiceImp productService;
-    CategoryServiceImp categoryService;
-    ColorServiceImp colorService;
-    FileStorageServiceImpl fileStorageService;
+    ProductService productService;
+    CategoryService categoryService;
+    ColorService colorService;
+    FileStorageService fileStorageService;
     @GetMapping
     public String getAllProduct(Model model,
                                 @RequestParam(name = "page", defaultValue = "0") int page,
                                 @RequestParam(name = "size", defaultValue = "5") int size,
                                 @RequestParam(name = "sortField", defaultValue = "productId") String sortField,
                                 @RequestParam(name = "sortDir", defaultValue = "desc") String sortDir,
-                                @RequestParam(name = "categoryId", required = false) Integer categoryId) {
+                                @RequestParam(name = "categoryId", required = false) Integer categoryId,
+                                @RequestParam(name = "search", required = false) String name) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<ProductDTO> productColorPage = productService.findPaginated(pageable, categoryId);
+        Page<ProductDTO> productColorPage = productService.findPaginated(pageable, categoryId,name);
 
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
@@ -57,6 +63,7 @@ public class ProductController {
         model.addAttribute("category", categoryService.findAllCategory());
         model.addAttribute("colors", colorService.getAllColor());
         model.addAttribute("productDTO", new ProductDTO());
+        model.addAttribute("search",name);
         return "listproduct";
     }
 
@@ -72,14 +79,14 @@ public class ProductController {
                                 @RequestParam("productName") String productName,
                                 @RequestParam("cateId") int cateId,
                                 @RequestParam("quantity") int quantity,
-                                @RequestParam("price") BigDecimal price,
+                                @RequestParam("description") String description,
                                 @RequestParam("warrantyPeriod") int warrantyPeriod
     ) {
         ProductUpdateRequest request=new ProductUpdateRequest();
         request.setProductName(productName);
         request.setCategory(cateId);
         request.setQuantity(quantity);
-        request.setPrice(price);
+        request.setDescription(description);
         request.setWarrantyPeriod(warrantyPeriod);
         productService.updateProduct(proId, request);
         return "redirect:/admin/products";
@@ -105,8 +112,9 @@ public class ProductController {
                                      @RequestParam("proColorId") int proColorId,
                                      @RequestParam("colors") int colorId,
                                      @RequestParam("image") MultipartFile image,
+                                     @RequestParam("price") String price,
                                      @RequestParam("quantity") int quantity,
-                                     Model model) {
+                                     Model model, RedirectAttributes redirectAttributes) {
         Path uploadDir = Paths.get("uploads/");
 
         if (!Files.exists(uploadDir)) {
@@ -137,12 +145,26 @@ public class ProductController {
         request.setProductId(productId);
         request.setColorId(colorId);
         request.setImage(fileImage);
+        BigDecimal gia = null;
+        try {
+            gia = new BigDecimal(price);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Invalid price format.");
+            return "redirect:/admin/products/" + productId;
+        }
+        request.setPrice(gia);
         request.setQuantity(quantity);
 
         try {
             productService.updateProductColor(proColorId, request);
+            redirectAttributes.addFlashAttribute("successMessage", "Product color updated successfully!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred.");
         }
         return "redirect:/admin/products/" + productId;
     }
@@ -152,6 +174,7 @@ public class ProductController {
     public String addProductColor(@PathVariable("productId") int proId,
                                   @RequestParam("color") int color,
                                   @RequestParam("image") MultipartFile image,
+                                  @RequestParam("price") String price,
                                   @RequestParam("quantity") int quantity){
         Path uploadDir = Paths.get("uploads/");
 
@@ -183,6 +206,15 @@ public class ProductController {
         request.setProId(proId);
         request.setImage(fileImage);
         request.setQuantity(quantity);
+        BigDecimal gia = null;
+        try {
+            gia = new BigDecimal(price);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+//            redirectAttributes.addFlashAttribute("errorMessage", "Invalid price format.");
+            return "redirect:/admin/products/{productId}";
+        }
+        request.setPrice(gia);
         request.setColorId(color);
 
         productService.addProductColor(request,proId);
