@@ -45,11 +45,14 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public void saveProduct(ProductDTO productDTO) {
-
+        int total=0;
         Products product = new Products();
+        boolean result=productRepository.findAll().stream().anyMatch(p ->p.getProductName().equals(productDTO.getProductName()));
+        if(result) return;
+        if(productDTO.getWarrantyPeriod()<0) return ;
         product.setProductName(productDTO.getProductName());
         product.setDescription(productDTO.getDescription());
-        product.setQuantity(productDTO.getQuantity());
+
         product.setBrandName(productDTO.getBrandName());
         product.setWarrantyPeriod(productDTO.getWarrantyPeriod());
         product.setCreatedAt(new Date());
@@ -88,18 +91,28 @@ public class ProductServiceImp implements ProductService {
                     e.printStackTrace();
                 }
             }
+            if(colorDTO.getQuantity()<0) return;
+
             ProductInfo productInfo = new ProductInfo();
             Colors color = new Colors();
             color.setColorId(colorDTO.getColorId());
             productInfo.setColors(color);
-            productInfo.setQuantity(colorDTO.getQuantity());
-            productInfo.setPrice(colorDTO.getPrice());
+            BigDecimal gia = null;
+            try {
+                gia = new BigDecimal(colorDTO.getPrice());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                return;
+            }
+            productInfo.setPrice(gia);
             productInfo.setImage(fileImage);
+            productInfo.setQuantity(colorDTO.getQuantity());
+            total+=colorDTO.getQuantity();
             productInfo.setProducts(product);
 
             product.getProductInfoList().add(productInfo);
         }
-
+        product.setQuantity(total);
         productRepository.save(product);
     }
 
@@ -139,6 +152,7 @@ public class ProductServiceImp implements ProductService {
             productViewRequest.setImage(imagePaths);
             productViewRequest.setDescription(products.getDescription());
             productViewRequest.setQuantity(quantity);
+            productViewRequest.setPrice(price);
             productViewRequest.setWarrantyPeriod(products.getWarrantyPeriod());
             productViewRequest.setCreatedAt(products.getCreatedAt());
 
@@ -178,14 +192,13 @@ public class ProductServiceImp implements ProductService {
                 .orElseThrow(() -> new RuntimeException("Color not exist"));
 
         ProductViewRequest productViewRequest = getProduct(request.getProductId());
-        boolean colorExists = productViewRequest.getColorId().stream().anyMatch(id -> id == color.getColorId());
+        boolean colorExists = productViewRequest.getColorId().stream().anyMatch(id -> id == color.getColorId() && id!=productInfo.getColors().getColorId());
         if (request.getQuantity() < 0) {
             throw new IllegalArgumentException("Quantity cannot be negative");
         }
         if (colorExists) {
             throw new IllegalArgumentException("Color already exists for the product");
         }
-
 //        productColor.setProducts(product);
         productInfo.setColors(color);
         productInfo.setImage(request.getImage());
@@ -203,9 +216,10 @@ public class ProductServiceImp implements ProductService {
             Products products = productRepository.findById(request.getProId()).orElseThrow(() -> new RuntimeException("product not exist"));
             Colors colors = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
             ProductViewRequest productViewRequest=getProduct(productId);
-            int c=productViewRequest.getColorId().stream().filter(color -> color==colors.getColorId()).findFirst().orElse(-1);
+            boolean colorExists = productViewRequest.getColorId().stream()
+                    .anyMatch(color -> color== colors.getColorId());
             if(request.getQuantity()<0) return;
-            if(c!=-1) return;
+            if(!colorExists) return;
             productInfo.setProducts(products);
             productInfo.setColors(colors);
             productInfo.setImage(request.getImage());
@@ -240,12 +254,17 @@ public class ProductServiceImp implements ProductService {
         }
     }
 
-    @Override
-    public Page<ProductDTO> findPaginated(Pageable pageable, Integer categoryId) {
+    public Page<ProductDTO> findPaginated(Pageable pageable, Integer categoryId, String name) {
         try {
             Page<Products> productPage;
-            if (categoryId != null) {
+
+            // Modify the query based on the name and categoryId parameters
+            if (categoryId != null && name != null) {
+                productPage = productRepository.findByCategoryCategoryIdAndProductNameContainingIgnoreCase(categoryId, name, pageable);
+            } else if (categoryId != null) {
                 productPage = productRepository.findByCategoryCategoryId(categoryId, pageable);
+            } else if (name != null) {
+                productPage = productRepository.findByProductNameContainingIgnoreCase(name, pageable);
             } else {
                 productPage = productRepository.findAll(pageable);
             }
@@ -275,6 +294,7 @@ public class ProductServiceImp implements ProductService {
 
                 productDTOS.add(dto);
             }
+
             return new PageImpl<>(productDTOS, pageable, productPage.getTotalElements());
         } catch (Exception e) {
             e.printStackTrace();

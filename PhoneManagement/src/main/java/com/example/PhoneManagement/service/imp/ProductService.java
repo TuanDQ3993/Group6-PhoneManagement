@@ -26,7 +26,7 @@ public interface ProductService {
 
     List<ProductInfo> findAllProductColor();
 
-    Page<ProductDTO> findPaginated(Pageable pageable, Integer categoryId);
+    Page<ProductDTO> findPaginated(Pageable pageable, Integer categoryId, String name);
 
     List<ProductDTO> findAllProduct();
 }
