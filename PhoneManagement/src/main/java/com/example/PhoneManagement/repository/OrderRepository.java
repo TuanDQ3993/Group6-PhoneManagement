@@ -2,6 +2,8 @@ package com.example.PhoneManagement.repository;
 
 import com.example.PhoneManagement.dto.request.OrderInfoDTO;
 import com.example.PhoneManagement.entity.Orders;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -48,4 +50,25 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
 
     @Query(value = "SELECT COUNT(DISTINCT user_id) FROM orders WHERE MONTH(order_date) = :month", nativeQuery = true)
     long countDistinctUserId(@Param("month") int month);
+
+    @Query(value = "SELECT o1.orderId, p2.productName, c1.colorName, p1.image, p1.price, o1.totalAmount, o2.quantity, o1.orderDate, c2.categoryName " +
+            "FROM Orders o1 " +
+            "JOIN orderdetail o2 ON o1.orderId = o2.order.orderId " +
+            "JOIN productinfo p1 ON o2.productInfo.productcolorId = p1.productcolorId " +
+            "JOIN Products p2 ON p1.products.productId = p2.productId " +
+            "JOIN Color c1 ON p1.colors.colorId = c1.colorId " +
+            "JOIN Category c2 on c2.categoryId=p2.category.categoryId " +
+            "WHERE o1.user.userId = :userId " +
+            "AND (:status IS NULL OR o1.status = :status) " +
+            "AND (:startDate IS NULL OR o1.orderDate >= :startDate) " +
+            "AND (:endDate IS NULL OR o1.orderDate <= :endDate) " +
+            "GROUP BY o1.orderId, p2.productName, c1.colorName, p1.image, p1.price, o2.price, o2.quantity, o1.orderDate, c2.categoryName")
+    Page<Object[]> findOrdersWithFilters(@Param("userId") int userId,
+                                         @Param("status") String status,
+                                         @Param("startDate") LocalDate startDate,
+                                         @Param("endDate") LocalDate endDate,
+                                         Pageable pageable);
+
+    @Query("SELECT COUNT(o) FROM Orders o WHERE o.user.userId = :userId")
+    int countOrdersByUserId(@Param("userId") int userId);
 }
