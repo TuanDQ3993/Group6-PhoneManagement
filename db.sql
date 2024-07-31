@@ -76,6 +76,11 @@ CREATE TABLE orders
     order_date   DATETIME DEFAULT CURRENT_TIMESTAMP,
     total_amount DECIMAL(10, 2),
     status       VARCHAR(50),
+    note         VARCHAR(255),
+    receiver     VARCHAR(50),
+    address      VARCHAR(255),
+    phone_number VARCHAR(50),
+    payment      nvarchar(20),    -- COD hay Onl...
     FOREIGN KEY (user_id) REFERENCES useraccount (user_id)
 );
 
