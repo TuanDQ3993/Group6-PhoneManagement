@@ -39,4 +39,7 @@ public interface OrderService {
     List<ProductTopSeller> getProductTopSellers();
 
     void changeStatusOrder(int orderId, String status);
+
+    public Page<Object[]> getOrdersByUserIdWithFilters(int userId, String status, LocalDate startDate, LocalDate endDate, int page, int size);
+    public int countTotalOrders(int userId);
 }

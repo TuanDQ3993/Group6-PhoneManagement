@@ -249,5 +249,15 @@ public class OrderServiceImp implements OrderService {
         orderRepository.save(order);
     }
 
+    @Override
+    public Page<Object[]> getOrdersByUserIdWithFilters(int userId, String status, LocalDate startDate, LocalDate endDate, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return orderRepository.findOrdersWithFilters(userId, status, startDate, endDate, pageable);
+    }
+
+    @Override
+    public int countTotalOrders(int userId) {
+        return orderRepository.countOrdersByUserId(userId);
+    }
 
 }
