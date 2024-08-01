@@ -139,39 +139,36 @@
                             <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                                 <i class="fa fa-shopping-cart"></i>
                                 <span>Your Cart</span>
-                                <div class="qty">3</div>
+                                <div class="qty" th:text="${size}">0</div>
                             </a>
                             <div class="cart-dropdown">
-                                <div class="cart-list">
-                                    <div class="product-widget">
+                                <div th:if="${cart != null}" class="cart-list">
+                                    <div th:each="item : ${cart.items}" class="product-widget">
                                         <div class="product-img">
-                                            <img src="/build1/img/product01.png" alt="">
+                                            <img th:src="@{/uploads/{image}(image=${item.productColor.image})}" alt="">
                                         </div>
                                         <div class="product-body">
-                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                                            <h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
+                                            <h3 class="product-name" th:text="${item.productColor.products.productName}"><a href="#"></a></h3>
+                                            <h4 class="product-price" >
+                                                <span class="qty" th:text="${item.quantity}+'x'"></span><th:block th:text="'$' + ${item.price}"></th:block>
+                                            </h4>
+
                                         </div>
-                                        <button class="delete"><i class="fa fa-close"></i></button>
+                                        <form th:action="@{/cart/delete(productColorId=${item.productColor.productcolorId})}" method="post">
+
+                                            <button type="submit" class="delete"><i class="fa fa-close"></i></button>
+                                        </form>
                                     </div>
 
-                                    <div class="product-widget">
-                                        <div class="product-img">
-                                            <img src="/build1/img/product02.png" alt="">
-                                        </div>
-                                        <div class="product-body">
-                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                                            <h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
-                                        </div>
-                                        <button class="delete"><i class="fa fa-close"></i></button>
-                                    </div>
+
                                 </div>
                                 <div class="cart-summary">
-                                    <small>3 Item(s) selected</small>
-                                    <h5>SUBTOTAL: $2940.00</h5>
+                                    <small th:text="${size} +' Item(s) selected'">0 Item(s) selected</small>
+                                    <h5 th:text="'SUBTOTAL: '+${total}">SUBTOTAL:0.00</h5>
                                 </div>
                                 <div class="cart-btns">
-                                    <a href="#">View Cart</a>
-                                    <a href="#">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+                                    <a th:href="@{/cart/viewcart}">View Cart</a>
+                                    <a th:href="@{/cart/checkout}">Checkout <i class="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -305,7 +302,7 @@
                                 <div class="product" th:each="product : ${products}"
                                      style="width: 263px; height: 343.06px">
                                     <div class="product-img" style="width: 100%; height: 175.33px">
-                                        <img th:src="@{/uploads/{image}(image=${product.productColorList[0].image})}"
+                                        <img th:src="@{/uploads/{image}(image=${product.productInfoList[0].image})}"
                                              style="width: 100%; height: 100%" alt="Product Image">
 
 
@@ -318,15 +315,20 @@
                                             Category</p>
                                         <h3 class="product-name"><a href="#" th:text="${product.productName}">Product
                                             Name</a></h3>
-                                        <h4 class="product-price" th:text="${product.price}">Price</h4>
+                                        <h4 class="product-price" th:text="${product.productInfoList[0].price}">Price</h4>
+
                                         <div class="product-btns">
                                             <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span>
                                             </button>
                                         </div>
                                     </div>
                                     <div class="add-to-cart">
-                                        <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart
-                                        </button>
+                                        <form name="f" th:action="@{/cart/addtocart(productColorId=${product.productInfoList[0].productcolorId})}" method="post">
+                                            <button type="submit" class="add-to-cart-btn">
+                                                <i class="fa fa-shopping-cart"></i> Add to Cart
+                                            </button>
+                                        </form>
+
                                     </div>
                                 </div>
                                 <!-- /product -->
@@ -428,7 +430,7 @@
                                 <div class="product" th:each="product : ${productTS}"
                                      style="width: 263px; height: 343.06px">
                                     <div class="product-img" style="width: 100%; height: 175.33px">
-                                        <img th:src="@{/uploads/{image}(image=${product.productColorList[0].image})}"
+                                        <img th:src="@{/uploads/{image}(image=${product.productInfoList[0].image})}"
                                              style="width: 100%; height: 100%"
                                              alt="Product Image">
                                     </div>
@@ -437,7 +439,7 @@
                                             Category</p>
                                         <h3 class="product-name"><a href="#" th:text="${product.productName}">Product
                                             Name</a></h3>
-                                        <h4 class="product-price" th:text="${product.price}">Price</h4>
+                                        <h4 class="product-price" th:text="${product.productInfoList[0].price}">Price</h4>
                                         <div class="product-btns">
                                             <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span>
                                             </button>

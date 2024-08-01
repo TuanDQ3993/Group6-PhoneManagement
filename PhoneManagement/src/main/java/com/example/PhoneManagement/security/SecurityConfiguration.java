@@ -29,16 +29,22 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests()
-                .requestMatchers("/auth/login", "/auth/logout", "/auth/register", "/vendors/**", "/build/**", "/password/**", "/build1/**", "/home/**", "/uploads/**")
+                .requestMatchers("/auth/login", "/auth/logout", "/auth/register", "/vendors/**", "/build/**", "/password/**", "/build1/**", "/home/**", "/uploads/**","/cart/**")
                 .permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/saler/**").hasRole("SALER")
                 .requestMatchers("/technical/**").hasAnyRole( "ADMIN","TECHNICAL STAFF")
                 .anyRequest().authenticated()
                 .and()
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .logoutSuccessUrl("/home/homepage")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID", "Authorization")
+                );
         return http.build();
     }
 

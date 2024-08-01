@@ -1,10 +1,7 @@
 package com.example.PhoneManagement.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
@@ -13,6 +10,7 @@ import java.util.List;
 
 @Entity(name = "Orders")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -34,6 +32,21 @@ public class Orders {
 
     @Column(name="status",length = 50)
     String status;
+
+    @Column(name = "note", length = 250)
+    String note;
+
+    @Column(name = "receiver", length = 50)
+    String receiver;
+
+    @Column(name = "address", length = 250)
+    String address;
+
+    @Column(name = "phone_number", length = 50)
+    String phoneNumber;
+
+    @Column(name = "payment", length = 20)
+    String payment;
 
     @ManyToOne
     @JoinColumn(name="user_id")

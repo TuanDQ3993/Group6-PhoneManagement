@@ -69,6 +69,50 @@
             overflow: hidden;
             background-color: #e9ecef;
         }
+        .product__cart__item__pic {
+            width: 90px;
+            height: 90px;
+            overflow: hidden;
+        }
+
+        .product__cart__item__pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .shopping__cart__table table tbody tr td.quantity__item {
+            width: 270px;
+        }
+        .shopping__cart__table table tbody tr td.quantity__price {
+            width: 270px;
+        }
+        .shopping__cart__table table tbody tr td.product__cart__item {
+            width: 450px;
+        }
+        .confirmation-message {
+            text-align: center;
+        }
+
+        .big-text {
+            font-size: 32px; /* Chữ to */
+            font-weight: bold; /* Chữ đậm */
+            color: #3498db; /* Màu sắc, bạn có thể thay đổi mã màu theo ý muốn */
+        }
+        .signature {
+            font-style: italic; /* Nghiêng nghiêng */
+            color: #e74c3c; /* Màu sắc, bạn có thể thay đổi mã màu theo ý muốn */
+        }
+
+        .heart {
+            color: #e74c3c; /* Màu sắc trái tim */
+        }
+        .total {
+            font-size: 24px; /* Chữ to */
+            font-weight: bold; /* Chữ đậm */
+            text-align: right;
+        }
+
     </style>
 </head>
 <body>
@@ -222,8 +266,9 @@
                 <h3 class="breadcrumb-header">Checkout</h3>
                 <ul class="breadcrumb-tree">
                     <li><a href="/home/homepage">Home</a></li>
-                    <li><a href="/cart/viewcart">View Cart</a></li>
-                    <li class="active">Checkout</li>
+                    <li><a href="#">View Cart</a></li>
+                    <li><a href="#">Checkout</a></li>
+                    <li class="active">Order Success</li>
                 </ul>
             </div>
         </div>
@@ -234,118 +279,79 @@
 <!-- /BREADCRUMB -->
 
 <!-- SECTION -->
-<div class="section">
-    <!-- container -->
+<section class="shopping-cart spad">
     <div class="container">
-        <!-- row -->
-        <form id="checkout-form" action="/cart/placeorder" method="POST">
-            <div class="row">
+        <div class="confirmation-message">
+            <p class="big-text">You have placed your order successfully</p>
+            <p>Thank you for choosing our products.</p>
+            <p>The product will reach you as soon as possible.</p>
+            <p class="signature">from PhoneManagerJ03 with love <span class="heart">&#10084;</span></p>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shopping__cart__table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
 
-                <div class="col-md-7">
-                    <!-- Billing Details -->
-                    <div th:if="${user!=null}" class="billing-details">
-                        <div class="section-title">
-                            <h3 class="title">Billing address</h3>
-                        </div>
-                        <div class="form-group">
-                            <input th:value="${user.fullName}" class="input" type="text" name="fullname"
-                                   placeholder="Full Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input th:value="${user.userName}" class="input" type="email" name="email" placeholder="Email"
-                                   readonly>
-                        </div>
-                        <div class="form-group">
-                            <input th:value="${user.address}" class="input" type="text" name="address"
-                                   placeholder="Address" required>
-                        </div>
-                        <div class="form-group">
-                            <input th:value="${user.phoneNumber}" class="input" type="tel" name="tel"
-                                   placeholder="Telephone" required>
-                        </div>
-                    </div>
-                    <!-- /Billing Details -->
 
-                    <!-- Order notes -->
-                    <div class="order-notes">
-                        <textarea class="input" name="note" placeholder="Order Notes"></textarea>
-                    </div>
-                    <!-- /Order notes -->
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                            <div class="continue__btn">
-                                <a href="/cart/viewcart">Change Cart</a>
-                            </div>
-                        </div>
-                    </div>
+                            <tr th:each="item :${listi}">
+                                <td class="product__cart__item">
+                                    <div class="product__cart__item__pic">
+                                        <img th:src="@{/uploads/{image}(image=${item.productColor.image})}" alt="">
+                                    </div>
+                                    <div class="product__cart__item__text">
+                                        <h6 th:text="${item.productColor.products.productName}+' - '+${item.productColor.colors.colorName} "></h6>
+                                    </div>
+                                </td>
+
+                                <td class="original-price" th:text="${item.price}+ ' $'"></td>
+
+                                <td class="quantity__item">
+                                    <div class="quantity">
+                                        <div>
+                                            &emsp;<span class="qty" th:text="${item.quantity}"></span>&emsp;
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="original-price" th:text="${item.quantity*item.price} +' $'"></td>
+
+                            </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
                 </div>
-
-                <!-- Order Details -->
-                <div class="col-md-5 order-details">
-                    <div class="section-title text-center">
-                        <h3 class="title">Your Order</h3>
-                    </div>
-                    <div class="order-summary">
-                        <div class="order-col">
-                            <div><strong>PRODUCT</strong></div>
-                            <div><strong>TOTAL</strong></div>
-                        </div>
-                        <th:block th:if="${cart != null}">
-                            <div th:each="item : ${cart.items}" class="order-products">
-                                <div class="order-col">
-                                    <div th:text="'x'+${item.quantity} +'  '+${item.productColor.products.productName}">1x Product Name Goes Here</div>
-                                    <div th:text="${item.price}">$980.00</div>
-                                </div>
-                            </div>
-                        </th:block>
-
-                        <div class="order-col">
-                            <div>Shipping</div>
-                            <div><strong>FREE</strong></div>
-                        </div>
-                        <div class="order-col">
-                            <div><strong>TOTAL</strong></div>
-                            <div><strong class="order-total" th:text="${total}">$2940.00</strong></div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn">
+                            <a href="/home/homepage">Continue Shopping</a>
                         </div>
                     </div>
-                    <div class="payment-method">
-                        <div class="input-radio">
-                            <input type="radio" name="payment" id="payment-2" value="COD">
-                            <label for="payment-2">
-                                <span></span>
-                                Cash On Delivery
-                            </label>
-                            <div class="caption">
-                                <p>You have selected the "Cash On Delivery" (COD) payment method. This means you will pay in cash upon receiving the goods at the delivery address. Please prepare the exact amount for delivery convenience.</p>
-                            </div>
-                        </div>
-                        <div class="input-radio">
-                            <input type="radio" name="payment" id="payment-3" value="QR">
-                            <label for="payment-3">
-                                <span></span>
-                                Pay via QR Code
-                            </label>
 
-                            <div class="caption">
-                                <p>Pay via QR Code: Please scan the provided QR code to complete payment via your banking app or e-wallet. Confirm the transaction and check your order confirmation message.</p>
-                            </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="total">
+                            Total <span class="original-price" th:text="${totalsuccess} +' $'"></span>
                         </div>
-                        <div class="error-message" id="payment-error" style="display:none; color: red;">
-                            Please select a payment method.
-                        </div>
-
                     </div>
 
-                    <input class="primary-btn order-submit" type="submit" value="Place order">
                 </div>
             </div>
-        </form>
-            <!-- /Order Details -->
+
         </div>
-        <!-- /row -->
     </div>
-    <!-- /container -->
-</div>
+</section>
 <!-- /SECTION -->
 
 <!-- NEWSLETTER -->

@@ -6,6 +6,7 @@ import com.example.PhoneManagement.entity.Users;
 import com.example.PhoneManagement.security.JwtService;
 import com.example.PhoneManagement.service.LoginServiceImp;
 import com.example.PhoneManagement.service.imp.LoginService;
+import com.example.PhoneManagement.util.Cart;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +64,12 @@ public class LoginController {
             Cookie cookie = new Cookie("Authorization", jwt.getToken());
             cookie.setHttpOnly(true); // Bảo mật, ngăn JavaScript truy cập cookie này
             cookie.setPath("/"); // Đường dẫn của cookie
-            cookie.setMaxAge(86400);// 1 day
+            cookie.setMaxAge(86400); // 1 ngày, tính bằng giây
             response.addCookie(cookie);
+
+
+            Cart cart = new Cart();
+            session.setAttribute("cart", cart);
 
 
             if (user.getRole().getRoleName().equals("ADMIN")) {
@@ -76,7 +81,7 @@ public class LoginController {
             } else if (user.getRole().getRoleName().equals("TECHNICAL STAFF")) {
                 return "redirect:/technical/dashboard";
             }else{
-                return "redirect:/home/hompage";
+                return "redirect:/home/homepage";
             }
 
         } catch (Exception e) {
@@ -91,19 +96,19 @@ public class LoginController {
         return "home";
     }
 
-    @GetMapping("/logout")
-    public String logout(HttpServletResponse response) {
-
-        Cookie cookie = new Cookie("Authorization", null);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-
-        SecurityContextHolder.clearContext();
-
-        return "redirect:/auth/login?logout";
-    }
+//    @GetMapping("/logout")
+//    public String logout(HttpServletResponse response) {
+//
+//        Cookie cookie = new Cookie("Authorization", null);
+//        cookie.setHttpOnly(true);
+//        cookie.setPath("/");
+//        cookie.setMaxAge(0);
+//        response.addCookie(cookie);
+//
+//        SecurityContextHolder.clearContext();
+//
+//        return "redirect:/home/homepage";
+//    }
 
 
 }
