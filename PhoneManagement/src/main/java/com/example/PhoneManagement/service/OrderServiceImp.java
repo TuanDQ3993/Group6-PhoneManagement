@@ -250,14 +250,22 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public Page<Object[]> getOrdersByUserIdWithFilters(int userId, String status, LocalDate startDate, LocalDate endDate, int page, int size) {
+    public Page<Object[]> getOrdersByUserIdWithFilters(UserDTO userDTO, String status , String search, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return orderRepository.findOrdersWithFilters(userId, status, startDate, endDate, pageable);
+        int userId = userRepository.findIdByUserName(userDTO.getUserName());
+        return orderRepository.findOrdersWithFiltersCategory(userId, status,search, pageable);
+    }
+
+
+    @Override
+    public int countTotalOrders(UserDTO user) {
+        int userId = userRepository.findIdByUserName(user.getUserName());
+        return orderRepository.countOrdersByUserId(userId);
     }
 
     @Override
-    public int countTotalOrders(int userId) {
-        return orderRepository.countOrdersByUserId(userId);
+    public List<Object[]> findOrderDetail(int orderId){
+        return orderRepository.findOrderDetail(orderId);
     }
 
 }
