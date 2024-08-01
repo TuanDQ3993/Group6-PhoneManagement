@@ -80,7 +80,7 @@ CREATE TABLE orders
     receiver     VARCHAR(50),
     address      VARCHAR(250),
     phone_number VARCHAR(50),
-    payment      nvarchar(20),    -- COD hay Onl...
+    payment      VARCHAR(20),    -- COD hay Onl...
     FOREIGN KEY (user_id) REFERENCES useraccount (user_id)
 );
 
