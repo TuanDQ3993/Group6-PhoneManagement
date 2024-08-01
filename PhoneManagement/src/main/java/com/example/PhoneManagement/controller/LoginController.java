@@ -70,8 +70,6 @@ public class LoginController {
                 return "redirect:/admin/products";
             } else if (user.getRole().getRoleName().equals("SALER")) {
                 return "redirect:/saler/dashboard";
-            } else if (user.getRole().getRoleName().equals("WAREHOUSE STAFF")) {
-                return "redirect:/warehouse/dashboard";
             } else if (user.getRole().getRoleName().equals("TECHNICAL STAFF")) {
                 return "redirect:/technical/dashboard";
             }

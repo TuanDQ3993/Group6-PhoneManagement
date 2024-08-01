@@ -35,6 +35,21 @@ public class Orders {
     @Column(name="status",length = 50)
     String status;
 
+    @Column(name = "note", length = 250)
+    String note;
+
+    @Column(name = "receiver", length = 50)
+    String receiver;
+
+    @Column(name = "address", length = 250)
+    String address;
+
+    @Column(name = "phone_number", length = 50)
+    String phoneNumber;
+
+    @Column(name = "payment", length = 20)
+    String payment;
+
     @ManyToOne
     @JoinColumn(name="user_id")
     Users user;
