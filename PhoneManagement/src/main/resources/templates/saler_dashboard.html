@@ -279,7 +279,7 @@
                                             <td th:text="${product.productId}"></td>
                                             <td class="d-none d-xl-table-cell" th:text="${product.productName}"></td>
                                             <td class="d-none d-xl-table-cell">
-                                                <img th:src="${product.image}" alt="Product Image">
+                                                <img th:src="@{/uploads/{image}(image=${product.image})}" alt="Product Image">
                                             </td>
                                             <td class="d-none d-md-table-cell" th:text="${product.quantitySold}"></td>
                                         </tr>

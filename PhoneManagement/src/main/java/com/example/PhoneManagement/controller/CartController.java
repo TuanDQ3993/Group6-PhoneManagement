@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -109,8 +111,7 @@ public class CartController {
             model.addAttribute("cart", cart);
             model.addAttribute("size", cart.getItems().size());
             model.addAttribute("total", cart.getTotalPrice());
-        }
-        else {
+        } else {
             model.addAttribute("size", 0);
             model.addAttribute("total", 0.0);
         }
@@ -183,20 +184,85 @@ public class CartController {
                              @RequestParam("tel") String tel,
                              @RequestParam("note") String note,
                              @RequestParam("payment") String payment,
-                             HttpSession session,Principal principal) {
+                             HttpSession session, Principal principal,
+                             RedirectAttributes redirectAttributes) {
 
         Cart cart = (Cart) session.getAttribute("cart");
-        if(cart == null){
+        if (cart == null) {
             return "redirect:/home/homepage";
         }
+
+        if ("COD".equals(payment)) {
+            String userName = principal.getName();
+            Users users = userService.getUserByName(userName);
+            cartService.addOrder(users, cart, fullname, address, tel, note, payment);
+            return "redirect:/cart/ordersuccess";
+        } else if ("QR".equals(payment)) {
+            redirectAttributes.addAttribute("fullname", fullname);
+            redirectAttributes.addAttribute("address", address);
+            redirectAttributes.addAttribute("tel", tel);
+            redirectAttributes.addAttribute("note", note);
+            return "redirect:/cart/orderonline";
+        }
+
+        return "redirect:/home/homepage";
+    }
+
+    @GetMapping("orderonline")
+    public String orderOnline(Principal principal, Model model, HttpSession session,
+                              @RequestParam("fullname") String fullname,
+                              @RequestParam("address") String address,
+                              @RequestParam("tel") String tel,
+                              @RequestParam("note") String note) {
+
         String userName = principal.getName();
-        Users users=userService.getUserByName(userName);
-        cartService.addOrder(users,cart,fullname,address,tel,note,payment);
+        Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
+        userDTO.ifPresent(user -> model.addAttribute("user", user));
+        String name=userDTO.get().getFullName();
+
+        Cart cart = (Cart) session.getAttribute("cart");
+        String bankId = "BIDV"; // Mã ngân hàng
+        String accountNo = "5101976013"; // Số tài khoản
+        String template = "compact2.jpg"; // Tệp mẫu
+        long amount = (long) cart.getTotalPrice(); // Số tiền
+        String description = name + " mua hàng"; // Thông tin thêm
+        String accountName = "Hoang Phi Hong"; // Tên tài khoản
+
+        // Tạo URL QR Code
+        String qrCodeUrl = String.format(
+                "https://img.vietqr.io/image/%s-%s-%s?amount=%d&addInfo=%s&accountName=%s",
+                bankId, accountNo, template,
+                amount,
+                java.net.URLEncoder.encode(description, StandardCharsets.UTF_8),
+                java.net.URLEncoder.encode(accountName, StandardCharsets.UTF_8)
+        );
+        model.addAttribute("cart", cart);
+        model.addAttribute("size", cart.getItems().size());
+        model.addAttribute("total", cart.getTotalPrice());
+        model.addAttribute("qrCodeUrl", qrCodeUrl);
+        model.addAttribute("fullname", fullname);
+        model.addAttribute("address", address);
+        model.addAttribute("tel", tel);
+        model.addAttribute("note", note);
+        return "qrcode";
+    }
+
+    @PostMapping("onlinesuccess")
+    public String onlineSuccess(@RequestParam("fullname") String fullname,
+                             @RequestParam("address") String address,
+                             @RequestParam("tel") String tel,
+                             @RequestParam("note") String note,
+                             HttpSession session, Principal principal){
+        Cart cart = (Cart) session.getAttribute("cart");
+        String userName = principal.getName();
+        Users users = userService.getUserByName(userName);
+        cartService.addOrder(users, cart, fullname, address, tel, note,"Online");
         return "redirect:/cart/ordersuccess";
     }
 
+
     @GetMapping("ordersuccess")
-    public String orderSuccess(HttpSession session,Principal principal,Model model){
+    public String orderSuccess(HttpSession session, Principal principal, Model model) {
 
         if (principal != null) {
             String userName = principal.getName();
@@ -205,12 +271,12 @@ public class CartController {
         }
 
         Cart cart = (Cart) session.getAttribute("cart");
-        List<Item> listi= cart.getItems();
+        List<Item> listi = cart.getItems();
 
-        model.addAttribute("listi",listi);
-        model.addAttribute("totalsuccess",cart.getTotalPrice());
-        model.addAttribute("size",0);
-        model.addAttribute("total",0.0);
+        model.addAttribute("listi", listi);
+        model.addAttribute("totalsuccess", cart.getTotalPrice());
+        model.addAttribute("size", 0);
+        model.addAttribute("total", 0.0);
 
         session.removeAttribute("cart");
         return "ordersuccess";
