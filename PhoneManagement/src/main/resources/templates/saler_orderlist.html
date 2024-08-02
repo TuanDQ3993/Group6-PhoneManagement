@@ -224,7 +224,7 @@
                                         </td>
                                         <td>
                                             <img style="width: 38%;"
-                                                 th:src="${order.image}">
+                                                 th:src="@{/uploads/{image}(image=${order.image})}"  >
                                         </td>
                                         <td class="project_progress">
                                             <p th:text="${order.totalAmount}"></p>
