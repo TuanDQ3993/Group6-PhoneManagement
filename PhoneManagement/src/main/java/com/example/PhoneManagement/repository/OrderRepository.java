@@ -32,13 +32,6 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             nativeQuery = true)
     List<Object[]> findOrderedOrders();
 
-    @Query(value = "SELECT o.total_amount, o.order_date, ua.address, ua.fullname, ua.phone_number " +
-            "FROM orders o " +
-            "JOIN useraccount ua ON ua.user_id = o.user_id " +
-            "WHERE o.order_id = :orderId", nativeQuery = true)
-    List<Object[]> findOrderInfo(@Param("orderId") Integer orderId);
-
-
     long countByOrderDateBetween(Date startDate, Date endDate);
 
     long countByOrderDateBetweenAndStatus(Date startDate, Date endDate, String status);

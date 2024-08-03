@@ -38,14 +38,14 @@ public class CartServiceImp implements CartService {
 
 
     @Override
-    public void addOrder(Users user, Cart cart, String name, String address, String tel, String note, String payment) {
+    public void addOrder(Users user, Cart cart, String name, String address, String tel, String note, String payment,String status) {
 
         var order = Orders.builder()
                 .user(user)
                 .salerId(2)
                 .orderDate(new Date())
                 .totalAmount(BigDecimal.valueOf(cart.getTotalPrice()))
-                .status("Pending Confirmation")
+                .status(status)
                 .note(note)
                 .receiver(name)
                 .address(address)

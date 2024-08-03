@@ -33,6 +33,12 @@
             color: yellowgreen;
         }
 
+        .text-prepay {
+            color: #00ccff;
+        }
+
+
+
     </style>
 </head>
 
@@ -169,6 +175,7 @@
                             <label for="status">Status:</label>
                             <select name="status" id="status" class="form-control">
                                 <option value="">All</option>
+                                <option value="Prepay" th:selected="${status eq 'Prepay'}">Prepay</option>
                                 <option value="Pending Confirmation" th:selected="${status eq 'Pending Confirmation'}">
                                     Pending Confirmation
                                 </option>
@@ -177,6 +184,7 @@
                                 </option>
                                 <option value="Completed" th:selected="${status eq 'Completed'}">Completed</option>
                                 <option value="Cancelled" th:selected="${status eq 'Cancelled'}">Cancelled</option>
+
 
                             </select>
                         </div>
@@ -239,7 +247,8 @@
                                             <p th:text="${order.status}"
                                                th:class="${order.status == 'Completed' ? 'text-complete' :
                                                            order.status == 'Cancelled' ? 'text-cancelled' :
-                                                            order.status == 'Confirm and Shipping' ? 'text-confirm':''} "></p>
+                                                            order.status == 'Confirm and Shipping' ? 'text-confirm':
+                                                            order.status == 'Prepay' ? 'text-prepay':'' } "></p>
                                         </td>
                                         <td>
                                             <th:block th:if="${order.status == 'Pending Confirmation'}">
@@ -250,6 +259,13 @@
                                             </th:block>
 
                                             <th:block th:if="${order.status == 'Confirm and Shipping'}">
+                                                <a class="button green"
+                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=1)}">Completed</a>
+                                                <a class="button red"
+                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
+                                            </th:block>
+
+                                            <th:block th:if="${order.status == 'Prepay'}">
                                                 <a class="button green"
                                                    th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=1)}">Completed</a>
                                                 <a class="button red"
