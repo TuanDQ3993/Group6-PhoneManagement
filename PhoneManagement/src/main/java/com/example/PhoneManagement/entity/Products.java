@@ -33,8 +33,6 @@ public class Products {
     @Column(name = "quantity")
     int quantity;
 
-
-
     @Column(name="warranty_period")
     int warrantyPeriod;
 

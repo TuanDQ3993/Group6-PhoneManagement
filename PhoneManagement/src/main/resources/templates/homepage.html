@@ -316,16 +316,20 @@
                                     <div class="product-body" style="width: 100%; height: 167.74px">
                                         <p class="product-category" th:text="${product.category.categoryName}">
                                             Category</p>
-                                        <h3 class="product-name"><a href="#" th:text="${product.productName}">Product
-                                            Name</a></h3>
-                                        <h4 class="product-price" th:text="${product.productInfoList[0].price}">Price</h4>
-                                        <div class="product-btns">
-                                            <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span>
-                                            </button>
-                                        </div>
+                                        <h3 class="product-name"><a th:href="@{/home/detail/{productId}/{productColorId}
+                                                (productId=${product.productId}, productColorId=${product.productInfoList[0].productcolorId})}"
+                                                                    th:text="${product.productName}">Product Name</a>
+                                        </h3>
+                                        <h4 class="product-price" th:text="${'$' + product.productInfoList[0].price}">
+                                            Price</h4>
                                     </div>
                                     <div class="add-to-cart">
-                                        <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart
+                                        <button class="add-to-cart-btn">
+                                            <a th:href="@{/home/detail/{productId}/{productColorId}
+                                                (productId=${product.productId}, productColorId=${product.productInfoList[0].productcolorId})}">
+                                                <i class="fa fa-shopping-cart"></i>
+                                                Buy Now
+                                            </a>
                                         </button>
                                     </div>
                                 </div>
@@ -435,16 +439,20 @@
                                     <div class="product-body" style="width: 100%; height: 167.74px">
                                         <p class="product-category" th:text="${product.category.categoryName}">
                                             Category</p>
-                                        <h3 class="product-name"><a href="#" th:text="${product.productName}">Product
-                                            Name</a></h3>
-                                        <h4 class="product-price" th:text="${product.productInfoList[0].price}">Price</h4>
-                                        <div class="product-btns">
-                                            <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span>
-                                            </button>
-                                        </div>
+                                        <h3 class="product-name"><a th:href="@{/home/detail/{productId}/{productColorId}
+                                                (productId=${product.productId}, productColorId=${product.productInfoList[0].productcolorId})}"
+                                                                    th:text="${product.productName}">Product Name</a>
+                                        </h3>
+                                        <h4 class="product-price" th:text="${'$' + product.productInfoList[0].price}">
+                                            Price</h4>
                                     </div>
                                     <div class="add-to-cart">
-                                        <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart
+                                        <button class="add-to-cart-btn">
+                                            <a th:href="@{/home/detail/{productId}/{productColorId}
+                                                (productId=${product.productId}, productColorId=${product.productInfoList[0].productcolorId})}">
+                                            <i class="fa fa-shopping-cart"></i>
+                                            Buy Now
+                                            </a>
                                         </button>
                                     </div>
                                 </div>
