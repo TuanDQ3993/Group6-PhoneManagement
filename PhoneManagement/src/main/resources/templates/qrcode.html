@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -34,42 +34,57 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+<style>
+    /* Hide the dropdown menu by default */
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        min-width: 160px;
+        padding: 12px 16px;
+    }
 
-    <style>
-        /* Hide the dropdown menu by default */
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            background-color: white;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-            min-width: 160px;
-            padding: 12px 16px;
-        }
+    /* Show the dropdown menu when the parent has the class 'show' */
+    .nav-item.dropdown.show .dropdown-menu {
+        display: block;
+    }
 
-        /* Show the dropdown menu when the parent has the class 'show' */
-        .nav-item.dropdown.show .dropdown-menu {
-            display: block;
-        }
+    .dropdown-item {
+        padding: 8px 16px;
+        text-decoration: none;
+        display: block;
+        color: black;
+    }
 
-        .dropdown-item {
-            padding: 8px 16px;
-            text-decoration: none;
-            display: block;
-            color: black;
-        }
+    .dropdown-item:hover {
+        background-color: #f1f1f1;
+    }
 
-        .dropdown-item:hover {
-            background-color: #f1f1f1;
-        }
+    .dropdown-divider {
+        height: 1px;
+        margin: 8px 0;
+        overflow: hidden;
+        background-color: #e9ecef;
+    }
 
-        .dropdown-divider {
-            height: 1px;
-            margin: 8px 0;
-            overflow: hidden;
-            background-color: #e9ecef;
-        }
-    </style>
+    .qr-code img {
+        width: 100%;
+        max-width: 450px;
+    }
+    .text-center {
+         text-align: center;
+     }
+
+    .order-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Căn giữa các phần tử con theo chiều ngang */
+    }
+
+
+</style>
 
 </head>
 <body>
@@ -213,178 +228,130 @@
 </nav>
 <!-- /NAVIGATION -->
 
-<!-- SECTION -->
-<div class="section">
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
     <!-- container -->
     <div class="container">
         <!-- row -->
         <div class="row">
-            <!-- shop -->
-            <div class="col-md-4 col-xs-6">
-                <div class="shop">
-                    <div class="shop-img">
-                        <img src="/build1/img/shop01.png" alt="">
-                    </div>
-                    <div class="shop-body">
-                        <h3>Laptop<br>Collection</h3>
-                        <a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
+            <div class="col-md-12">
+                <h3 class="breadcrumb-header">Checkout</h3>
+                <ul class="breadcrumb-tree">
+                    <li><a href="#">Home</a></li>
+                    <li class="active">Checkout</li>
+                </ul>
             </div>
-            <!-- /shop -->
-
-            <!-- shop -->
-            <div class="col-md-4 col-xs-6">
-                <div class="shop">
-                    <div class="shop-img">
-                        <img src="/build1/img/shop03.png" alt="">
-                    </div>
-                    <div class="shop-body">
-                        <h3>Accessories<br>Collection</h3>
-                        <a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-            </div>
-            <!-- /shop -->
-
-            <!-- shop -->
-            <div class="col-md-4 col-xs-6">
-                <div class="shop">
-                    <div class="shop-img">
-                        <img src="/build1/img/shop02.png" alt="">
-                    </div>
-                    <div class="shop-body">
-                        <h3>Cameras<br>Collection</h3>
-                        <a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-            </div>
-            <!-- /shop -->
         </div>
         <!-- /row -->
     </div>
     <!-- /container -->
 </div>
-<!-- /SECTION -->
+<!-- /BREADCRUMB -->
 
 <!-- SECTION -->
+<!-- Shopping Cart Section Begin -->
+
 <div class="section">
     <!-- container -->
     <div class="container">
         <!-- row -->
-        <div class="row">
+        <form  action="/cart/onlinesuccess" method="POST">
+            <div class="row">
 
-            <!-- section title -->
-            <div class="col-md-12">
-                <div class="section-title">
-                    <h3 class="title">New Products</h3>
-                    <div class="section-nav">
-                        <ul class="section-tab-nav tab-nav">
-                            <li th:each="category : ${categories}">
-                                <a th:href="@{/home/homepage(categoryId=${category.categoryId})}"
-                                   th:text="${category.categoryName}"
-                                   th:class="${category.categoryId == selectedCategoryId} ? 'active' : ''"></a>
-                            </li>
-                        </ul>
+                <div class="col-md-7">
+                    <!-- QR -->
+                    <div class="qr-code">
+                        <img th:src="${qrCodeUrl}" alt="QR Code">
                     </div>
-                </div>
-            </div>
-            <!-- /section title -->
+                    <!-- QR -->
 
-            <!-- Products tab & slick -->
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="products-tabs">
-                        <!-- tab -->
-                        <div id="tab1" class="tab-pane active">
-                            <div class="products-slick" data-nav="#slick-nav-1">
-                                <!-- product -->
-                                <div class="product" th:each="product : ${products}"
-                                     style="width: 263px; height: 343.06px">
-                                    <div class="product-img" style="width: 100%; height: 175.33px">
-                                        <img th:src="@{/uploads/{image}(image=${product.productInfoList[0].image})}"
-                                             style="width: 100%; height: 100%" alt="Product Image">
+                    <!-- Order notes -->
 
-
-                                        <div class="product-label">
-                                            <span class="new">NEW</span>
-                                        </div>
-                                    </div>
-                                    <div class="product-body" style="width: 100%; height: 167.74px">
-                                        <p class="product-category" th:text="${product.category.categoryName}">
-                                            Category</p>
-                                        <h3 class="product-name"><a th:href="@{/home/detail/{productId}/{productColorId}
-                                                (productId=${product.productId}, productColorId=${product.productInfoList[0].productcolorId})}"
-                                                                    th:text="${product.productName}">Product Name</a>
-                                        </h3>
-                                        <h4 class="product-price" th:text="${'$' + product.productInfoList[0].price}">
-                                            Price</h4>
-                                    </div>
-                                    <div class="add-to-cart">
-                                        <button class="add-to-cart-btn">
-                                            <a th:href="@{/home/detail/{productId}/{productColorId}
-                                                (productId=${product.productId}, productColorId=${product.productInfoList[0].productcolorId})}">
-                                                <i class="fa fa-shopping-cart"></i>
-                                                Buy Now
-                                            </a>
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- /product -->
-
-
+                    <!-- /Order notes -->
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="continue__btn">
+                                <a href="/cart/viewcart">Change Cart</a>
                             </div>
-                            <div id="slick-nav-1" class="products-slick-nav"></div>
                         </div>
-                        <!-- /tab -->
                     </div>
                 </div>
+
+                <!-- Order Details -->
+                <div class="col-md-5 order-details">
+                    <div class="section-title text-center">
+                        <h3 class="title">Your Order</h3>
+                    </div>
+                    <div class="order-summary">
+                        <div class="order-col">
+                            <div><strong>PRODUCT</strong></div>
+                            <div><strong>TOTAL</strong></div>
+                        </div>
+                        <th:block th:if="${cart != null}">
+                            <div th:each="item : ${cart.items}" class="order-products">
+                                <div class="order-col">
+                                    <div th:text="'x'+${item.quantity} +'  '+${item.productColor.products.productName}">1x Product Name Goes Here</div>
+                                    <div th:text="${item.price}">$980.00</div>
+                                </div>
+                            </div>
+                        </th:block>
+
+                        <div class="order-col">
+                            <div>Shipping</div>
+                            <div><strong>FREE</strong></div>
+                        </div>
+                        <div class="order-col">
+                            <div><strong>TOTAL</strong></div>
+                            <div><strong class="order-total" th:text="${total}">$2940.00</strong></div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="fullname" th:value="${fullname}">
+                    <input type="hidden" name="address" th:value="${address}">
+                    <input type="hidden" name="tel" th:value="${tel}">
+                    <input type="hidden" name="note" th:value="${note}">
+                    <div class="text-center">
+                        <input class="primary-btn order-submit" type="submit" value="Money Transferred Successfully">
+                    </div>
+
+                </div>
             </div>
-            <!-- Products tab & slick -->
-        </div>
-        <!-- /row -->
+        </form>
+        <!-- /Order Details -->
     </div>
-    <!-- /container -->
+    <!-- /row -->
 </div>
+<!-- /container -->
+</div>
+<!-- Shopping Cart Section End -->
 <!-- /SECTION -->
 
-<!-- HOT DEAL SECTION -->
-<div id="hot-deal" class="section">
+<!-- NEWSLETTER -->
+<div id="newsletter" class="section">
     <!-- container -->
     <div class="container">
         <!-- row -->
         <div class="row">
             <div class="col-md-12">
-                <div class="hot-deal">
-                    <ul class="hot-deal-countdown">
+                <div class="newsletter">
+                    <p>Sign Up for the <strong>NEWSLETTER</strong></p>
+                    <form>
+                        <input class="input" type="email" placeholder="Enter Your Email">
+                        <button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
+                    </form>
+                    <ul class="newsletter-follow">
                         <li>
-                            <div>
-                                <h3>02</h3>
-                                <span>Days</span>
-                            </div>
+                            <a href="#"><i class="fa fa-facebook"></i></a>
                         </li>
                         <li>
-                            <div>
-                                <h3>10</h3>
-                                <span>Hours</span>
-                            </div>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
                         </li>
                         <li>
-                            <div>
-                                <h3>34</h3>
-                                <span>Mins</span>
-                            </div>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
                         </li>
                         <li>
-                            <div>
-                                <h3>60</h3>
-                                <span>Secs</span>
-                            </div>
+                            <a href="#"><i class="fa fa-pinterest"></i></a>
                         </li>
                     </ul>
-                    <h2 class="text-uppercase">hot deal this week</h2>
-                    <p>New Collection Up to 50% OFF</p>
-                    <a class="primary-btn cta-btn" href="#">Shop now</a>
                 </div>
             </div>
         </div>
@@ -392,84 +359,7 @@
     </div>
     <!-- /container -->
 </div>
-<!-- /HOT DEAL SECTION -->
-
-<!-- SECTION -->
-<div class="section">
-    <!-- container -->
-    <div class="container">
-        <!-- row -->
-        <div class="row">
-
-            <!-- section title -->
-            <div class="col-md-12">
-                <div class="section-title">
-                    <h3 class="title">Top selling</h3>
-                    <div class="section-nav">
-                        <ul class="section-tab-nav tab-nav">
-                            <li th:each="category : ${categories}">
-                                <a th:href="@{/home/homepage(categoryIdTS=${category.categoryId})}"
-                                   th:text="${category.categoryName}"
-                                   th:class="${category.categoryId == selectedCategoryIdTS} ? 'active' : ''"></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- /section title -->
-
-            <!-- Products tab & slick -->
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="products-tabs">
-                        <!-- tab -->
-                        <div id="tab2" class="tab-pane fade in active">
-                            <div class="products-slick" data-nav="#slick-nav-2">
-                                <!-- product -->
-                                <div class="product" th:each="product : ${productTS}"
-                                     style="width: 263px; height: 343.06px">
-                                    <div class="product-img" style="width: 100%; height: 175.33px">
-                                        <img th:src="@{/uploads/{image}(image=${product.productInfoList[0].image})}"
-                                             style="width: 100%; height: 100%"
-                                             alt="Product Image">
-                                    </div>
-                                    <div class="product-body" style="width: 100%; height: 167.74px">
-                                        <p class="product-category" th:text="${product.category.categoryName}">
-                                            Category</p>
-                                        <h3 class="product-name"><a th:href="@{/home/detail/{productId}/{productColorId}
-                                                (productId=${product.productId}, productColorId=${product.productInfoList[0].productcolorId})}"
-                                                                    th:text="${product.productName}">Product Name</a>
-                                        </h3>
-                                        <h4 class="product-price" th:text="${'$' + product.productInfoList[0].price}">
-                                            Price</h4>
-                                    </div>
-                                    <div class="add-to-cart">
-                                        <button class="add-to-cart-btn">
-                                            <a th:href="@{/home/detail/{productId}/{productColorId}
-                                                (productId=${product.productId}, productColorId=${product.productInfoList[0].productcolorId})}">
-                                            <i class="fa fa-shopping-cart"></i>
-                                            Buy Now
-                                            </a>
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- /product -->
-
-                            </div>
-                            <div id="slick-nav-2" class="products-slick-nav"></div>
-                        </div>
-                        <!-- /tab -->
-                    </div>
-                </div>
-            </div>
-            <!-- /Products tab & slick -->
-        </div>
-        <!-- /row -->
-    </div>
-    <!-- /container -->
-</div>
-<!-- /SECTION -->
-
+<!-- /NEWSLETTER -->
 
 <!-- FOOTER -->
 <footer id="footer">

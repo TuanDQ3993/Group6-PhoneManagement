@@ -8,6 +8,8 @@ import com.example.PhoneManagement.service.UserServiceImp;
 import com.example.PhoneManagement.service.imp.CategoryService;
 import com.example.PhoneManagement.service.imp.ProductService;
 import com.example.PhoneManagement.service.imp.UserService;
+import com.example.PhoneManagement.util.Cart;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +36,7 @@ public class HomepageController {
     @GetMapping("/homepage")
     public String homepage(@RequestParam(value = "categoryId", required = false) Integer categoryId,
                            @RequestParam(value = "categoryIdTS", required = false) Integer categoryIdTS,
-                           Model model, Principal principal) {
+                           Model model, Principal principal, HttpSession session) {
         List<Category> categories = categoryService.findAllCategory();
         List<Products> products;
         List<Products> productTS;
@@ -56,6 +58,16 @@ public class HomepageController {
             String userName = principal.getName();
             Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
             userDTO.ifPresent(user -> model.addAttribute("user", user));
+        }
+
+        Cart cart = (Cart) session.getAttribute("cart");
+        if (cart != null) {
+            model.addAttribute("cart", cart);
+            model.addAttribute("size", cart.getItems().size());
+            model.addAttribute("total", cart.getTotalPrice());
+        } else {
+            model.addAttribute("size", 0);
+            model.addAttribute("total", 0.0);
         }
 
 
