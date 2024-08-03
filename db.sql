@@ -62,6 +62,7 @@ CREATE TABLE productinfo
     quantity         INT,
     price           DECIMAL(10, 2) NOT NULL,
     last_updated     DATETIME DEFAULT CURRENT_TIMESTAMP,
+     isdeleted 		BIT,
 --     PRIMARY KEY (product_id, color_id),
     FOREIGN KEY (product_id) REFERENCES products (product_id),
     FOREIGN KEY (color_id) REFERENCES color (color_id)
@@ -164,15 +165,15 @@ VALUES
 INSERT INTO color(color_name)
 VALUES('Xanh'),('Vàng'),('Đen'),('Hồng'),('Trắng');
 
-INSERT INTO productinfo (product_id, image, color_id, quantity, last_updated, price)
+INSERT INTO productinfo (product_id, image, color_id, quantity, last_updated, price, isdeleted)
 VALUES
-(1, 'iphone-15-pro-max-blue-1-1.jpg', 1, 55, '2023-07-29', 1999),
-(2,'samsung-galaxy-s23-ultra-1-1.jpg',3,55,'2023-07-23', 1199),
-(3,'sony-xperia-1-iv-1-600x600.jpg',3,55,'2024-02-23', 1099),
-(4,'iphone-15-pro-max-blue-1-1.jpg', 2, 55, '2023-03-29', 1499),
-(5,'samsung-galaxy-z-fold-3-silver-1-600x600.jpg',4,55,'2023-03-29', 1799),
-(6,'2023_3_7_638138235534641283_iphone-14-vang-1.jpg',2,44,'2023-03-21', 1299),
-(7,'dell-xps-13-9310-i7-jgnh61-2-org.jpg',3,54, '2023-05-12', 1499),
-(8,'macbook-air-15-inch-m2-2023-70w-1.jpg',5, 89, '2023-07-21', 1299),
-(9, 'tai-nghe-bluetooth-airpods-pro-2nd-gen-usb-c-charge-apple-1.jpg',5,91,'2023-08-12', 249),
-(10, 'pdp_wh-1000xm4.jpg', 3, 43, '2024-01-29', 349);
+(1, 'iphone-15-pro-max-blue-1-1.jpg', 1, 55, '2023-07-29', 1999,1),
+(2,'samsung-galaxy-s23-ultra-1-1.jpg',3,55,'2023-07-23', 1199,1),
+(3,'sony-xperia-1-iv-1-600x600.jpg',3,55,'2024-02-23', 1099,1),
+(4,'iphone-15-pro-max-blue-1-1.jpg', 2, 55, '2023-03-29', 1499,1),
+(5,'samsung-galaxy-z-fold-3-silver-1-600x600.jpg',4,55,'2023-03-29', 1799,1),
+(6,'2023_3_7_638138235534641283_iphone-14-vang-1.jpg',2,44,'2023-03-21', 1299,1),
+(7,'dell-xps-13-9310-i7-jgnh61-2-org.jpg',3,54, '2023-05-12', 1499,1),
+(8,'macbook-air-15-inch-m2-2023-70w-1.jpg',5, 89, '2023-07-21', 1299,1),
+(9, 'tai-nghe-bluetooth-airpods-pro-2nd-gen-usb-c-charge-apple-1.jpg',5,91,'2023-08-12', 249,1),
+(10, 'pdp_wh-1000xm4.jpg', 3, 43, '2024-01-29', 349,1);
