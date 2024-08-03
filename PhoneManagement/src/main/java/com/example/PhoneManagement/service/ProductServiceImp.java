@@ -132,6 +132,7 @@ public class ProductServiceImp implements ProductService {
             List<Integer> quantity = new ArrayList<>();
             List<Integer> proColorId = new ArrayList<>();
             List<BigDecimal> price=new ArrayList<>();
+            List<Boolean> isDeleted=new ArrayList<>();
 
             productViewRequest.setProductId(products.getProductId());
             productViewRequest.setProductName(products.getProductName());
@@ -144,6 +145,7 @@ public class ProductServiceImp implements ProductService {
                 colorName.add(productInfo.getColors().getColorName());
                 quantity.add(productInfo.getQuantity());
                 price.add(productInfo.getPrice());
+                isDeleted.add(productInfo.isDeleted());
             }
 
             productViewRequest.setProColorId(proColorId);
@@ -153,6 +155,7 @@ public class ProductServiceImp implements ProductService {
             productViewRequest.setDescription(products.getDescription());
             productViewRequest.setQuantity(quantity);
             productViewRequest.setPrice(price);
+            productViewRequest.setIsDeleted(isDeleted);
             productViewRequest.setWarrantyPeriod(products.getWarrantyPeriod());
             productViewRequest.setCreatedAt(products.getCreatedAt());
 
@@ -254,6 +257,7 @@ public class ProductServiceImp implements ProductService {
         }
     }
 
+    @Override
     public Page<ProductDTO> findPaginated(Pageable pageable, Integer categoryId, String name) {
         try {
             Page<Products> productPage;
@@ -303,8 +307,8 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<ProductInfo> findAllProductColor(){
-        return productColorRepository.findAll();
+    public ProductInfo getProductColorById(int proId){
+        return productColorRepository.findById(proId).orElseThrow(()-> new RuntimeException("Product not exist"));
     }
 
     @Override
@@ -313,5 +317,15 @@ public class ProductServiceImp implements ProductService {
                 .stream()
                 .map(product -> new ProductDTO(product.getProductId(), product.getProductName()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void isDeletedProduct(int proId) {
+        ProductInfo productInfo=productColorRepository.findById(proId).orElseThrow(()-> new RuntimeException(""));
+        if(productInfo.isDeleted()){
+            productInfo.setDeleted(false);
+        }
+        else productInfo.setDeleted(true);
+        productColorRepository.save(productInfo);
     }
 }

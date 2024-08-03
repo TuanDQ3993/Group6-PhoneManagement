@@ -2,6 +2,7 @@
 package com.example.PhoneManagement.controller;
 
 import com.example.PhoneManagement.dto.request.*;
+import com.example.PhoneManagement.entity.ProductInfo;
 import com.example.PhoneManagement.service.CategoryServiceImp;
 import com.example.PhoneManagement.service.ColorServiceImp;
 import com.example.PhoneManagement.service.FileStorageServiceImpl;
@@ -125,7 +126,13 @@ public class ProductController {
             }
         }
 
-        String fileImage = null;
+        ProductInfo existingProductColor = productService.getProductColorById(proColorId);
+        if (existingProductColor == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Product color not found.");
+            return "redirect:/admin/products/" + productId;
+        }
+
+        String fileImage = existingProductColor.getImage();
         if (image != null && !image.isEmpty()) {
             try {
                 String fileName = StringUtils.cleanPath(image.getOriginalFilename());
@@ -153,6 +160,7 @@ public class ProductController {
             redirectAttributes.addFlashAttribute("errorMessage", "Invalid price format.");
             return "redirect:/admin/products/" + productId;
         }
+
         request.setPrice(gia);
         request.setQuantity(quantity);
 
@@ -223,7 +231,7 @@ public class ProductController {
 
     @PostMapping("/{productId}/delete")
     public String deleteProductColor(@RequestParam("proColorId")int proId, @PathVariable("productId") int productId){
-        productService.deleteProductColor(proId);
+        productService.isDeletedProduct(proId);
         return "redirect:/admin/products/"+productId;
     }
 
