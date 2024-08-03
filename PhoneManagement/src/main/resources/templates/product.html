@@ -336,7 +336,13 @@
                             </div>
                             <div id="quantity-error" class="quantity-error"></div>
                         </div>
-                        <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                        <th:block th:if="${user.roleName == 'USER'}">
+                            <form name="f" th:action="@{/cart/addtocart(productColorId=${selectedProductInfo.productcolorId})}" method="post">
+                                <button type="submit" class="add-to-cart-btn">
+                                    <i class="fa fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </form>
+                        </th:block>
                     </div>
                     <ul class="product-links">
                         <li>Category:</li>
