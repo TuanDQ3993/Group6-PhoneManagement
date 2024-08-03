@@ -38,4 +38,11 @@ public interface ProductService {
     public List<Products> getTopSellingProduct();
 
     public List<Products> getTopSellingProductsByCategory(int categoryId);
+
+    public Products getProductById(int productId);
+
+    public ProductInfo getProductInfoById(int productColorId);
+
+    public List<Products> getRelatedProductByCategory(int categoryId);
+
 }

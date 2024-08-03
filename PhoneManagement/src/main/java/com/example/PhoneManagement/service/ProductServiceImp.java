@@ -41,6 +41,7 @@ public class ProductServiceImp implements ProductService {
     ProductColorRepository productColorRepository;
     FileStorageServiceImpl fileStorageService;
     OrderDetailRepository orderDetailRepository;
+    ProductInfoRepository productInfoRepository;
 
     @Override
     public void saveProduct(ProductDTO productDTO) {
@@ -318,4 +319,19 @@ public class ProductServiceImp implements ProductService {
         return orderDetailRepository.findTopSellingByCategory(categoryId, pageable).getContent();
     }
 
+    @Override
+    public Products getProductById(int productId) {
+        return productRepository.findById(productId).orElse(null);
+    }
+
+    @Override
+    public ProductInfo getProductInfoById(int productColorId) {
+        return productInfoRepository.findById(productColorId).orElse(null);
+    }
+
+    @Override
+    public List<Products> getRelatedProductByCategory(int categoryId) {
+        Pageable pageable = PageRequest.of(0, 4);
+        return productInfoRepository.findTop4ByCategoryIdOrderByCreatedAtDesc(categoryId, pageable).getContent();
+    }
 }
