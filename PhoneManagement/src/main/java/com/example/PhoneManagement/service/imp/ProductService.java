@@ -24,9 +24,11 @@ public interface ProductService {
 
     String uploadFile(MultipartFile file);
 
-    List<ProductInfo> findAllProductColor();
+    ProductInfo getProductColorById(int proId);
 
     Page<ProductDTO> findPaginated(Pageable pageable, Integer categoryId, String name);
 
     List<ProductDTO> findAllProduct();
+
+    void isDeletedProduct(int proId);
 }

@@ -13,10 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -29,7 +26,7 @@ import java.util.stream.IntStream;
 @Controller
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/user")
+@RequestMapping("/home")
 public class OrderController {
     OrderService orderService;
     UserService userService;
@@ -41,6 +38,9 @@ public class OrderController {
             @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "search", required = false) String searchQuery,
             Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/auth/login";
+        }
         String userName = principal.getName();
         Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
         if (status == null || status.equals("all")) {
@@ -72,6 +72,12 @@ public class OrderController {
                 .collect(Collectors.groupingBy(order -> (Integer) order[0]));
         model.addAttribute("orderdetail",groupedOrders);
         return "orderdetailuser";
+    }
+
+    @PostMapping("/order")
+    public String updateStatusOrder(@RequestParam("orderId") int oderId){
+        orderService.changeStatusOrder(oderId,"Canceled");
+        return "redirect:/home/order";
     }
 
 }
