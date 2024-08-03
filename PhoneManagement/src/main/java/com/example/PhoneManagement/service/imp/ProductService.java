@@ -1,6 +1,7 @@
 package com.example.PhoneManagement.service.imp;
 
 import com.example.PhoneManagement.dto.request.*;
+import com.example.PhoneManagement.entity.Colors;
 import com.example.PhoneManagement.entity.ProductInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,4 +32,6 @@ public interface ProductService {
     List<ProductDTO> findAllProduct();
 
     void isDeletedProduct(int proId);
+
+    List<Colors> findColorByProductId(int productId);
 }
