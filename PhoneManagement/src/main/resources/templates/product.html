@@ -325,25 +325,26 @@
                             </div>
                         </div>
                     </div>
-
+                    <form name="f" th:action="@{/cart/addtocart(productColorId=${selectedProductInfo.productcolorId})}" method="post">
                     <div class="add-to-cart">
                         <div class="qty-label">
                             Qty
                             <div class="input-number">
-                                <input id="quantity-input" type="number" min="1" value="1">
+                                <input id="quantity-input" name="number" type="number" min="1" value="1">
                                 <span class="qty-up" onclick="incrementQuantity()">+</span>
                                 <span class="qty-down" onclick="decrementQuantity()">-</span>
                             </div>
                             <div id="quantity-error" class="quantity-error"></div>
                         </div>
                         <th:block th:if="${user.roleName == 'USER'}">
-                            <form name="f" th:action="@{/cart/addtocart(productColorId=${selectedProductInfo.productcolorId})}" method="post">
+
                                 <button type="submit" class="add-to-cart-btn">
                                     <i class="fa fa-shopping-cart"></i> Add to Cart
                                 </button>
-                            </form>
+
                         </th:block>
                     </div>
+                    </form>
                     <ul class="product-links">
                         <li>Category:</li>
                         <li><a href="#" th:text="${product.category.categoryName}">Category Name</a></li>

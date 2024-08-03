@@ -79,16 +79,8 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public OrderDetailInfoDTO getOrderInfo(int orderId) {
-        List<Object[]> results = orderRepository.findOrderInfo(orderId);
-        Object[] result = results.get(0);
-        OrderDetailInfoDTO dto = new OrderDetailInfoDTO();
-        dto.setTotalAmount(((Number) result[0]).doubleValue());
-        dto.setOrderDate((Date) result[1]);
-        dto.setAddress((String) result[2]);
-        dto.setCustomerName((String) result[3]);
-        dto.setPhoneNumber((String) result[4]);
-        return dto;
+    public Orders getOrderInfo(int orderId) {
+        return orderRepository.findById(orderId).get();
     }
 
     public LocalDate convertToLocalDate(Date date) {

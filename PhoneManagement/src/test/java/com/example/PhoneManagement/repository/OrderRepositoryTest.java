@@ -110,19 +110,6 @@ class OrderRepositoryTest {
         assertEquals(0, ((Number) orderedOrder[6]).intValue()); // countP
     }
 
-    @Test
-    void findOrderInfo() {
-        List<Object[]> orderInfo = orderRepository.findOrderInfo(1);
-        assertNotNull(orderInfo);
-        assertFalse(orderInfo.isEmpty());
-
-        Object[] info = orderInfo.get(0);
-        assertEquals(new BigDecimal("200.00"), info[0]);
-        assertNotNull(info[1]); // Kiểm tra ngày không null
-        assertEquals("Vinh Test", info[2]);
-        assertEquals("Quang Test", info[3]);
-        assertEquals("1234567890", info[4]);
-    }
 
     @Test
     void countByOrderDateBetween() throws ParseException {
