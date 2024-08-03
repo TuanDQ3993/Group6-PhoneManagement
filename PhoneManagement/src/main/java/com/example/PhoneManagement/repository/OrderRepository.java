@@ -23,7 +23,7 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             "FROM orders o " +
             "JOIN useraccount u ON o.user_id = u.user_id " +
             "JOIN orderdetail od ON o.order_id = od.order_id " +
-            "JOIN productcolor pc ON od.product_color_id = pc.product_color_id " +
+            "JOIN productinfo pc ON od.product_color_id = pc.product_color_id " +
             "JOIN products p ON pc.product_id = p.product_id) " +
             "SELECT OrderID, ProductName, Image, TotalAmount, OrderDate, Username, countP,Status,Saler " +
             "FROM OrderedOrders " +

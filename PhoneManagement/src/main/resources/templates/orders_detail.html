@@ -175,7 +175,7 @@
                                         </td>
                                         <td>
                                             <img style="width: 38%;"
-                                                 th:src="${orderdetail.image}">
+                                                 th:src="@{/uploads/{image}(image=${orderdetail.image})}">
                                         </td>
                                         <td class="project_progress">
                                             <p th:text="${orderdetail.price}"></p>
