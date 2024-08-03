@@ -217,14 +217,14 @@ public class ProductServiceImp implements ProductService {
         try{
             ProductInfo productInfo = new ProductInfo();
             Products products = productRepository.findById(request.getProId()).orElseThrow(() -> new RuntimeException("product not exist"));
-            Colors colors = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
-            ProductViewRequest productViewRequest=getProduct(productId);
-            boolean colorExists = productViewRequest.getColorId().stream()
-                    .anyMatch(color -> color== colors.getColorId());
+            Colors color = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
+            List<Colors> colors=findColorByProductId(productId);
+            for(Colors c:colors){
+                if(c.getColorId()==request.getColorId()) return;
+            }
             if(request.getQuantity()<0) return;
-            if(!colorExists) return;
             productInfo.setProducts(products);
-            productInfo.setColors(colors);
+            productInfo.setColors(color);
             productInfo.setImage(request.getImage());
             productInfo.setPrice(request.getPrice());
             productInfo.setQuantity(request.getQuantity());
@@ -327,5 +327,15 @@ public class ProductServiceImp implements ProductService {
         }
         else productInfo.setDeleted(true);
         productColorRepository.save(productInfo);
+    }
+
+    @Override
+    public List<Colors> findColorByProductId(int productId){
+        List<Colors> color=new ArrayList<>();
+        List<ProductInfo> productInfos=productColorRepository.findAll().stream().filter(p -> p.getProducts().getProductId()==productId).toList();
+        for(ProductInfo pro: productInfos){
+            color.add(pro.getColors());
+        }
+        return color;
     }
 }
