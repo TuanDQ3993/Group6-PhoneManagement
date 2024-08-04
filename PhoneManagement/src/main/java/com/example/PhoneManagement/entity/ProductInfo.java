@@ -51,6 +51,4 @@ public class ProductInfo {
     @OneToMany(mappedBy = "productInfo")
     private List<OrderDetail> orderDetailList;
 
-    @Column(name="isdeleted")
-    boolean isDeleted;
 }
