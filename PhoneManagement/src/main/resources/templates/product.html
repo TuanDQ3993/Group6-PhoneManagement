@@ -102,7 +102,7 @@
         }
 
         // Gọi hàm setupQuantityInput khi trang được tải
-        window.onload = function() {
+        window.onload = function () {
             setupQuantityInput();
         };
     </script>
@@ -360,26 +360,32 @@
 
                     <!--                    lay duoc cai stock cua product_color_id-->
                     <input type="hidden" id="stock-quantity" th:value="${stock}" readonly>
-
-                    <div class="add-to-cart" id="add-to-cart" style="display: flex">
-                        <div class="qty-label">
-                            Qty
-                            <div class="input-number">
-                                <input id="quantity-input" type="number" min="1" value="1">
-                                <span class="qty-up" onclick="incrementQuantity()">+</span>
-                                <span class="qty-down" onclick="decrementQuantity()">-</span>
+                    <form name="f"
+                          th:action="@{/cart/addtocart(productColorId=${selectedProductInfo.productcolorId})}"
+                          method="post">
+                        <div class="add-to-cart" id="add-to-cart" style="display: flex">
+                            <div class="qty-label">
+                                Qty
+                                <div class="input-number">
+                                    <input id="quantity-input" type="number" name="number" min="1" value="1">
+                                    <span class="qty-up" onclick="incrementQuantity()">+</span>
+                                    <span class="qty-down" onclick="decrementQuantity()">-</span>
+                                </div>
+                                <div id="quantity-error" class="quantity-error"></div>
+                                <div id="quantity-error1" class="quantity-error"></div>
                             </div>
-                            <div id="quantity-error" class="quantity-error"></div>
-                            <div id="quantity-error1" class="quantity-error"></div>
+
+
+                            <th:block>
+                                <button type="submit" class="add-to-cart-btn" id="add-to-cart-btn"
+                                        th:if="${user == null or user.roleName == 'USER'}"><i
+                                        class="fa fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </th:block>
+
+
                         </div>
-
-                            <form name="f"
-                                  th:action="@{/cart/addtocart(productColorId=${selectedProductInfo.productcolorId})}"
-                                  method="post">
-                                <th:block> <button type="submit" class="add-to-cart-btn" id="add-to-cart-btn" th:if="${user == null or user.roleName == 'USER'}"> <i class="fa fa-shopping-cart"></i> Add to Cart </button> </th:block>
-                            </form>
-
-                    </div>
+                    </form>
                     <ul class="product-links">
                         <li>Category:</li>
                         <li><a href="#" th:text="${product.category.categoryName}">Category Name</a></li>
