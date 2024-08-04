@@ -142,7 +142,7 @@ public class ProductController {
                     Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                 }
 
-                fileImage = "/uploads/" + fileName.toLowerCase();
+                fileImage =  fileName.toLowerCase();
             } catch (IOException e) {
                 e.printStackTrace();
             }
