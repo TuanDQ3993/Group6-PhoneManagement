@@ -2,6 +2,8 @@ package com.example.PhoneManagement.repository;
 
 import com.example.PhoneManagement.dto.request.OrderInfoDTO;
 import com.example.PhoneManagement.entity.Orders;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,7 +21,7 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             "ROW_NUMBER() OVER (PARTITION BY o.order_id ORDER BY od.order_detail_id) AS rn, " +
             "(SELECT COUNT(*) FROM orderdetail WHERE order_id = o.order_id) - 1 AS countP, " +
             "o.status AS Status," +
-            "o.saler_id AS Saler "+
+            "o.saler_id AS Saler " +
             "FROM orders o " +
             "JOIN useraccount u ON o.user_id = u.user_id " +
             "JOIN orderdetail od ON o.order_id = od.order_id " +
@@ -58,4 +60,34 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             "LIMIT 1",
             nativeQuery = true)
     int getSaleMinOrder();
+
+    @Query(value = "SELECT o1.orderId, p2.productName, c1.colorName, p1.image, p1.price, o1.totalAmount, o2.quantity, o1.orderDate, c2.categoryName, o1.status " +
+            "FROM Orders o1 " +
+            "JOIN orderdetail o2 ON o1.orderId = o2.order.orderId " +
+            "JOIN productinfo p1 ON o2.productInfo.productcolorId = p1.productcolorId " +
+            "JOIN Products p2 ON p1.products.productId = p2.productId " +
+            "JOIN Color c1 ON p1.colors.colorId = c1.colorId " +
+            "JOIN Category c2 ON c2.categoryId = p2.category.categoryId " +
+            "WHERE o1.user.userId = :userId " +
+            "AND (:status = 'all' OR o1.status = :status) " +
+            "AND (:searchTerm IS NULL OR LOWER(p2.productName) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) ")
+    Page<Object[]> findOrdersWithFiltersCategory(@Param("userId") int userId,
+                                                 @Param("status") String status,
+                                                 @Param("searchTerm") String searchTerm,
+                                                 Pageable pageable);
+
+    @Query(value = "SELECT o1.orderId, p2.productName, c1.colorName, p1.image, p1.price, o1.totalAmount, o2.quantity, o1.orderDate, c2.categoryName," +
+            "o1.receiver, o1.note, o1.address, o1.phoneNumber, o1.payment " +
+            "FROM Orders o1 " +
+            "JOIN orderdetail o2 ON o1.orderId = o2.order.orderId " +
+            "JOIN productinfo p1 ON o2.productInfo.productcolorId = p1.productcolorId " +
+            "JOIN Products p2 ON p1.products.productId = p2.productId " +
+            "JOIN Color c1 ON p1.colors.colorId = c1.colorId " +
+            "JOIN Category c2 ON c2.categoryId = p2.category.categoryId " +
+            "WHERE o1.orderId=:orderId ")
+    List<Object[]> findOrderDetail(@Param("orderId") int orderId);
+
+
+    @Query("SELECT COUNT(o) FROM Orders o WHERE o.user.userId = :userId")
+    int countOrdersByUserId(@Param("userId") int userId);
 }

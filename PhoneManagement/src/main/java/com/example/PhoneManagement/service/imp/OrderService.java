@@ -43,4 +43,10 @@ public interface OrderService {
 
     void backProduct(int id);
 
+    public Page<Object[]> getOrdersByUserIdWithFilters(UserDTO user, String status, String search, int page, int size);
+
+    public int countTotalOrders(UserDTO user);
+
+    public List<Object[]> findOrderDetail(int orderId);
+
 }

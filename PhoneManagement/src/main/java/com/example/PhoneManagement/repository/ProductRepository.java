@@ -19,7 +19,11 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     @Query(value = "select n from Products n")
     List<Products> getListProduct();
 
-    Page<Products> findByCategoryCategoryId(int categoryId, Pageable pageable);
+    Page<Products> findByCategoryCategoryId(Integer categoryId, Pageable pageable);
+    Page<Products> findByProductNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<Products> findByCategoryCategoryIdAndProductNameContainingIgnoreCase(Integer categoryId, String name, Pageable pageable);
+
+
 
     @Query("SELECT p FROM Products p ORDER BY p.createdAt DESC")
     Page<Products> findTop8ByOrderByCreatedAtDesc(Pageable pageable);

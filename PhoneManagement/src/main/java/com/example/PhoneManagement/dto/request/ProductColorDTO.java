@@ -19,6 +19,6 @@ import java.util.Date;
 public class ProductColorDTO {
     Integer colorId;
     Integer quantity;
-    BigDecimal price;
+    String price;
     MultipartFile image;
 }

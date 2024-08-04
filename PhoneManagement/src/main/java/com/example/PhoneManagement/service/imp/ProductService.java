@@ -1,6 +1,7 @@
 package com.example.PhoneManagement.service.imp;
 
 import com.example.PhoneManagement.dto.request.*;
+import com.example.PhoneManagement.entity.Colors;
 import com.example.PhoneManagement.entity.ProductInfo;
 import com.example.PhoneManagement.entity.Products;
 import org.springframework.data.domain.Page;
@@ -25,9 +26,9 @@ public interface ProductService {
 
     String uploadFile(MultipartFile file);
 
-    List<ProductInfo> findAllProductColor();
+    ProductInfo getProductColorById(int proId);
 
-    Page<ProductDTO> findPaginated(Pageable pageable, Integer categoryId);
+    Page<ProductDTO> findPaginated(Pageable pageable, Integer categoryId, String name);
 
     List<ProductDTO> findAllProduct();
 
@@ -44,5 +45,9 @@ public interface ProductService {
     public ProductInfo getProductInfoById(int productColorId);
 
     public List<Products> getRelatedProductByCategory(int categoryId);
+
+    void isDeletedProduct(int proId);
+
+    List<Colors> findColorByProductId(int productId);
 
 }

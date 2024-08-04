@@ -21,7 +21,8 @@ public class ProductViewRequest {
     List<Integer> colorId;
     List<String> colorName;
     List<String> image;
-    BigDecimal price;
+    List<BigDecimal> price;
+    List<Boolean> isDeleted;
     String brandName;
     String description;
     List<Integer> quantity;
