@@ -12,12 +12,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class WarrantyExcel {
+public class WarrantyExportExcel {
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
     private final List<WarrantyRepair> warrantyRepairList;
 
-    public WarrantyExcel(List<WarrantyRepair> warrantyRepairList) {
+    public WarrantyExportExcel(List<WarrantyRepair> warrantyRepairList) {
         this.warrantyRepairList = warrantyRepairList;
         this.workbook = new XSSFWorkbook();
     }
@@ -39,6 +39,7 @@ public class WarrantyExcel {
         createCell(row, 3, "Issues", style);
         createCell(row, 4, "Status", style);
         createCell(row, 5, "Repair Date", style);
+        createCell(row, 6, "Technical Name", style);
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -74,6 +75,7 @@ public class WarrantyExcel {
             createCell(row, columnCount++, warrantyRepair.getIssueDescription(), style);
             createCell(row, columnCount++, warrantyRepair.getStatus(), style);
             createCell(row, columnCount++, warrantyRepair.getRepairDate(), style);
+            createCell(row, columnCount++, warrantyRepair.getTechnical().getFullName(), style);
         }
     }
 

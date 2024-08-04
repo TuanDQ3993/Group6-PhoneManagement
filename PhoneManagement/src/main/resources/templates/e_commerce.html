@@ -199,7 +199,7 @@
                                                             </select>
                                                         </td>
                                                         <td style="width: 30%;">
-                                                            <span><img id="currentImage" style="width: 20%;" th:src="${product.image.get(i)}"/></span>
+                                                            <span><img id="currentImage" style="width: 20%;" th:src="@{/uploads/{image}(image=${product.image.get(i)})}"/></span>
                                                             <input type="file" class="form-control edit-input fileInput" name="image" style="display:none;"/>
                                                             <img id="preview" src="#" alt="Image Preview" style="display:none; width: 200px;"/>
                                                         </td>

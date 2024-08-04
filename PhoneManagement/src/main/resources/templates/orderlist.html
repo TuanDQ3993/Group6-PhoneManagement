@@ -204,7 +204,7 @@
                             <!-- Iterate over products in the current order -->
                             <div th:each="order : ${entry.value}" style="display: flex; border-bottom: 1px solid #eee; padding-bottom: 15px;">
                                 <!-- Check if image URL is present -->
-                                <img th:src="@{${order[3]}}" alt="Product Image" style="width: 100px; height: 100px; margin-right: 20px;"
+                                <img th:src="@{/uploads/{image}(image=${order[3]})}" alt="Product Image" style="width: 100px; height: 100px; margin-right: 20px;"
                                      th:if="${order[3] != null}">
                                 <div>
                                     <!-- Display product details safely -->

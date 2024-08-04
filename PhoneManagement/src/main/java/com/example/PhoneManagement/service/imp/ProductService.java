@@ -3,6 +3,7 @@ package com.example.PhoneManagement.service.imp;
 import com.example.PhoneManagement.dto.request.*;
 import com.example.PhoneManagement.entity.Colors;
 import com.example.PhoneManagement.entity.ProductInfo;
+import com.example.PhoneManagement.entity.Products;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +32,22 @@ public interface ProductService {
 
     List<ProductDTO> findAllProduct();
 
+    public List<Products> getNewProducts();
+
+    public List<Products> getNewProductsByCategory(int categoryId);
+
+    public List<Products> getTopSellingProduct();
+
+    public List<Products> getTopSellingProductsByCategory(int categoryId);
+
+    public Products getProductById(int productId);
+
+    public ProductInfo getProductInfoById(int productColorId);
+
+    public List<Products> getRelatedProductByCategory(int categoryId);
+
     void isDeletedProduct(int proId);
 
     List<Colors> findColorByProductId(int productId);
+
 }

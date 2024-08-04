@@ -1,10 +1,7 @@
 package com.example.PhoneManagement.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
@@ -13,6 +10,7 @@ import java.util.List;
 
 @Entity(name = "Orders")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -56,4 +54,8 @@ public class Orders {
 
     @OneToMany(mappedBy = "order")
     List<OrderDetail> orderDetails;
+
+
+    @OneToMany(mappedBy = "order")
+    List<WarrantyRepair> warrantyRepairs;
 }

@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -34,6 +35,8 @@ public class AccountController {
     private RoleServiceImp roleServiceImp;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private  AccountExcelImportController accountExcelImportController;
     //Show all user with paging
     @GetMapping("/users")
     public String listOrSearchUsers(Model model,
@@ -52,10 +55,13 @@ public class AccountController {
 
     // View details each user
     @GetMapping("/viewUser/{userid}")
-    public String showDetailsUser(Model model, @PathVariable int userid) {
+    public String showDetailsUser(Model model, @PathVariable int userid, Authentication authentication) {
         Users theUser = accountServiceImp.getUserById(userid);
         List<Roles> roles = roleServiceImp.getAllRoles();
+        Users users = (Users) authentication.getPrincipal();
+        int userId = users.getUserId();
         model.addAttribute("roles", roles);
+        model.addAttribute("userId", userId);
         model.addAttribute("users", theUser);
         return "accountdetails";
     }
@@ -123,27 +129,49 @@ public class AccountController {
 
     @PostMapping("/saveAccount")
     public String saveAccount(@ModelAttribute("userForm") Users user, Model model, Authentication authentication) {
-        if (accountServiceImp.isPhoneExist(user.getPhoneNumber()) || accountServiceImp.isEmailExist(user.getUsername())) {
-            model.addAttribute("phoneExistsError", "Số điện thoại đã tồn tại. Vui lòng nhập số điện thoại khác.");
-            model.addAttribute("emailExistsError", "Email đã tồn tại. Vui lòng nhập emails khác.");
 
+
+        if (!accountServiceImp.isValidEmail((user.getUsername()))) {
+            model.addAttribute("invalidEmailError", "Email invalid. Try again.");
+        }
+
+        if (!accountServiceImp.isValidPhoneNumber(user.getPhoneNumber())) {
+            model.addAttribute("invalidPhoneError", "Phone number invalid. Try again.");
+        }
+
+
+        if (accountServiceImp.isPhoneExist(user.getPhoneNumber())) {
+            model.addAttribute("phoneExistsError", "Phone number was exist. Try again.");
+        }
+
+        if (accountServiceImp.isEmailExist(user.getUsername())) {
+            model.addAttribute("emailExistsError", "Email was exist. Try again.");
+        }
+
+        if (model.containsAttribute("invalidEmailError") || model.containsAttribute("invalidPhoneError") ||
+                model.containsAttribute("phoneExistsError") || model.containsAttribute("emailExistsError")) {
             Users currentUser = (Users) authentication.getPrincipal();
             addUserPageAttributes(model, 0, 5, "", null, currentUser.getUserId());
-
             return "accountlist";
-
         }
+
         user.setCreatedAt(new Date());
         user.setActive(true);
-        user.setRole(roleServiceImp.getRoleByName("USER")); // Giả sử bạn có roleService để lấy thông tin role
         user.setPassword(passwordEncoder.encode("123456")); // Giả sử bạn có passwordEncoder để mã hóa mật khẩu
-
         accountServiceImp.createUser(user);
         return "redirect:/admin/users";
     }
+    @PostMapping("/import-excel")
+    public String importExcel(@RequestParam("file") MultipartFile file) {
+        try {
+            List<Users> usersList = accountExcelImportController.importUsersFromExcel(file.getInputStream());
+            accountServiceImp.saveAll(usersList);
+        } catch (IOException e) {
+            e.printStackTrace();
 
-
-
+        }
+        return "redirect:/admin/users";
+    }
 
 
 }
