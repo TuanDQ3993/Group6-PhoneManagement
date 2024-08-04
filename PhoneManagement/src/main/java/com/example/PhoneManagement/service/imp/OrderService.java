@@ -40,4 +40,7 @@ public interface OrderService {
     List<ProductTopSeller> getProductTopSellers();
 
     void changeStatusOrder(int orderId, String status);
+
+    void backProduct(int id);
+
 }

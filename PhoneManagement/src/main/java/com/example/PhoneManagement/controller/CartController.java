@@ -83,15 +83,13 @@ public class CartController {
         }
 
         Cart cart = (Cart) session.getAttribute("cart");
+        cart.removeItem(productColorId);
         if (cart != null) {
             model.addAttribute("cart", cart);
             model.addAttribute("size", cart.getItems().size());
             model.addAttribute("total", cart.getTotalPrice());
-        } else {
-            model.addAttribute("size", 0);
-            model.addAttribute("total", 0.0);
         }
-        cart.removeItem(productColorId);
+
 
         return "viewcart";
     }
@@ -110,13 +108,17 @@ public class CartController {
 
         Cart cart = (Cart) session.getAttribute("cart");
         if (cart != null) {
+            if(cart.getItems().size() ==0){
+                return "redirect:/home/homepage";
+            }
             model.addAttribute("cart", cart);
             model.addAttribute("size", cart.getItems().size());
             model.addAttribute("total", cart.getTotalPrice());
         } else {
-            model.addAttribute("size", 0);
-            model.addAttribute("total", 0.0);
+            return "redirect:/home/homepage";
         }
+
+
 
 
         return "checkout";
@@ -133,17 +135,16 @@ public class CartController {
             model.addAttribute("error", "You need login before want view cart.");
             return "login";
         }
-
-
         Cart cart = (Cart) session.getAttribute("cart");
         if (cart != null) {
             model.addAttribute("cart", cart);
             model.addAttribute("size", cart.getItems().size());
             model.addAttribute("total", cart.getTotalPrice());
-        } else {
+        }else {
             model.addAttribute("size", 0);
             model.addAttribute("total", 0.0);
         }
+
 
         return "viewcart";
     }
@@ -153,7 +154,8 @@ public class CartController {
                           @RequestParam("id") int id,
                           Model model,
                           HttpSession session,
-                          Principal principal) {
+                          Principal principal,
+                          RedirectAttributes redirectAttributes) {
         if (principal != null) {
             String userName = principal.getName();
             Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
@@ -167,6 +169,13 @@ public class CartController {
         if (num == -1 && cart.getItemById(id).getQuantity() <= 1) {
             cart.removeItem(id);
         } else {
+            if(num==1){
+                int quantity=cartService.getQuantityProduct(id);
+                if(cart.getItemById(id).getQuantity()>quantity){
+                    redirectAttributes.addFlashAttribute("errorquantity","The quantity of products in stock is not enough");
+                    return "redirect:/cart/viewcart";
+                }
+            }
             ProductInfo productInfo = cartService.getProductInfoById(id);
             double price = productInfo.getPrice().doubleValue();
             cart.addItem(new Item(productInfo, price, num));
@@ -190,9 +199,7 @@ public class CartController {
                              RedirectAttributes redirectAttributes) {
 
         Cart cart = (Cart) session.getAttribute("cart");
-        if (cart == null) {
-            return "redirect:/home/homepage";
-        }
+
 
         if ("COD".equals(payment)) {
             String userName = principal.getName();

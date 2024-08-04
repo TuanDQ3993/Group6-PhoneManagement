@@ -41,4 +41,21 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
 
     @Query(value = "SELECT COUNT(DISTINCT user_id) FROM orders WHERE MONTH(order_date) = :month", nativeQuery = true)
     long countDistinctUserId(@Param("month") int month);
+
+    @Query(value = "SELECT " +
+            "    saler_id " +
+            "FROM (" +
+            "    SELECT " +
+            "    s.user_id AS saler_id, " +
+            "    COUNT(o.order_id) AS order_count " +
+            "    FROM useraccount s " +
+            "    LEFT JOIN orders o ON s.user_id = o.saler_id " +
+            "    AND DATE(o.order_date) = CURDATE() " +
+            "    WHERE s.role_id = 2 and s.active= 1" +
+            "    GROUP BY s.user_id " +
+            ") AS order_counts " +
+            "ORDER BY order_count ASC " +
+            "LIMIT 1",
+            nativeQuery = true)
+    int getSaleMinOrder();
 }

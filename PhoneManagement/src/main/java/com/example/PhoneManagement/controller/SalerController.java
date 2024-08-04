@@ -127,6 +127,7 @@ public class SalerController {
         }
         else{
             orderService.changeStatusOrder(oid,"Cancelled");
+            orderService.backProduct(oid);
         }
 
 
