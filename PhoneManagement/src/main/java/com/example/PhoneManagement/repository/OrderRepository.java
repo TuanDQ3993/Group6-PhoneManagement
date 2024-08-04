@@ -21,11 +21,11 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             "ROW_NUMBER() OVER (PARTITION BY o.order_id ORDER BY od.order_detail_id) AS rn, " +
             "(SELECT COUNT(*) FROM orderdetail WHERE order_id = o.order_id) - 1 AS countP, " +
             "o.status AS Status," +
-            "o.saler_id AS Saler "+
+            "o.saler_id AS Saler " +
             "FROM orders o " +
             "JOIN useraccount u ON o.user_id = u.user_id " +
             "JOIN orderdetail od ON o.order_id = od.order_id " +
-            "JOIN productcolor pc ON od.product_color_id = pc.product_color_id " +
+            "JOIN productinfo pc ON od.product_color_id = pc.product_color_id " +
             "JOIN products p ON pc.product_id = p.product_id) " +
             "SELECT OrderID, ProductName, Image, TotalAmount, OrderDate, Username, countP,Status,Saler " +
             "FROM OrderedOrders " +
@@ -33,13 +33,6 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             "ORDER BY OrderDate DESC",
             nativeQuery = true)
     List<Object[]> findOrderedOrders();
-
-    @Query(value = "SELECT o.total_amount, o.order_date, ua.address, ua.fullname, ua.phone_number " +
-            "FROM orders o " +
-            "JOIN useraccount ua ON ua.user_id = o.user_id " +
-            "WHERE o.order_id = :orderId", nativeQuery = true)
-    List<Object[]> findOrderInfo(@Param("orderId") Integer orderId);
-
 
     long countByOrderDateBetween(Date startDate, Date endDate);
 
@@ -50,6 +43,23 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
 
     @Query(value = "SELECT COUNT(DISTINCT user_id) FROM orders WHERE MONTH(order_date) = :month", nativeQuery = true)
     long countDistinctUserId(@Param("month") int month);
+
+    @Query(value = "SELECT " +
+            "    saler_id " +
+            "FROM (" +
+            "    SELECT " +
+            "    s.user_id AS saler_id, " +
+            "    COUNT(o.order_id) AS order_count " +
+            "    FROM useraccount s " +
+            "    LEFT JOIN orders o ON s.user_id = o.saler_id " +
+            "    AND DATE(o.order_date) = CURDATE() " +
+            "    WHERE s.role_id = 2 and s.active= 1" +
+            "    GROUP BY s.user_id " +
+            ") AS order_counts " +
+            "ORDER BY order_count ASC " +
+            "LIMIT 1",
+            nativeQuery = true)
+    int getSaleMinOrder();
 
     @Query(value = "SELECT o1.orderId, p2.productName, c1.colorName, p1.image, p1.price, o1.totalAmount, o2.quantity, o1.orderDate, c2.categoryName, o1.status " +
             "FROM Orders o1 " +

@@ -46,5 +46,9 @@ public class WarrantyRepair {
     @ManyToOne
     @JoinColumn(name = "technical_id", referencedColumnName = "user_id")
     Users technical;
+
+    @ManyToOne
+    @JoinColumn(name="order_id")
+    Orders order;
 }
 

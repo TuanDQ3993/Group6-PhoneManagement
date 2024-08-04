@@ -1,3 +1,4 @@
+
 package com.example.PhoneManagement.entity;
 
 import jakarta.persistence.*;
@@ -32,7 +33,7 @@ public class ProductInfo {
     private Colors colors;
 
     @Lob
-    @Column(name = "image", columnDefinition = "TEXT")  
+    @Column(name = "image", columnDefinition = "TEXT")
     private String image;
 
     @Column(name = "quantity", nullable = false)
@@ -41,14 +42,14 @@ public class ProductInfo {
     @Column(name="price", precision = 10, scale = 2)
     BigDecimal price ;
 
+    @Column(name="isdeleted")
+    boolean isDeleted;
+
     @Column(name = "last_updated")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated;
 
-
-    @Column(name="isdeleted")
-    boolean isDeleted;
-
     @OneToMany(mappedBy = "productInfo")
     private List<OrderDetail> orderDetailList;
+
 }
