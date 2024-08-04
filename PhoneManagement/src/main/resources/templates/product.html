@@ -41,37 +41,68 @@
             window.location.href = url;
         }
 
-        //setting quantity
+        // Setting up quantity input
         function setupQuantityInput() {
             const quantityInput = document.getElementById('quantity-input');
             const errorDiv = document.getElementById('quantity-error');
+            const errorDiv1 = document.getElementById('quantity-error1');
+            const addToCartDiv = document.getElementById('add-to-cart');
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+            const stock = parseInt(document.getElementById('stock-quantity').value);
 
-            quantityInput.addEventListener('input', function (e) {
-                let quantity = parseInt(e.target.value);
+            function checkStock(quantity) {
+                if (stock === 0) {
+                    addToCartDiv.style.display = 'none';
+                    errorDiv1.textContent = 'Out of stock';
+                    errorDiv1.style.display = 'block';
+                } else {
+                    if (quantity > stock) {
+                        errorDiv1.textContent = 'Quantity exceeds available stock';
+                        errorDiv1.style.display = 'block';
+                        addToCartBtn.style.display = 'none';
+                    } else {
+                        errorDiv1.style.display = 'none';
+                        addToCartBtn.style.display = 'block';
+                    }
+                }
+            }
+
+            function handleQuantityInput() {
+                let quantity = parseInt(quantityInput.value);
                 if (isNaN(quantity) || quantity <= 0) {
                     quantityInput.value = 1;
                     errorDiv.textContent = 'Quantity must be a positive number';
                     errorDiv.style.display = 'block';
                 } else {
                     errorDiv.style.display = 'none';
+                    checkStock(quantity);
                 }
-            });
-        }
-
-        function incrementQuantity() {
-            const quantityInput = document.getElementById('quantity-input');
-            document.getElementById('quantity-error').style.display = 'none';
-        }
-
-        function decrementQuantity() {
-            const quantityInput = document.getElementById('quantity-input');
-            if (parseInt(quantityInput.value) > 1) {
-                document.getElementById('quantity-error').style.display = 'none';
             }
+
+            quantityInput.addEventListener('input', handleQuantityInput);
+
+            function incrementQuantity() {
+                let quantity = parseInt(quantityInput.value);
+                handleQuantityInput();
+            }
+
+            function decrementQuantity() {
+                let quantity = parseInt(quantityInput.value);
+                if (quantity > 1) {
+                    handleQuantityInput();
+                }
+            }
+
+            // Gắn sự kiện cho các nút tăng/giảm
+            document.querySelector('.qty-up').addEventListener('click', incrementQuantity);
+            document.querySelector('.qty-down').addEventListener('click', decrementQuantity);
+
+            // Kiểm tra stock ngay khi trang được tải
+            checkStock(parseInt(quantityInput.value));
         }
 
         // Gọi hàm setupQuantityInput khi trang được tải
-        window.onload = function () {
+        window.onload = function() {
             setupQuantityInput();
         };
     </script>
@@ -300,11 +331,12 @@
                         <h3 class="product-price" th:text="${'$' + selectedProductInfo.price}">$980.00
                             <!--                            <del class="product-old-price">$990.00</del>-->
                         </h3>
-                        <!--                        <span class="product-available">In Stock</span>-->
+                        <span class="product-available" th:if="${selectedProductInfo.quantity > 0}">In Stock</span>
+                        <span class="product-unavailable"
+                              style="font-size: 12px; text-transform: uppercase; font-weight: 700; margin-left: 30px; color: #D10024;"
+                              th:if="${selectedProductInfo.quantity<=0}">Sold Out
+                        </span>
                     </div>
-                    <!--                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut-->
-                    <!--                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco-->
-                    <!--                        laboris nisi ut aliquip ex ea commodo consequat.</p>-->
 
                     <div class="product-options">
                         <label>Color:</label>
@@ -326,7 +358,10 @@
                         </div>
                     </div>
 
-                    <div class="add-to-cart">
+                    <!--                    lay duoc cai stock cua product_color_id-->
+                    <input type="hidden" id="stock-quantity" th:value="${stock}" readonly>
+
+                    <div class="add-to-cart" id="add-to-cart" style="display: flex">
                         <div class="qty-label">
                             Qty
                             <div class="input-number">
@@ -335,10 +370,13 @@
                                 <span class="qty-down" onclick="decrementQuantity()">-</span>
                             </div>
                             <div id="quantity-error" class="quantity-error"></div>
+                            <div id="quantity-error1" class="quantity-error"></div>
                         </div>
                         <th:block th:if="${user.roleName == 'USER'}">
-                            <form name="f" th:action="@{/cart/addtocart(productColorId=${selectedProductInfo.productcolorId})}" method="post">
-                                <button type="submit" class="add-to-cart-btn">
+                            <form name="f"
+                                  th:action="@{/cart/addtocart(productColorId=${selectedProductInfo.productcolorId})}"
+                                  method="post">
+                                <button type="submit" class="add-to-cart-btn" id="add-to-cart-btn">
                                     <i class="fa fa-shopping-cart"></i> Add to Cart
                                 </button>
                             </form>
@@ -589,9 +627,9 @@
                     <div class="product-img" style="width: 262.5px; height: 175px;">
                         <img th:src="@{/uploads/{image}(image=${product.productInfoList[0].image})}" alt=""
                              style="width: 100%; height: 100%">
-<!--                        <div class="product-label">-->
-<!--                            <span class="sale">-30%</span>-->
-<!--                        </div>-->
+                        <!--                        <div class="product-label">-->
+                        <!--                            <span class="sale">-30%</span>-->
+                        <!--                        </div>-->
                     </div>
                     <div class="product-body" style="height: 152.33px">
                         <p class="product-category" th:text="${product.category.categoryName}">Category</p>
