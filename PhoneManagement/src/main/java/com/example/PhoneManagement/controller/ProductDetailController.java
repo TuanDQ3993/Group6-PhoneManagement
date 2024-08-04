@@ -3,6 +3,7 @@ package com.example.PhoneManagement.controller;
 import com.example.PhoneManagement.dto.request.UserDTO;
 import com.example.PhoneManagement.entity.ProductInfo;
 import com.example.PhoneManagement.entity.Products;
+import com.example.PhoneManagement.repository.ProductColorRepository;
 import com.example.PhoneManagement.service.imp.ProductService;
 import com.example.PhoneManagement.service.imp.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class ProductDetailController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ProductColorRepository productColorRepository;
 
     @GetMapping("/detail/{productId}/{productColorId}")
     public String getProductDetail(@PathVariable int productId, @PathVariable int productColorId, Model model, Principal principal) {
@@ -36,6 +39,12 @@ public class ProductDetailController {
             String userName = principal.getName();
             Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
             userDTO.ifPresent(user -> model.addAttribute("user", user));
+        }
+
+        if(selectedProductInfo != null) {
+            int stock = productColorRepository.getQuantityProduct(productColorId);
+            selectedProductInfo.setQuantity(stock);
+            model.addAttribute("stock", stock);
         }
         model.addAttribute("relatedProducts", relatedProducts);
         model.addAttribute("product", products);

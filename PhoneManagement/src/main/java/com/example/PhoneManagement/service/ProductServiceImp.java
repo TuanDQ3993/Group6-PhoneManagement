@@ -41,7 +41,6 @@ public class ProductServiceImp implements ProductService {
     ProductColorRepository productColorRepository;
     FileStorageServiceImpl fileStorageService;
     OrderDetailRepository orderDetailRepository;
-    ProductInfoRepository productInfoRepository;
 
     @Override
     public void saveProduct(ProductDTO productDTO) {
@@ -118,7 +117,7 @@ public class ProductServiceImp implements ProductService {
             List<String> colorName = new ArrayList<>();
             List<Integer> quantity = new ArrayList<>();
             List<Integer> proColorId = new ArrayList<>();
-            List<BigDecimal> price=new ArrayList<>();
+            List<BigDecimal> price = new ArrayList<>();
 
             productViewRequest.setProductId(products.getProductId());
             productViewRequest.setProductName(products.getProductName());
@@ -161,7 +160,7 @@ public class ProductServiceImp implements ProductService {
             products.setWarrantyPeriod(request.getWarrantyPeriod());
             products.setBrandName(request.getBrandName());
             productRepository.save(products);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -197,15 +196,15 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public void addProductColor(ProductColorCreateRequest request, int productId){
-        try{
+    public void addProductColor(ProductColorCreateRequest request, int productId) {
+        try {
             ProductInfo productInfo = new ProductInfo();
             Products products = productRepository.findById(request.getProId()).orElseThrow(() -> new RuntimeException("product not exist"));
             Colors colors = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
-            ProductViewRequest productViewRequest=getProduct(productId);
-            int c=productViewRequest.getColorId().stream().filter(color -> color==colors.getColorId()).findFirst().orElse(-1);
-            if(request.getQuantity()<0) return;
-            if(c!=-1) return;
+            ProductViewRequest productViewRequest = getProduct(productId);
+            int c = productViewRequest.getColorId().stream().filter(color -> color == colors.getColorId()).findFirst().orElse(-1);
+            if (request.getQuantity() < 0) return;
+            if (c != -1) return;
             productInfo.setProducts(products);
             productInfo.setColors(colors);
             productInfo.setImage(request.getImage());
@@ -214,14 +213,14 @@ public class ProductServiceImp implements ProductService {
             productInfo.setLastUpdated(new Date());
 
             productColorRepository.save(productInfo);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void deleteProductColor(int proId){
-        ProductInfo productInfo =productColorRepository.findById(proId).orElseThrow(()-> new RuntimeException(("Product not exist")));
+    public void deleteProductColor(int proId) {
+        ProductInfo productInfo = productColorRepository.findById(proId).orElseThrow(() -> new RuntimeException(("Product not exist")));
         productColorRepository.delete(productInfo);
     }
 
@@ -283,12 +282,12 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<ProductInfo> findAllProductColor(){
+    public List<ProductInfo> findAllProductColor() {
         return productColorRepository.findAll();
     }
 
     @Override
-    public List<ProductDTO> findAllProduct(){
+    public List<ProductDTO> findAllProduct() {
         return productRepository.findAll()
                 .stream()
                 .map(product -> new ProductDTO(product.getProductId(), product.getProductName()))
@@ -326,12 +325,12 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public ProductInfo getProductInfoById(int productColorId) {
-        return productInfoRepository.findById(productColorId).orElse(null);
+        return productColorRepository.findById(productColorId).orElse(null);
     }
 
     @Override
     public List<Products> getRelatedProductByCategory(int categoryId) {
         Pageable pageable = PageRequest.of(0, 4);
-        return productInfoRepository.findTop4ByCategoryIdOrderByCreatedAtDesc(categoryId, pageable).getContent();
+        return productColorRepository.findTop4ByCategoryIdOrderByCreatedAtDesc(categoryId, pageable).getContent();
     }
 }
