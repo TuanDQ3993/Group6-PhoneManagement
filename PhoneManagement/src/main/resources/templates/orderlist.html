@@ -182,9 +182,10 @@
                 <select name="status" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                     <option value="all" th:selected="${status == 'all'}">All Statuses</option>
                     <option value="Completed" th:selected="${status == 'Completed'}">Completed</option>
-                    <option value="Processing" th:selected="${status == 'Processing'}">In Process</option>
-                    <option value="Canceled" th:selected="${status == 'Rejected'}">Rejected</option>
-                    <option value="Pending" th:selected="${status == 'Pending'}">Pending</option>
+                    <option value="Confirm and Shipping" th:selected="${status == 'Confirm and Shipping'}">Confirm and Shipping</option>
+                    <option value="Canceled" th:selected="${status == 'Cancelled'}">Cancelled</option>
+                    <option value="Pending Confirm" th:selected="${status == 'Pending Confirm'}">Pending Comfirm</option>
+                    <option value="Prepay" th:selected="${status == 'Prepay'}">Prepay</option>
                 </select>
 
                 <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
@@ -219,7 +220,7 @@
                         </div>
 
                         <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-                            <form th:if="${entry.value[0][9]}== 'Pending'" method="post" th:action="@{/home/order}">
+                            <form th:if="${entry.value[0][9]}== 'Pending Confirm'" method="post" th:action="@{/home/order}">
                                 <input th:value="${entry.value[0][0]}" type="hidden" name="orderId">
                                 <button type="submit" style="padding: 8px 20px;">Reject</button>
                             </form>
@@ -259,6 +260,7 @@
 <!--                </ul>-->
 <!--            </div>-->
         <!-- /row -->
+    </div>
     </div>
     <!-- /container -->
 </div>
