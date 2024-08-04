@@ -243,6 +243,24 @@ public class OrderServiceImp implements OrderService {
         orderRepository.save(order);
     }
 
+    @Override
+    public Page<Object[]> getOrdersByUserIdWithFilters(UserDTO userDTO, String status , String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        int userId = userRepository.findIdByUserName(userDTO.getUserName());
+        return orderRepository.findOrdersWithFiltersCategory(userId, status,search, pageable);
+    }
+
+
+    @Override
+    public int countTotalOrders(UserDTO user) {
+        int userId = userRepository.findIdByUserName(user.getUserName());
+        return orderRepository.countOrdersByUserId(userId);
+    }
+
+    @Override
+    public List<Object[]> findOrderDetail(int orderId){
+        return orderRepository.findOrderDetail(orderId);
+    }
 
     @Override
     public void backProduct(int id) {

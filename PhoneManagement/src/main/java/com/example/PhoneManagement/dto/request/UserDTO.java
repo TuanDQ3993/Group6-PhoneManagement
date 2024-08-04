@@ -16,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDTO {
-
+    int userId;
     String userName;
     String fullName;
     String address;

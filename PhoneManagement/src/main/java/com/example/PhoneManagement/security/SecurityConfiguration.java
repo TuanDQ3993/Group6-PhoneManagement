@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/saler/**").hasRole("SALER")
                 .requestMatchers("/technical/**").hasAnyRole( "ADMIN","TECHNICAL STAFF")
+                .requestMatchers("/user/**").hasAnyRole( "ADMIN","TECHNICAL STAFF","SALER","USER")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
