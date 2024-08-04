@@ -372,15 +372,13 @@
                             <div id="quantity-error" class="quantity-error"></div>
                             <div id="quantity-error1" class="quantity-error"></div>
                         </div>
-                        <th:block th:if="${user.roleName == 'USER'}">
+
                             <form name="f"
                                   th:action="@{/cart/addtocart(productColorId=${selectedProductInfo.productcolorId})}"
                                   method="post">
-                                <button type="submit" class="add-to-cart-btn" id="add-to-cart-btn">
-                                    <i class="fa fa-shopping-cart"></i> Add to Cart
-                                </button>
+                                <th:block> <button type="submit" class="add-to-cart-btn" id="add-to-cart-btn" th:if="${user == null or user.roleName == 'USER'}"> <i class="fa fa-shopping-cart"></i> Add to Cart </button> </th:block>
                             </form>
-                        </th:block>
+
                     </div>
                     <ul class="product-links">
                         <li>Category:</li>

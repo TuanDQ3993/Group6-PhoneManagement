@@ -32,13 +32,6 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             nativeQuery = true)
     List<Object[]> findOrderedOrders();
 
-    @Query(value = "SELECT o.total_amount, o.order_date, ua.address, ua.fullname, ua.phone_number " +
-            "FROM orders o " +
-            "JOIN useraccount ua ON ua.user_id = o.user_id " +
-            "WHERE o.order_id = :orderId", nativeQuery = true)
-    List<Object[]> findOrderInfo(@Param("orderId") Integer orderId);
-
-
     long countByOrderDateBetween(Date startDate, Date endDate);
 
     long countByOrderDateBetweenAndStatus(Date startDate, Date endDate, String status);
@@ -48,4 +41,21 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
 
     @Query(value = "SELECT COUNT(DISTINCT user_id) FROM orders WHERE MONTH(order_date) = :month", nativeQuery = true)
     long countDistinctUserId(@Param("month") int month);
+
+    @Query(value = "SELECT " +
+            "    saler_id " +
+            "FROM (" +
+            "    SELECT " +
+            "    s.user_id AS saler_id, " +
+            "    COUNT(o.order_id) AS order_count " +
+            "    FROM useraccount s " +
+            "    LEFT JOIN orders o ON s.user_id = o.saler_id " +
+            "    AND DATE(o.order_date) = CURDATE() " +
+            "    WHERE s.role_id = 2 and s.active= 1" +
+            "    GROUP BY s.user_id " +
+            ") AS order_counts " +
+            "ORDER BY order_count ASC " +
+            "LIMIT 1",
+            nativeQuery = true)
+    int getSaleMinOrder();
 }

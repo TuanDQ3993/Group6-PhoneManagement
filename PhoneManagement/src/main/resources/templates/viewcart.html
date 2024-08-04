@@ -268,7 +268,11 @@
                                             <button style="border: none; border-radius: 12px;background-color: white"><a th:href="@{/cart/process(num=-1,id=${item.productColor.productcolorId})}" style="color: black"><</a></button>
                                             &emsp;<span class="qty" th:text="${item.quantity}"></span>&emsp;
                                             <button style="border: none; border-radius: 12px;background-color: white"><a th:href="@{/cart/process(num=1,id=${item.productColor.productcolorId})}" style="color: black">></a></button>
+
                                         </div>
+                                    </div>
+                                    <div th:if="${errorquantity}">
+                                        <p th:text="${errorquantity}" class="text-danger"></p>
                                     </div>
                                 </td>
                                 <td class="cart__price original-price " th:text="${item.quantity*item.price}"></td>
