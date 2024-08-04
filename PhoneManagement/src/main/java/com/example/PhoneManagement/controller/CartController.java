@@ -95,7 +95,7 @@ public class CartController {
     }
 
     @GetMapping("checkout")
-    public String checkout(Model model, HttpSession session, Principal principal) {
+    public String checkout(Model model, HttpSession session, Principal principal,RedirectAttributes redirectAttributes) {
 
         if (principal != null) {
             String userName = principal.getName();
@@ -111,6 +111,14 @@ public class CartController {
             if(cart.getItems().size() ==0){
                 return "redirect:/home/homepage";
             }
+            for(Item i : cart.getItems()){
+                int quantity=cartService.getQuantityProduct(i.getProductColor().getProductcolorId());
+                if(quantity < i.getQuantity()){
+                    redirectAttributes.addFlashAttribute("errorquantity","The quantity of products in stock is not enough");
+                    return "redirect:/cart/viewcart";
+                }
+            }
+
             model.addAttribute("cart", cart);
             model.addAttribute("size", cart.getItems().size());
             model.addAttribute("total", cart.getTotalPrice());
