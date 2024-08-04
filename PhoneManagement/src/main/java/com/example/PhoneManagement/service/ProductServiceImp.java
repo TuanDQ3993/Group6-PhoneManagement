@@ -261,8 +261,6 @@ public class ProductServiceImp implements ProductService {
     public Page<ProductDTO> findPaginated(Pageable pageable, Integer categoryId, String name) {
         try {
             Page<Products> productPage;
-
-            // Modify the query based on the name and categoryId parameters
             if (categoryId != null && name != null) {
                 productPage = productRepository.findByCategoryCategoryIdAndProductNameContainingIgnoreCase(categoryId, name, pageable);
             } else if (categoryId != null) {
