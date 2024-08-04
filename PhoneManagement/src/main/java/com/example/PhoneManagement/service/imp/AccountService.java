@@ -17,6 +17,7 @@ public interface AccountService {
 
     Users getUserById(int userId);
 
+//    void editAccount(Users users);
 
     boolean isPhoneExist(String phone);
 
@@ -24,9 +25,13 @@ public interface AccountService {
 
     void createUser(Users user);
 
-    Page<Users> searchAndFilterUsers(String userName, PageDTO pageDTO,int role);
+    Page<Users> searchAndFilterUsers(String userName, PageDTO pageDTO, int role);
+
     Page<Users> searchUsers(String query, PageDTO pageDTO);
+
     Page<Users> filterRole(int roleId, PageDTO pageDTO);
+    boolean isValidPhoneNumber(String phone);
+    boolean isValidEmail(String email);
 
 
 }

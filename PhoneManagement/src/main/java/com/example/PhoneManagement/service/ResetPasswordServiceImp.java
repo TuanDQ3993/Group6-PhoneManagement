@@ -34,10 +34,10 @@ public class ResetPasswordServiceImp implements ResetPasswordService {
         Optional<Users> userOptional = userService.findByEmail(email);
         if (userOptional.isPresent()) {
             Users user = userOptional.get();
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
             String token = jwtService.generatePasswordResetToken(userDetails);
             String resetLink = "http://localhost:8080/password/reset?token=" + token;
-            emailService.sendEmail(user.getUsername(), "Password Reset Request", "To reset your password, click the link below:\n" + resetLink);
+            emailService.sendEmail(user.getUserName(), "Password Reset Request", "To reset your password, click the link below:\n" + resetLink);
             model.addAttribute("message", "Password reset link has been sent to your email.");
         } else {
             model.addAttribute("error", "No account found with that email address.");

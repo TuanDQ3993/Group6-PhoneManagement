@@ -19,5 +19,6 @@ public class OrderInfoDTO {
     Date orderDate;
     String username;
     int countP;
-
+    String status;
+    int salerId;
 }

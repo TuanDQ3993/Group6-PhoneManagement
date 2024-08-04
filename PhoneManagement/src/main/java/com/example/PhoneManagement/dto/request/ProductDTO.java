@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductDTO {
      Integer productId;
@@ -19,9 +18,14 @@ public class ProductDTO {
      String description;
      Integer quantity;
      BigDecimal price;
+     String brandName;
      Integer warrantyPeriod;
      Integer categoryId;
      Date createAt;
      List<ProductColorDTO> colors=new ArrayList<>();
 
+     public ProductDTO(Integer productId, String productName) {
+          this.productId = productId;
+          this.productName = productName;
+     }
 }

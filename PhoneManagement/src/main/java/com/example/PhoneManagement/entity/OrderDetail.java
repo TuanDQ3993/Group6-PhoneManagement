@@ -32,6 +32,6 @@ public class OrderDetail {
     Orders order;
 
     @ManyToOne
-    @JoinColumn(name="product_id")
-    Products products;
+    @JoinColumn(name="product_color_id")
+    ProductInfo productInfo;
 }

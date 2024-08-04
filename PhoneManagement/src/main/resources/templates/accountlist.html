@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Gentelella Alela! | Users List</title>
@@ -17,15 +17,13 @@
         .form-inline .form-group {
             margin-left: -9px;
         }
+
         .pagination .page-item.active .page-link {
             background-color: #007bff; /* Change to your preferred color */
             border-color: #007bff; /* Ensure the border color matches the background if needed */
             color: white; /* Change text color for better visibility */
         }
-        body {
-            background: #f7f7ff;
-            margin-top: 20px;
-        }
+
         .modal {
             display: none;
             position: fixed;
@@ -39,252 +37,279 @@
             background-color: rgba(0, 0, 0, 0.4);
             padding-top: 60px;
         }
+
         .modal-content {
             background-color: #fefefe;
             margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
-            border-radius: 10px;
         }
+
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
+
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
+
     </style>
 </head>
 
 <body class="nav-md">
 <div class="container body">
-    <header th:insert="~{fragments/menu.html :: header}"></header>
+    <div class="main_container">
+        <div th:insert="~{fragments/sidebar.html}"></div>
 
-    <div class="right_col" role="main">
-        <div class="row-fluid">
-            <h3>Account List</h3>
-        </div>
-        <div>
-            <button id="openModalBtn" class="btn btn-success btn-xs"> <i class="fa fa-plus-circle"></i> Create</button>
-        </div>
-
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close" id="closeModalBtn">&times;</span>
-                <h5>Create User</h5>
-                <form th:action="@{/admin/saveAccount}" th:object="${userForm}" method="post" style="border: 1px solid #ccc; padding: 20px; border-radius: 10px;">
-                    <label for="username" style="display: block; margin-top: 10px;">Username:</label>
-                    <input type="text" id="username" th:field="*{userName}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" required/>
-
-                    <label for="fullname" style="display: block; margin-top: 10px;">Full Name:</label>
-                    <input type="text" id="fullname" th:field="*{fullName}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" required/>
-
-                    <label for="address" style="display: block; margin-top: 10px;">Address:</label>
-                    <input type="text" id="address" th:field="*{address}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" required/>
-
-                    <label for="phoneNumber" style="display: block; margin-top: 10px;">Phone Number:</label>
-                    <input type="text" id="phoneNumber" th:field="*{phoneNumber}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" required/>
-
-                    <label for="role" style="display: block; margin-top: 10px;">Role:</label>
-                    <select id="role" th:field="*{role}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;">
-                        <option value="">Select Role</option>
-                        <option th:each="role : ${rolesFilter}"
-                                th:value="${role.roleId}"
-                                th:text="${role.roleName}"></option>
-                    </select>
-
-                    <button type="submit" style="display: block; margin-top: 20px; background-color: #008CBA; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Save</button>
-                </form>
+        <div class="right_col" role="main">
+            <div class="page-title">
+                <div class="title_left">
+                    <h3>Account List</h3>
+                </div>
             </div>
-        </div>
-
-        <!-- Modal for error messages -->
-        <div id="errorModal" class="modal">
-            <div class="modal-content">
-                <span class="close" id="closeErrorModalBtn">&times;</span>
-                <h5>Error</h5>
-                <div id="errorMessage" class="alert alert-danger" role="alert"></div>
+            <div class="row mb-3">
+                <div class="col-md-12 text-left">
+                    <button id="openModalBtn" class="btn btn-success btn-xs"><i class="fa fa-plus-circle"></i> Create</button>
+                </div>
             </div>
-        </div>
 
-        <div class="row"> <!-- New row for better alignment and separation -->
-            <form th:action="@{/admin/users}" method="get" class="form-inline w-100">
-                <div class="row">
-                    <div class="col-md-9"> <!-- This column now takes up more space pushing elements to the right -->
-                    </div>
-                    <div class="col-md-3 d-flex justify-content-end">
-                        <!-- Combined Search Input and Role Filter Dropdown into a single column -->
-                        <div class="form-group">
-                            <input type="text" class="form-control form-control-sm" th:name="query" placeholder="Search for..." style="margin-right: 10px;">
-                            <select name="role" class="form-control form-control-sm">
-                                <option value="">Select Role</option>
-                                <option th:each="role : ${rolesFilter}" th:value="${role.roleId}" th:text="${role.roleName}"></option>
-                            </select>
-                            <button class="btn btn-secondary btn-sm" type="submit" style="margin-right: 5px; margin-bottom: 0px">Go</button>
-                        </div>
+
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="closeModalBtn">&times;</span>
+                    <h5>Create User</h5>
+                    <form th:action="@{/admin/saveAccount}" th:object="${userForm}" method="post"
+                          style="border: 1px solid #ccc; padding: 20px; border-radius: 10px;">
+                        <label for="username" style="display: block; margin-top: 10px;">Email:</label>
+                        <input type="text" id="username" th:field="*{userName}"
+                               style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
+                               required/>
+
+                        <label for="fullname" style="display: block; margin-top: 10px;">Full Name:</label>
+                        <input type="text" id="fullname" th:field="*{fullName}"
+                               style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
+                               required/>
+
+                        <label for="address" style="display: block; margin-top: 10px;">Address:</label>
+                        <input type="text" id="address" th:field="*{address}"
+                               style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
+                               required/>
+
+                        <label for="phoneNumber" style="display: block; margin-top: 10px;">Phone Number:</label>
+                        <input type="text" id="phoneNumber" th:field="*{phoneNumber}"
+                               style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
+                               required/>
+
+                        <label for="role" style="display: block; margin-top: 10px;">Role:</label>
+                        <select id="role" th:field="*{role}"
+                                style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;">
+                            <option value="">Select Role</option>
+                            <option th:each="role : ${rolesFilter}" th:value="${role.roleId}"
+                                    th:text="${role.roleName}"></option>
+                        </select>
+
+                        <button type="submit"
+                                style="display: block; margin-top: 20px; background-color: #008CBA; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
+                            Save
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="errorModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="closeErrorModalBtn">&times;</span>
+                    <h5>Error</h5>
+                    <div id="errorMessage" class="alert alert-danger" role="alert"></div>
+                </div>
+            </div>
+            <div class="row mb-3" style="    margin-left: 2px;">
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <!-- Import Excel Form -->
+                        <form th:action="@{/admin/import-excel}" method="post" enctype="multipart/form-data" class="form-inline">
+                            <div class="form-group d-flex align-items-center">
+                                <input type="file" name="file" accept=".xlsx"  class="form-control form-control-sm mr-2">
+                                <button type="submit" class="btn btn-primary btn-sm" style="margin-bottom: -1px;">Upload</button>
+                            </div>
+                        </form>
+
+                        <!-- Select Role and Search Form -->
+                        <form th:action="@{/admin/users}" method="get" class="form-inline">
+                            <div class="form-group d-flex align-items-center">
+                                <select name="role" class="form-control form-control-sm mr-2">
+                                    <option value="">Select Role</option>
+                                    <option th:each="roleItem : ${rolesFilter}" th:value="${roleItem.roleId}"
+                                            th:text="${roleItem.roleName}" th:selected="${roleItem.roleId == role}"></option>
+                                </select>
+                                <input type="text" class="form-control form-control-sm mr-2" th:name="query"
+                                       placeholder="Search for email: ..." th:value="${query}">
+                                <button class="btn btn-secondary btn-sm" type="submit">Go</button>
+                            </div>
+                        </form>
+
                     </div>
                 </div>
-            </form>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="x_panel">
-                    <div class="x_content">
-                        <!-- Start Project List -->
-                        <table class="table table-striped projects">
-                            <thead>
-                            <tr>
-                                <th style="width: 20%">Email</th>
-                                <th>FullName</th>
-                                <th>Address</th>
-                                <th>PhoneNumber</th>
-                                <th>Status</th>
-                                <th>Role</th>
-                                <th>Date of create</th>
-                                <th style="width: 20%">Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:if="${userPage == null || #lists.isEmpty(userPage)}">
-                                <td colspan="7">No records found</td>
-                            </tr>
-                            <tr th:each="user : ${userPage}" th:unless="${user.userId == userId}">
-                                <td th:text="${user.username}"></td>
-                                <td th:text="${user.fullName}"></td>
-                                <td th:text="${user.address}"></td>
-                                <td th:text="${user.phoneNumber}"></td>
-                                <td th:text="${user.active ? 'Hoạt động' : 'Ngừng Hoạt động'}"></td>
-                                <td th:text="${user.role.roleName}"></td>
-                                <td th:text="${#dates.format(user.createdAt, 'dd-MM-yyyy')}"></td>
-                                <td>
-                                    <a th:href="@{/admin/viewUser/{id}(id=${user.userId})}"
-                                       class="btn btn-primary btn-xs" th:unless="${user.userId == userId}">
-                                        <i class="fa fa-folder"></i> View
-                                    </a>
+            </div>
 
-                                    <!-- Form to ban user, hide if the user is the logged-in user -->
-                                    <form th:if="${user.active and user.userId != userId}"
-                                          th:action="@{/admin/banUser/{userid}(userid=${user.userId})}"
-                                          method="post" style="display:inline;"
-                                          th:onsubmit="return confirm('Are you sure you want to ban this user?')">
-                                        <button type="submit" class="btn btn-danger btn-xs"
-                                                style="width: 80px; height: 40px; font-size: 12px;">
-                                            <i class="fa fa-ban"></i> Ban
-                                        </button>
-                                    </form>
 
-                                    <!-- Form to unban user, hide if the user is the logged-in user -->
-                                    <form th:if="${not user.active and user.userId != userId}"
-                                          th:action="@{/admin/unBanUser/{userid}(userid=${user.userId})}"
-                                          method="post" style="display:inline;"
-                                          th:onsubmit="return confirm('Are you sure you want to unban this user?')">
-                                        <button type="submit" class="btn btn-danger btn-xs"
-                                                style="width: 80px; height: 40px; font-size: 12px;">
-                                            <i class="fa fa-ban"></i> UnBan
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
 
-                        <div class="container">
-                            <div class="row justify-content-between align-items-center">
-                                <div class="col-auto">
-                                    <div class="d-flex align-items-center">
-                                        <a class="media-body">Number of records </a>
-                                        <form th:action="@{/admin/users}" method="get">
-                                            <select name="pageSize" class="form-select"
-                                                    onchange="this.form.page.value=0; this.form.submit()">
-                                                <option th:value="5" th:selected="${size == 5}">5</option>
-                                                <option th:value="10" th:selected="${size == 10}">10</option>
-                                                <option th:value="15" th:selected="${size == 15}">15</option>
-                                            </select>
-                                            <input type="hidden" name="page" value="0"/> <!-- Luôn chuyển về trang đầu tiên -->
-                                            <input type="hidden" th:name="query" th:value="${query}"/>
-                                            <input type="hidden" th:name="role" th:value="${role}"/>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <table class="table table-striped projects">
+                                <thead>
+                                <tr>
+                                    <th style="width: 20%">Email</th>
+                                    <th>FullName</th>
+                                    <th>Address</th>
+                                    <th>PhoneNumber</th>
+                                    <th>Status</th>
+                                    <th>Role</th>
+                                    <th>Date of create</th>
+                                    <th style="width: 20%">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${userPage == null || #lists.isEmpty(userPage)}">
+                                    <td colspan="7">No records found</td>
+                                </tr>
+                                <tr th:each="user : ${userPage}">
+                                    <td th:text="${user.username}"></td>
+                                    <td th:text="${user.fullName}"></td>
+                                    <td th:text="${user.address}"></td>
+                                    <td th:text="${user.phoneNumber}"></td>
+                                    <td th:text="${user.active ? 'Hoạt động' : 'Ngừng Hoạt động'}"></td>
+                                    <td th:text="${user.role.roleName}"></td>
+                                    <td th:text="${#dates.format(user.createdAt, 'dd-MM-yyyy')}"></td>
+                                    <td>
+                                        <a th:href="@{/admin/viewUser/{id}(id=${user.userId})}"
+                                           class="btn btn-primary btn-xs">
+                                            <i class="fa fa-folder"></i> View
+                                        </a>
+
+                                        <form th:if="${user.active and user.userId != userId}"
+                                              th:action="@{/admin/banUser/{userid}(userid=${user.userId})}"
+                                              method="post" style="display:inline;"
+                                              th:onsubmit="return confirm('Are you sure to ban this account??')">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    style="width: 80px; height: 40px; font-size: 12px;">
+                                                <i class="fa fa-ban"></i> Ban
+                                            </button>
                                         </form>
+
+                                        <form th:if="${not user.active and user.userId != userId}"
+                                              th:action="@{/admin/unBanUser/{userid}(userid=${user.userId})}"
+                                              method="post" style="display:inline;"
+                                              th:onsubmit="return confirm('Are you sure to unban this account?')">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    style="width: 80px; height: 40px; font-size: 12px;">
+                                                <i class="fa fa-ban"></i> UnBan
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="container">
+                                <div class="row justify-content-between align-items-center">
+                                    <div class="col-auto">
+                                        <div class="d-flex align-items-center">
+                                            <a class="media-body">Number of records </a>
+                                            <form th:action="@{/admin/users}" method="get">
+                                                <select name="pageSize" class="form-select"
+                                                        onchange="this.form.page.value=0; this.form.submit()">
+                                                    <option th:value="5" th:selected="${size == 5}">5</option>
+                                                    <option th:value="10" th:selected="${size == 10}">10</option>
+                                                    <option th:value="15" th:selected="${size == 15}">15</option>
+                                                </select>
+                                                <input type="hidden" name="page" value="0"/>
+                                                <input type="hidden" th:name="query" th:value="${query}"/>
+                                                <input type="hidden" th:name="role" th:value="${role}"/>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination justify-content-end mb-0">
+                                                <li class="page-item"
+                                                    th:classappend="${userPage.number == 0} ? 'disabled'">
+                                                    <a class="page-link"
+                                                       th:href="@{/admin/users(size=${userPage.size}, page=${userPage.number - 1}, pageSize=${size}, query=${query}, role=${role})}">Previous</a>
+                                                </li>
+                                                <li th:each="pageNumber : ${pageNumbers}" th:class="page-item"
+                                                    th:classappend="${pageNumber - 1 == userPage.number} ? 'active'">
+                                                    <a class="page-link"
+                                                       th:href="@{/admin/users(size=${userPage.size}, page=${pageNumber - 1}, pageSize=${size}, query=${query}, role=${role})}"
+                                                       th:text="${pageNumber}"></a>
+                                                </li>
+                                                <li class="page-item"
+                                                    th:classappend="${userPage.number + 1 == userPage.totalPages} ? 'disabled'">
+                                                    <a class="page-link"
+                                                       th:href="@{/admin/users(size=${userPage.size}, page=${userPage.number + 1}, pageSize=${size}, query=${query}, role=${role})}">Next</a>
+                                                </li>
+                                            </ul>
+                                        </nav>
                                     </div>
                                 </div>
-                                <div class="col-auto">
-                                    <nav aria-label="Page navigation">
-                                        <ul class="pagination justify-content-end mb-0">
-                                            <!-- Previous button -->
-                                            <li class="page-item" th:classappend="${userPage.number == 0} ? 'disabled'">
-                                                <a class="page-link" th:href="@{/admin/users(size=${userPage.size}, page=${userPage.number - 1}, pageSize=${size}, query=${query}, role=${role})}">Previous</a>
-                                            </li>
-                                            <!-- Page numbers -->
-                                            <li th:each="pageNumber : ${pageNumbers}" th:class="page-item" th:classappend="${pageNumber - 1 == userPage.number} ? 'active'">
-                                                <a class="page-link" th:href="@{/admin/users(size=${userPage.size}, page=${pageNumber - 1}, pageSize=${size}, query=${query}, role=${role})}" th:text="${pageNumber}"></a>
-                                            </li>
-                                            <!-- Next button -->
-                                            <li class="page-item" th:classappend="${userPage.number + 1 == userPage.totalPages} ? 'disabled'">
-                                                <a class="page-link" th:href="@{/admin/users(size=${userPage.size}, page=${userPage.number + 1}, pageSize=${size}, query=${query}, role=${role})}">Next</a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
                             </div>
-                        </div>
 
+                            <script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
+                            <script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+                            <script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
+                            <script th:src="@{/vendors/nprogress/nprogress.js}"></script>
+                            <script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+                            <script th:src="@{/build/js/custom.min.js}"></script>
+                            <script th:inline="javascript">
+                                /*<![CDATA[*/
+                                var modal = document.getElementById("myModal");
+                                var btn = document.getElementById("openModalBtn");
+                                var span = document.getElementById("closeModalBtn");
+                                var errorModal = document.getElementById("errorModal");
+                                var closeErrorModalBtn = document.getElementById("closeErrorModalBtn");
 
+                                btn.onclick = function () {
+                                    modal.style.display = "block";
+                                }
 
-                        <script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
-                        <script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
-                        <script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
-                        <script th:src="@{/vendors/nprogress/nprogress.js}"></script>
-                        <script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
-                        <script th:src="@{/build/js/custom.min.js}"></script>
-                        <script th:inline="javascript">
-                            /*<![CDATA[*/
-                            var modal = document.getElementById("myModal");
-                            var btn = document.getElementById("openModalBtn");
-                            var span = document.getElementById("closeModalBtn");
-                            var errorModal = document.getElementById("errorModal");
-                            var closeErrorModalBtn = document.getElementById("closeErrorModalBtn");
-
-                            btn.onclick = function() {
-                                modal.style.display = "block";
-                            }
-
-                            span.onclick = function() {
-                                modal.style.display = "none";
-                            }
-
-                            closeErrorModalBtn.onclick = function() {
-                                errorModal.style.display = "none";
-                            }
-
-                            window.onclick = function(event) {
-                                if (event.target == modal) {
+                                span.onclick = function () {
                                     modal.style.display = "none";
                                 }
-                                if (event.target == errorModal) {
+
+                                closeErrorModalBtn.onclick = function () {
                                     errorModal.style.display = "none";
                                 }
-                            }
 
-                            function showErrorModal(message) {
-                                document.getElementById("errorMessage").innerText = message;
-                                errorModal.style.display = "block";
-                            }
+                                function showErrorModal(message) {
+                                    document.getElementById("errorMessage").innerText = message;
+                                    errorModal.style.display = "block";
+                                }
 
-                            var errorMessage = /*[[${phoneExistsError}]]*/ 'null';
-                            if (errorMessage !== 'null' && errorMessage.trim() !== '') {
-                                showErrorModal(errorMessage);
-                            }
-                            var errorMessage = /*[[${emailExistsError}]]*/ 'null';
-                            if (errorMessage !== 'null' && errorMessage.trim() !== '') {
-                                showErrorModal(errorMessage);
-                            }
-                            /*]]>*/
-                        </script>
+                                var errors = [
+                                    /*[[${phoneExistsError}]]*/,
+                                    /*[[${emailExistsError}]]*/,
+                                    /*[[${invalidEmailError}]]*/,
+                                    /*[[${invalidPhoneError}]]*/
+                                ];
+
+                                errors.forEach(function (error) {
+                                    if (error !== 'null' && error.trim() !== '') {
+                                        showErrorModal(error);
+                                    }
+                                });
+
+                                /*]]>*/
+                            </script>
+                        </div>
                     </div>
                 </div>
             </div>
