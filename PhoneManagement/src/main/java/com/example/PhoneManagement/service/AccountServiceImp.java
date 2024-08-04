@@ -19,6 +19,7 @@ import java.awt.print.Pageable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class AccountServiceImp implements AccountService {
@@ -75,6 +76,11 @@ public class AccountServiceImp implements AccountService {
         return accountRepository.findById(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
     }
 
+//    @Override
+//    public void editAccount(Users users) {
+//
+//    }
+
     @Override
     public boolean isPhoneExist(String phone) {
         return accountRepository.existsByPhoneNumber(phone);
@@ -106,6 +112,19 @@ public class AccountServiceImp implements AccountService {
     public Page<Users> filterRole(int roleId, PageDTO pageDTO) {
         return accountRepository.findByRole(roleId, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
     }
+    public boolean isValidEmail(String email) {
+        String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        return Pattern.matches(emailRegex, email);
+    }
 
+    public boolean isValidPhoneNumber(String phoneNumber) {
+        String phoneRegex = "^[0-9]{10}$"; // Giả sử số điện thoại chỉ bao gồm 10 chữ số
+        return Pattern.matches(phoneRegex, phoneNumber);
+    }
+
+
+    public void saveAll(List<Users> users) {
+        accountRepository.saveAll(users);
+    }
 
 }

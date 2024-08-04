@@ -3,6 +3,7 @@ package com.example.PhoneManagement.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -14,5 +15,6 @@ public class ProductColorCreateRequest {
     int proId;
     int colorId;
     String image;
+    BigDecimal price;
     int quantity;
 }

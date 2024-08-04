@@ -29,11 +29,11 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests()
-                .requestMatchers("/auth/login","/auth/logout","/auth/register","/vendors/**", "/build/**","/password/**")
+                .requestMatchers("/auth/login", "/auth/logout", "/auth/register", "/vendors/**", "/build/**", "/password/**", "/build1/**", "/home/**", "/uploads/**")
                 .permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/saler/**").hasRole("SALER")
-                .requestMatchers("/technical/**").hasAnyRole("TECHNICAL","ADMIN")
+                .requestMatchers("/saler/**").hasAnyRole("ADMIN","SALER")
+                .requestMatchers("/technical/**").hasAnyRole( "ADMIN","TECHNICAL STAFF")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -46,5 +46,5 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-    
+
 }

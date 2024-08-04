@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+
+    <!-- Bootstrap -->
+    <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link th:href="@{/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+    <!-- NProgress -->
+    <link th:href="@{/vendors/nprogress/nprogress.css}" rel="stylesheet">
+    <!-- iCheck -->
+    <link th:href="@{/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
+    <style>
+        .text-complete {
+            color: green;
+        }
+
+        .text-cancelled {
+            color: red;
+        }
+
+        .text-confirm {
+            color: yellowgreen;
+        }
+
+    </style>
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div th:insert="~{fragments/sidebar.html}"></div>
+
+
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Orders List</h3>
+                    </div>
+
+                    <div class="title_right">
+                        <div class="col-md-5 col-sm-5   form-group pull-right top_search">
+                            <form action="/saler/orders" method="GET" class="input-group">
+                                <input type="text" class="form-control" placeholder="Search for..." name="searchQuery"
+                                       th:value="${searchQuery}">
+                                <input type="hidden" name="startDate" th:value="${startDate}">
+                                <input type="hidden" name="endDate" th:value="${endDate}">
+                                <input type="hidden" name="status" th:value="${status}">
+                                <input type="hidden" name="size" th:value="${size}">
+                                <span class="input-group-btn">
+                <button class="btn btn-secondary" type="submit">Find</button>
+            </span>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <form id="filterForm" action="/saler/orders" method="GET" class="mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="startDate">Start Date:</label>
+                            <input type="date" name="startDate" id="startDate" class="form-control"
+                                   th:value="${startDate}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="endDate">End Date:</label>
+                            <input type="date" name="endDate" id="endDate" class="form-control" th:value="${endDate}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status">Status:</label>
+                            <select name="status" id="status" class="form-control">
+                                <option value="">All</option>
+                                <option value="Pending Confirmation" th:selected="${status eq 'Pending Confirmation'}">
+                                    Pending Confirmation
+                                </option>
+                                <option value="Confirm and Shipping" th:selected="${status eq 'Confirm and Shipping'}">
+                                    Confirm and Shipping
+                                </option>
+                                <option value="Completed" th:selected="${status eq 'Completed'}">Completed</option>
+                                <option value="Cancelled" th:selected="${status eq 'Cancelled'}">Cancelled</option>
+
+                            </select>
+                        </div>
+                        <input type="hidden" name="searchQuery" th:value="${searchQuery}">
+                        <input type="hidden" name="size" th:value="${size}">
+                        <div class="col-md-3 align-self-end">
+                            <button type="submit" class="btn btn-primary mt-2">Filter</button>
+                            <a class="button blue" th:href="@{/saler/export(startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}">Export to Excel</a>
+                        </div>
+
+                    </div>
+                </form>
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <!-- start project list -->
+                                <table class="table table-striped projects">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 1%">Id</th>
+                                        <th style="width: 20%">Products</th>
+                                        <th style="width: 20%">Image</th>
+                                        <th>Total amount($)</th>
+                                        <th>Order date</th>
+                                        <th>Purchaser</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="order :${orderlist}">
+                                        <td>
+                                            <a th:href="@{/saler/orders/orderdetails/{id}(id=${order.orderID})}"
+                                               th:text="${order.orderID}"></a>
+                                        </td>
+                                        <td>
+                                            <a th:text="${order.productName}"></a>
+                                            <a th:if="${order.countP > 0}"
+                                               th:text="'and ' + ${order.countP} + ' Products'"></a>
+
+                                        </td>
+                                        <td>
+                                            <img style="width: 38%;"
+                                                 th:src="${order.image}">
+                                        </td>
+                                        <td class="project_progress">
+                                            <p th:text="${order.totalAmount}"></p>
+                                        </td>
+                                        <td class="project_progress">
+                                            <p th:text="${order.orderDate}"></p>
+                                        </td>
+                                        <td>
+                                            <p th:text="${order.username}"></p>
+                                        </td>
+                                        <td>
+                                            <p th:text="${order.status}"
+                                               th:class="${order.status == 'Completed' ? 'text-complete' :
+                                                           order.status == 'Cancelled' ? 'text-cancelled' :
+                                                            order.status == 'Confirm and Shipping' ? 'text-confirm':''} "></p>
+                                        </td>
+                                        <td>
+                                            <th:block th:if="${order.status == 'Pending Confirmation'}">
+                                                <a class="button blue"
+                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=2)}">Confirm</a>
+                                                <a class="button red"
+                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
+                                            </th:block>
+
+                                            <th:block th:if="${order.status == 'Confirm and Shipping'}">
+                                                <a class="button green"
+                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=1)}">Completed</a>
+                                                <a class="button red"
+                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
+                                            </th:block>
+
+
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                                <!-- end project list -->
+                                <nav aria-label="...">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <form id="paginationForm" action="/saler/orders" method="GET" class="mb-0">
+                                            <label for="size">Items per page:</label>
+                                            <select name="size" id="size"
+                                                    class="form-select form-select-sm d-inline w-auto"
+                                                    onchange="this.form.submit()">
+                                                <option value="5" th:selected="${size == 5}">5</option>
+                                                <option value="10" th:selected="${size == 10}">10</option>
+                                                <option value="15" th:selected="${size == 15}">15</option>
+                                            </select>
+                                            <input type="hidden" name="startDate" th:value="${startDate}">
+                                            <input type="hidden" name="endDate" th:value="${endDate}">
+                                            <input type="hidden" name="status" th:value="${status}">
+                                            <input type="hidden" name="searchQuery" th:value="${searchQuery}">
+                                        </form>
+                                        <ul class="pagination mb-0">
+                                            <li class="page-item"
+                                                th:classappend="${orderlist.hasPrevious()} ? '': 'disabled'">
+                                                <a class="page-link"
+                                                   th:href="@{/saler/orders(page=${orderlist.number}, size=${size},startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}"
+                                                   aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                            <li class="page-item"
+                                                th:each="i : ${#numbers.sequence(1, orderlist.totalPages)}"
+                                                th:classappend="${orderlist.number +1 == i} ? 'active'">
+                                                <a class="page-link"
+                                                   th:href="@{/saler/orders(page=${i}, size=${size},startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}"
+                                                   th:text="${i}"></a>
+                                            </li>
+                                            <li class="page-item"
+                                                th:classappend="${orderlist.hasNext()} ? '': 'disabled'">
+                                                <a class="page-link"
+                                                   th:href="@{/saler/orders(page=${orderlist.number +2 }, size=${size},startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}"
+                                                   aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+
+                                    </div>
+                                </nav>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{/vendors/nprogress/nprogress.js}"></script>
+<!-- bootstrap-progressbar -->
+<script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+
+<!-- Custom Theme Scripts -->
+<script th:src="@{/build/js/custom.min.js}"></script>
+
+</body>
+</html>

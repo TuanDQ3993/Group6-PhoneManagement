@@ -41,4 +41,8 @@ public class Orders {
 
     @OneToMany(mappedBy = "order")
     List<OrderDetail> orderDetails;
+
+
+    @OneToMany(mappedBy = "order")
+    List<WarrantyRepair> warrantyRepairs;
 }

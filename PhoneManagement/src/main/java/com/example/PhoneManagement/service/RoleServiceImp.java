@@ -45,4 +45,14 @@ public class RoleServiceImp implements RoleService {
     public Roles getRoleByName(String roleName) {
         return roleRepository.findByRoleName(roleName);
     }
+
+
+    public Roles getRoleById(int roleId) {
+        return roleRepository.findById(roleId);
+    }
+
+
+    public Roles getDefaultRole() {
+        return roleRepository.findById(1);
+    }
 }

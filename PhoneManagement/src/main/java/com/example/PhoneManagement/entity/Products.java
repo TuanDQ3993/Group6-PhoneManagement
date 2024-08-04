@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,8 +33,7 @@ public class Products {
     @Column(name = "quantity")
     int quantity;
 
-    @Column(name="price", precision = 10, scale = 2)
-    BigDecimal price ;
+
 
     @Column(name="warranty_period")
     int warrantyPeriod;
@@ -43,16 +41,16 @@ public class Products {
     @Column(name="created_at")
     Date createdAt;
 
+    @Column(name="brand_name")
+    String brandName;
+
     @ManyToOne
     @JoinColumn(name="category_id")
     Category category;
 
     @OneToMany(mappedBy = "products", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<ProductColor> productColorList = new ArrayList<>();
+    List<ProductInfo> productInfoList = new ArrayList<>();
 
-
-    @OneToMany(mappedBy = "products")
-    List<OrderDetail> orderDetailList;
-
-
+//    @OneToMany(mappedBy = "products")
+//    List<OrderDetail> orderDetailList;
 }

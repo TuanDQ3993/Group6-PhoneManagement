@@ -7,6 +7,7 @@ import com.example.PhoneManagement.security.JwtService;
 import com.example.PhoneManagement.service.LoginServiceImp;
 import com.example.PhoneManagement.service.imp.LoginService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,9 +49,16 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String checkLogin(@ModelAttribute("loginRequest") AuthenticationRequest request, Model model) {
+    public String checkLogin(@ModelAttribute("loginRequest") AuthenticationRequest request, Model model, HttpSession session) {
         try {
             AuthenticationResponse jwt = loginService.checklogin(request);
+
+            Users user = loginService.findByUserName(request.getUsername());
+
+            if (!user.isActive()) {
+                model.addAttribute("error", "Your account is inactive.Login other account!");
+                return "login";
+            }
 
             Cookie cookie = new Cookie("Authorization", jwt.getToken());
             cookie.setHttpOnly(true); // Bảo mật, ngăn JavaScript truy cập cookie này
@@ -58,18 +66,16 @@ public class LoginController {
             cookie.setMaxAge(86400);// 1 day
             response.addCookie(cookie);
 
-            Users user = loginService.findByUserName(request.getUsername());
-
             if (user.getRole().getRoleName().equals("ADMIN")) {
-                return "redirect:/auth/home";
-            }
-            else if(user.getRole().getRoleName().equals("SALER")) {
+                return "redirect:/admin/products";
+            } else if (user.getRole().getRoleName().equals("SALER")) {
                 return "redirect:/saler/dashboard";
+            } else if (user.getRole().getRoleName().equals("TECHNICAL STAFF")) {
+                return "redirect:/technical/dashboard_technical";
+            }else{
+                return "redirect:/home/hompage";
             }
-            else if(user.getRole().getRoleName().equals("TECHNICAL")) {
-                return "redirect:/technical/dashboard";
-            }
-            return "login";
+
         } catch (Exception e) {
             model.addAttribute("error", "Login unsuccessful. Please check the information again.");
             return "login";

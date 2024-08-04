@@ -1,6 +1,5 @@
 package com.example.PhoneManagement.repository;
 
-import com.example.PhoneManagement.entity.ProductColor;
 import com.example.PhoneManagement.entity.Products;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +19,12 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     @Query(value = "select n from Products n")
     List<Products> getListProduct();
 
-    @Query(value = "select ten from Products where id=: id", nativeQuery = true)
-    String getNameById(@Param("id") int id);
+    Page<Products> findByCategoryCategoryId(int categoryId, Pageable pageable);
+
+    @Query("SELECT p FROM Products p ORDER BY p.createdAt DESC")
+    Page<Products> findTop8ByOrderByCreatedAtDesc(Pageable pageable);
+
+    @Query("SELECT p FROM Products p WHERE p.category.categoryId = :categoryId ORDER BY p.createdAt DESC")
+    Page<Products> findTop8ByCategoryIdOrderByCreatedAtDesc(@Param("categoryId") int categoryId, Pageable pageable);
+
 }
