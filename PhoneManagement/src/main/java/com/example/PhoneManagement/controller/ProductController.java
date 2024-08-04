@@ -102,8 +102,8 @@ public class ProductController {
     }
     @PostMapping("/{productId}/update")
     public String updateProductColor(@PathVariable("productId") int productId,
-                                     @RequestParam("proColorId") int proId,
-                                     @RequestParam("colors") int colors,
+                                     @RequestParam("proColorId") int proColorId,
+                                     @RequestParam("colors") int colorId,
                                      @RequestParam("image") MultipartFile image,
                                      @RequestParam("quantity") int quantity,
                                      Model model) {
@@ -114,8 +114,6 @@ public class ProductController {
                 Files.createDirectories(uploadDir);
             } catch (IOException e) {
                 e.printStackTrace();
-                model.addAttribute("errors", "Failed to create upload directory");
-                return "product-update";
             }
         }
 
@@ -132,37 +130,55 @@ public class ProductController {
                 fileImage = "/uploads/" + fileName.toLowerCase();
             } catch (IOException e) {
                 e.printStackTrace();
-                model.addAttribute("errors", "Failed to upload image");
-                return "product-update";
             }
         }
 
-        // Tạo đối tượng ProductColorUpdate
         ProductColorUpdate request = new ProductColorUpdate();
         request.setProductId(productId);
-        request.setColorId(colors);
+        request.setColorId(colorId);
         request.setImage(fileImage);
         request.setQuantity(quantity);
 
-        // Cập nhật thông tin màu sắc sản phẩm
         try {
-            productService.updateProductColor(proId, request, productId);
+            productService.updateProductColor(proColorId, request);
         } catch (Exception e) {
             e.printStackTrace();
-            model.addAttribute("errors", "Failed to update product color");
-            return "product-update";
         }
-
-        model.addAttribute("success", "Product color updated successfully");
         return "redirect:/admin/products/" + productId;
     }
+
 
     @PostMapping("/{productId}/add")
     public String addProductColor(@PathVariable("productId") int proId,
                                   @RequestParam("color") int color,
                                   @RequestParam("image") MultipartFile image,
                                   @RequestParam("quantity") int quantity){
-        String fileImage=productService.uploadFile(image);
+        Path uploadDir = Paths.get("uploads/");
+
+        if (!Files.exists(uploadDir)) {
+            try {
+                Files.createDirectories(uploadDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String fileImage = null;
+        if (image != null && !image.isEmpty()) {
+            try {
+                String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+                Path filePath = uploadDir.resolve(fileName);
+
+                try (InputStream inputStream = image.getInputStream()) {
+                    Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                fileImage = "/uploads/" + fileName.toLowerCase();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         ProductColorCreateRequest request=new ProductColorCreateRequest();
         request.setProId(proId);
         request.setImage(fileImage);

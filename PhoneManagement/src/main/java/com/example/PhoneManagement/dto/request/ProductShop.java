@@ -1,22 +1,24 @@
 package com.example.PhoneManagement.dto.request;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductUpdateRequest {
-    String productName;
-    int category;
-    BigDecimal price;
+public class ProductShop {
+    int id;
+    int category_id;
+    int color_id;
     String description;
-    String brandName;
+    String productName;
+    BigDecimal price;
+    String image;
     int quantity;
-    int warrantyPeriod;
 }

@@ -33,5 +33,5 @@ public class OrderDetail {
 
     @ManyToOne
     @JoinColumn(name="product_color_id")
-    ProductColor productColor;
+    ProductInfo productInfo;
 }

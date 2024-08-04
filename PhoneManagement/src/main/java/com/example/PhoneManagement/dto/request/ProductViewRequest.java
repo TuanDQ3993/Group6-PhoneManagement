@@ -22,6 +22,7 @@ public class ProductViewRequest {
     List<String> colorName;
     List<String> image;
     BigDecimal price;
+    String brandName;
     String description;
     List<Integer> quantity;
     int warrantyPeriod;

@@ -194,12 +194,10 @@
                                                             </select>
                                                         </td>
                                                         <td style="width: 30%;">
-                                                            <!--                                                            <span th:text="${product.image.get(i)}"></span>-->
-                                                            <!--                                                            <span><img style="width: 20%;" th:src="@{/uploads/{image}(image=${product.image.get(i)})}" /></span>-->
                                                             <span><img style="width: 20%;" th:src="${product.image.get(i)}" /></span>
                                                             <input type="file" class="form-control edit-input" name="image"
                                                                    th:value="${product.image.get(i)}"
-                                                                   style="display:none;" required/>
+                                                                   style="display:none;"/>
                                                         </td>
                                                         <td>
                                                             <span th:text="${product.quantity.get(i)}"></span>
@@ -207,6 +205,12 @@
                                                                    th:value="${product.quantity.get(i)}"
                                                                    style="display:none;" required/>
                                                         </td>
+<!--                                                        <td>-->
+<!--                                                            <span th:text="${product.price.get}"></span>-->
+<!--                                                            <input type="number" class="form-control edit-input" name="price"-->
+<!--                                                                   th:value="${product.price.get(i)}"-->
+<!--                                                                   style="display:none;" required/>-->
+<!--                                                        </td>-->
                                                         <td>
                                                             <input type="hidden" name="index" th:value="${i}"/>
                                                             <button type="button"
@@ -291,6 +295,10 @@
                 <div class="form-group">
                     <label for="quantity">Quantity</label>
                     <input type="number" class="form-control" id="quantity" name="quantity" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" class="form-control" id="price" name="price" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Product</button>
             </form>

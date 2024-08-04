@@ -72,10 +72,12 @@ public class LoginController {
                 return "redirect:/saler/dashboard";
             } else if (user.getRole().getRoleName().equals("WAREHOUSE STAFF")) {
                 return "redirect:/warehouse/dashboard";
-            } else if (user.getRole().getRoleName().equals("TECHNICAL")) {
+            } else if (user.getRole().getRoleName().equals("TECHNICAL STAFF")) {
                 return "redirect:/technical/dashboard";
+            }else{
+                return "redirect:/home/hompage";
             }
-            return "login";
+
         } catch (Exception e) {
             model.addAttribute("error", "Login unsuccessful. Please check the information again.");
             return "login";
