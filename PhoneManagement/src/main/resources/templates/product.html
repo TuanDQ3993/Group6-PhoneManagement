@@ -336,13 +336,13 @@
                             </div>
                             <div id="quantity-error" class="quantity-error"></div>
                         </div>
-                        <th:block th:if="${user.roleName == 'USER'}">
-
-                                <button type="submit" class="add-to-cart-btn">
-                                    <i class="fa fa-shopping-cart"></i> Add to Cart
-                                </button>
-
+                        <th:block>
+                            <button type="submit" class="add-to-cart-btn"
+                                    th:if="${user == null or user.roleName == 'USER'}">
+                                <i class="fa fa-shopping-cart"></i> Add to Cart
+                            </button>
                         </th:block>
+
                     </div>
                     </form>
                     <ul class="product-links">

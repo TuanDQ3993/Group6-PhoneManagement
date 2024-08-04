@@ -42,7 +42,7 @@ public class CartServiceImp implements CartService {
 
         var order = Orders.builder()
                 .user(user)
-                .salerId(2)
+                .salerId(getSaleMinOrder())
                 .orderDate(new Date())
                 .totalAmount(BigDecimal.valueOf(cart.getTotalPrice()))
                 .status(status)
@@ -67,5 +67,15 @@ public class CartServiceImp implements CartService {
             productInfo.setQuantity(productInfo.getQuantity() - item.getQuantity());
             productColorRepository.save(productInfo);
         }
+    }
+
+    @Override
+    public int getSaleMinOrder() {
+        return orderRepository.getSaleMinOrder();
+    }
+
+    @Override
+    public int getQuantityProduct(int id) {
+        return productColorRepository.getQuantityProduct(id);
     }
 }

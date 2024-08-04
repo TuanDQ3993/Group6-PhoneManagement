@@ -2,11 +2,10 @@ package com.example.PhoneManagement.service;
 
 import com.example.PhoneManagement.dto.request.*;
 import com.example.PhoneManagement.dto.response.ProductTopSeller;
+import com.example.PhoneManagement.entity.OrderDetail;
 import com.example.PhoneManagement.entity.Orders;
-import com.example.PhoneManagement.repository.OrderDetailRepository;
-import com.example.PhoneManagement.repository.OrderRepository;
-import com.example.PhoneManagement.repository.ProductRepository;
-import com.example.PhoneManagement.repository.UserRepository;
+import com.example.PhoneManagement.entity.ProductInfo;
+import com.example.PhoneManagement.repository.*;
 import com.example.PhoneManagement.service.imp.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +30,9 @@ public class OrderServiceImp implements OrderService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    ProductColorRepository productColorRepository;
 
 
     @Override
@@ -239,6 +241,17 @@ public class OrderServiceImp implements OrderService {
         Orders order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order Not Found"));
         order.setStatus(status);
         orderRepository.save(order);
+    }
+
+
+    @Override
+    public void backProduct(int id) {
+        Orders order= orderRepository.findById(id).get();
+        for (OrderDetail orderDetail : order.getOrderDetails()) {
+            ProductInfo productInfo = orderDetail.getProductInfo();
+            productInfo.setQuantity(productInfo.getQuantity() + orderDetail.getQuantity());
+            productColorRepository.save(productInfo);
+        }
     }
 
 

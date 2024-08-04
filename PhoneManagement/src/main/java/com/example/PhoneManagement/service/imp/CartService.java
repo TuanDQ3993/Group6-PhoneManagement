@@ -8,4 +8,8 @@ public interface CartService {
     ProductInfo getProductInfoById(int id);
 
     void addOrder(Users user, Cart cart, String name, String address, String tel, String note, String payment,String status);
+
+    int getSaleMinOrder();
+
+    int getQuantityProduct(int id);
 }
