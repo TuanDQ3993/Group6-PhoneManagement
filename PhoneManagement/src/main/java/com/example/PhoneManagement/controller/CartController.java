@@ -32,7 +32,9 @@ public class CartController {
     private UserService userService;
 
     @PostMapping("/addtocart")
-    public String addtocart(@RequestParam("productColorId") int productColorId, Model model, HttpSession session, Principal principal) {
+    public String addtocart(@RequestParam("productColorId") int productColorId,
+                            @RequestParam("number") int number,
+                            Model model, HttpSession session, Principal principal) {
         if (principal == null) {
             model.addAttribute("error", "You need login before adding to cart.");
             return "login";
@@ -44,7 +46,7 @@ public class CartController {
         }
         ProductInfo productInfo = cartService.getProductInfoById(productColorId);
         double price = productInfo.getPrice().doubleValue();
-        Item item = new Item(productInfo, price, 1);
+        Item item = new Item(productInfo, price, number);
         cart.addItem(item);
 
 
@@ -81,21 +83,19 @@ public class CartController {
         }
 
         Cart cart = (Cart) session.getAttribute("cart");
+        cart.removeItem(productColorId);
         if (cart != null) {
             model.addAttribute("cart", cart);
             model.addAttribute("size", cart.getItems().size());
             model.addAttribute("total", cart.getTotalPrice());
-        } else {
-            model.addAttribute("size", 0);
-            model.addAttribute("total", 0.0);
         }
-        cart.removeItem(productColorId);
+
 
         return "viewcart";
     }
 
     @GetMapping("checkout")
-    public String checkout(Model model, HttpSession session, Principal principal) {
+    public String checkout(Model model, HttpSession session, Principal principal,RedirectAttributes redirectAttributes) {
 
         if (principal != null) {
             String userName = principal.getName();
@@ -108,13 +108,25 @@ public class CartController {
 
         Cart cart = (Cart) session.getAttribute("cart");
         if (cart != null) {
+            if(cart.getItems().size() ==0){
+                return "redirect:/home/homepage";
+            }
+            for(Item i : cart.getItems()){
+                int quantity=cartService.getQuantityProduct(i.getProductColor().getProductcolorId());
+                if(quantity < i.getQuantity()){
+                    redirectAttributes.addFlashAttribute("errorquantity","The quantity of products in stock is not enough");
+                    return "redirect:/cart/viewcart";
+                }
+            }
+
             model.addAttribute("cart", cart);
             model.addAttribute("size", cart.getItems().size());
             model.addAttribute("total", cart.getTotalPrice());
         } else {
-            model.addAttribute("size", 0);
-            model.addAttribute("total", 0.0);
+            return "redirect:/home/homepage";
         }
+
+
 
 
         return "checkout";
@@ -131,17 +143,16 @@ public class CartController {
             model.addAttribute("error", "You need login before want view cart.");
             return "login";
         }
-
-
         Cart cart = (Cart) session.getAttribute("cart");
         if (cart != null) {
             model.addAttribute("cart", cart);
             model.addAttribute("size", cart.getItems().size());
             model.addAttribute("total", cart.getTotalPrice());
-        } else {
+        }else {
             model.addAttribute("size", 0);
             model.addAttribute("total", 0.0);
         }
+
 
         return "viewcart";
     }
@@ -151,7 +162,8 @@ public class CartController {
                           @RequestParam("id") int id,
                           Model model,
                           HttpSession session,
-                          Principal principal) {
+                          Principal principal,
+                          RedirectAttributes redirectAttributes) {
         if (principal != null) {
             String userName = principal.getName();
             Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
@@ -165,6 +177,13 @@ public class CartController {
         if (num == -1 && cart.getItemById(id).getQuantity() <= 1) {
             cart.removeItem(id);
         } else {
+            if(num==1){
+                int quantity=cartService.getQuantityProduct(id);
+                if(cart.getItemById(id).getQuantity()>quantity){
+                    redirectAttributes.addFlashAttribute("errorquantity","The quantity of products in stock is not enough");
+                    return "redirect:/cart/viewcart";
+                }
+            }
             ProductInfo productInfo = cartService.getProductInfoById(id);
             double price = productInfo.getPrice().doubleValue();
             cart.addItem(new Item(productInfo, price, num));
@@ -188,14 +207,12 @@ public class CartController {
                              RedirectAttributes redirectAttributes) {
 
         Cart cart = (Cart) session.getAttribute("cart");
-        if (cart == null) {
-            return "redirect:/home/homepage";
-        }
+
 
         if ("COD".equals(payment)) {
             String userName = principal.getName();
             Users users = userService.getUserByName(userName);
-            cartService.addOrder(users, cart, fullname, address, tel, note, payment);
+            cartService.addOrder(users, cart, fullname, address, tel, note, payment,"Pending Confirmation");
             return "redirect:/cart/ordersuccess";
         } else if ("QR".equals(payment)) {
             redirectAttributes.addAttribute("fullname", fullname);
@@ -221,12 +238,12 @@ public class CartController {
         String name=userDTO.get().getFullName();
 
         Cart cart = (Cart) session.getAttribute("cart");
-        String bankId = "BIDV"; // Mã ngân hàng
-        String accountNo = "5101976013"; // Số tài khoản
-        String template = "compact2.jpg"; // Tệp mẫu
-        long amount = (long) cart.getTotalPrice(); // Số tiền
-        String description = name + " mua hàng"; // Thông tin thêm
-        String accountName = "Hoang Phi Hong"; // Tên tài khoản
+        String bankId = "BIDV";
+        String accountNo = "5101976013";
+        String template = "compact2.jpg";
+        long amount = (long) cart.getTotalPrice();
+        String description = name + " mua hàng";
+        String accountName = "Hoang Phi Hong";
 
         // Tạo URL QR Code
         String qrCodeUrl = String.format(
@@ -256,7 +273,7 @@ public class CartController {
         Cart cart = (Cart) session.getAttribute("cart");
         String userName = principal.getName();
         Users users = userService.getUserByName(userName);
-        cartService.addOrder(users, cart, fullname, address, tel, note,"Online");
+        cartService.addOrder(users, cart, fullname, address, tel, note,"Online","Prepay");
         return "redirect:/cart/ordersuccess";
     }
 

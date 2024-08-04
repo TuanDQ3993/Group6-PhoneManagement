@@ -38,14 +38,14 @@ public class CartServiceImp implements CartService {
 
 
     @Override
-    public void addOrder(Users user, Cart cart, String name, String address, String tel, String note, String payment) {
+    public void addOrder(Users user, Cart cart, String name, String address, String tel, String note, String payment,String status) {
 
         var order = Orders.builder()
                 .user(user)
-                .salerId(2)
+                .salerId(getSaleMinOrder())
                 .orderDate(new Date())
                 .totalAmount(BigDecimal.valueOf(cart.getTotalPrice()))
-                .status("Pending Confirmation")
+                .status(status)
                 .note(note)
                 .receiver(name)
                 .address(address)
@@ -67,5 +67,15 @@ public class CartServiceImp implements CartService {
             productInfo.setQuantity(productInfo.getQuantity() - item.getQuantity());
             productColorRepository.save(productInfo);
         }
+    }
+
+    @Override
+    public int getSaleMinOrder() {
+        return orderRepository.getSaleMinOrder();
+    }
+
+    @Override
+    public int getQuantityProduct(int id) {
+        return productColorRepository.getQuantityProduct(id);
     }
 }
