@@ -76,7 +76,7 @@ public class LoginController {
             } else if (user.getRole().getRoleName().equals("TECHNICAL STAFF")) {
                 return "redirect:/technical/dashboard_technical";
             } else {
-                return "redirect:/home/hompage";
+                return "redirect:/home/homepage";
             }
 
         } catch (Exception e) {
