@@ -48,10 +48,6 @@ public class ProductInfo {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated;
 
-
-    @Column(name="isdeleted")
-    boolean isDeleted;
-
     @OneToMany(mappedBy = "productInfo")
     private List<OrderDetail> orderDetailList;
 
