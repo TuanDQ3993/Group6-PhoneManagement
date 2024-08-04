@@ -1,3 +1,4 @@
+
 package com.example.PhoneManagement.entity;
 
 import jakarta.persistence.*;
@@ -32,7 +33,7 @@ public class ProductInfo {
     private Colors colors;
 
     @Lob
-    @Column(name = "image", columnDefinition = "TEXT")  
+    @Column(name = "image", columnDefinition = "TEXT")
     private String image;
 
     @Column(name = "quantity", nullable = false)
