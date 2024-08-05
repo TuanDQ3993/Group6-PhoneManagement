@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -40,15 +37,15 @@ public class SalerController {
 
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model,Principal principal) {
+    public String dashboard(Model model, Principal principal) {
         String userName = principal.getName();
         Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
         model.addAttribute("user", userDTO.get());
-        model.addAttribute("order",orderService.countOrdersInCurrentMonth());
-        model.addAttribute("sale",orderService.countSalesInCurrentMonth());
-        model.addAttribute("totalamount",orderService.getTotalAmountForCurrentMonth());
-        model.addAttribute("customer",orderService.countCustomerInCurrentMonth());
-        model.addAttribute("topseller",orderService.getProductTopSellers());
+        model.addAttribute("order", orderService.countOrdersInCurrentMonth());
+        model.addAttribute("sale", orderService.countSalesInCurrentMonth());
+        model.addAttribute("totalamount", orderService.getTotalAmountForCurrentMonth());
+        model.addAttribute("customer", orderService.countCustomerInCurrentMonth());
+        model.addAttribute("topseller", orderService.getProductTopSellers());
 
         List<Double> totalAmounts = new ArrayList<>();
         for (int month = 1; month <= 12; month++) {
@@ -72,19 +69,20 @@ public class SalerController {
         String userName = principal.getName();
         Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
         model.addAttribute("user", userDTO.get());
-
+        if (userDTO.get().getRoleName().equals("ADMIN")) {
+            model.addAttribute("listsale", orderService.getAllSale());
+        }
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
-        String statusO=status.orElse(null);
+        String statusO = status.orElse(null);
         String query = searchQuery.orElse("");
-
 
 
         LocalDate start = startDate.map(LocalDate::parse).orElse(LocalDate.now().minusMonths(1));
         LocalDate end = endDate.map(LocalDate::parse).orElse(LocalDate.now());
 
-        PageableDTO pageableDTO = new PageableDTO(currentPage-1, pageSize);
-        Page<OrderInfoDTO> orderlist = orderService.findPaginated(pageableDTO, start, end,statusO,query,userDTO.get());
+        PageableDTO pageableDTO = new PageableDTO(currentPage - 1, pageSize);
+        Page<OrderInfoDTO> orderlist = orderService.findPaginated(pageableDTO, start, end, statusO, query, userDTO.get());
 
 
         model.addAttribute("size", pageSize);
@@ -114,23 +112,25 @@ public class SalerController {
     }
 
     @GetMapping("/changestatus")
-    public String changeStatus(Model model, Principal principal,
-                               @RequestParam("oid") int oid,
-                               @RequestParam("status") String status,
-                               @RequestParam("value") int value
-    ){
-        if(value==2){
-            orderService.changeStatusOrder(oid,"Confirm and Shipping");
-        }
-        else if(value==1){
-            orderService.changeStatusOrder(oid,"Completed");
-        }
-        else{
-            orderService.changeStatusOrder(oid,"Cancelled");
+    public String changeStatus(@RequestParam("oid") int oid,
+                               @RequestParam("value") int value) {
+        if (value == 2) {
+            orderService.changeStatusOrder(oid, "Confirm and Shipping");
+        } else if (value == 1) {
+            orderService.changeStatusOrder(oid, "Completed");
+        } else {
+            orderService.changeStatusOrder(oid, "Cancelled");
             orderService.backProduct(oid);
         }
 
 
+        return "redirect:/saler/orders";
+    }
+
+    @PostMapping("changesale")
+    public String changeSale(@RequestParam("sale") int sale,
+                             @RequestParam("orderid") int orderid) {
+        orderService.changeSale(orderid, sale);
         return "redirect:/saler/orders";
     }
 
@@ -142,22 +142,22 @@ public class SalerController {
                               @RequestParam("searchQuery") String searchQuery,
                               Principal principal) throws IOException {
         response.setContentType("application/octet-stream");
-        String headerKey="Content-Disposition";
+        String headerKey = "Content-Disposition";
 
-        DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-        String currentDateTime=dateFormat.format(new Date());
-        String fileName="orders_"+currentDateTime+".xlsx";
-        String headerValue="attachment; filename= "+fileName;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String currentDateTime = dateFormat.format(new Date());
+        String fileName = "orders_" + currentDateTime + ".xlsx";
+        String headerValue = "attachment; filename= " + fileName;
         response.setHeader(headerKey, headerValue);
 
         String userName = principal.getName();
         Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
         LocalDate start = startDate.map(LocalDate::parse).orElse(LocalDate.now().minusMonths(1));
         LocalDate end = endDate.map(LocalDate::parse).orElse(LocalDate.now());
-        List<OrderInfoDTO> listOrders=orderService.getListOrderFilter(start,end,status,searchQuery,userDTO.get());
+        List<OrderInfoDTO> listOrders = orderService.getListOrderFilter(start, end, status, searchQuery, userDTO.get());
 
 
-        OrderExcelExporter excelExporter=new OrderExcelExporter(listOrders);
+        OrderExcelExporter excelExporter = new OrderExcelExporter(listOrders);
         excelExporter.export(response);
     }
 }
