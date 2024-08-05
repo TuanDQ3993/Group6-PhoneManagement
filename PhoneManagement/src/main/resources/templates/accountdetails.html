@@ -1,96 +1,159 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
-    <title>Users List - Bootdey.com</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-        body {
-            background: #f7f7ff;
-            margin-top: 20px;
+    <meta charset="UTF-8">
+    <title>Gentelella Alela! | Users List</title>
+    <!-- Bootstrap -->
+    <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link th:href="@{/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+    <!-- NProgress -->
+    <link th:href="@{/vendors/nprogress/nprogress.css}" rel="stylesheet">
+    <!-- iCheck -->
+    <link th:href="@{/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
+    <style>
+        .form-inline .form-group {
+            margin-left: -9px;
         }
 
-        .card {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            word-wrap: break-word;
-            background-color: #fff;
-            background-clip: border-box;
-            border: 0 solid transparent;
-            border-radius: .25rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
+        .pagination .page-item.active .page-link {
+            background-color: #007bff; /* Change to your preferred color */
+            border-color: #007bff; /* Ensure the border color matches the background if needed */
+            color: white; /* Change text color for better visibility */
         }
 
-        .me-2 {
-            margin-right: .5rem !important;
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9; /* Make the odd rows a bit lighter */
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <div class="main-body">
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="main-breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/auth/home">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Users List</li>
-            </ol>
-        </nav>
-        <!-- /Breadcrumb -->
 
-        <div class="card">
-            <div class="card-body">
-                <h1>Users List</h1>
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Avatar</th>
-                        <th>Username</th>
-                        <th>Full Name</th>
-                        <th>Address</th>
-                        <th>Phone Number</th>
-                        <th>Active</th>
-                        <th>Created At</th>
-                        <th>Role</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="user : ${users}">
-                        <td><img th:src="@{${user.avatar}}" alt="avatar" class="rounded-circle" width="50"></td>
-                        <td th:text="${users.username}"></td>
-                        <td th:text="${users.fullName}"></td>
-                        <td th:text="${users.address}"></td>
-                        <td th:text="${users.phoneNumber}"></td>
-                        <td th:text="${users.active} ? 'Đang hoạt động' : 'Dừng hoạt động'"></td>
-                        <td th:text="${#dates.format(users.createdAt, 'yyyy-MM-dd')}"></td>
-                        <td th:text="${users.role.roleName}"></td> <!-- Displaying the user's role -->
-                        <!-- Role selection form -->
-                        <td>
-                            <form th:action="@{/admin/changeRole/{id}(id=${users.userId})}" method="post">
-                                <select name="roleId" class="form-control">
-                                    <option th:each="role : ${roles}"
-                                            th:value="${role.roleId}"
-                                            th:text="${role.roleName}">
-                                    </option>
-                                </select>
-                                <button type="submit" class="btn btn-primary mt-2">Save Role</button>
-                            </form>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+
+            <div th:insert="~{fragments/sidebar.html}"></div>
+
+
+        <!-- Main Content -->
+        <div class="right_col" role="main">
+            <div class="page-title">
+                <div class="col-md-12">
+                    <h3>Account Details</h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <ol class="breadcrumb" style="margin-left: 10px;">
+                    <li class="breadcrumb-item"><a href="/admin/users">Back</a></li>
+                </ol>
+                <div class="col-md-12">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <table class="table table-striped projects">
+                                <thead>
+                                <tr>
+                                    <th>Avatar</th>
+                                    <th>Username</th>
+                                    <th>Full Name</th>
+                                    <th>Address</th>
+                                    <th>Phone Number</th>
+                                    <th>Active</th>
+                                    <th>Created At</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="user : ${users}">
+                                    <td>
+                                        <img th:src="@{${user.avatar}}" alt="Avatar" class="rounded-circle" width="50">
+                                    </td>
+                                    <td th:text="${user.username}"></td>
+                                    <td th:text="${user.fullName}"></td>
+                                    <td th:text="${user.address}"></td>
+                                    <td th:text="${user.phoneNumber}"></td>
+                                    <td th:text="${user.active ? 'Đang hoạt động' : 'Dừng hoạt động'}"></td>
+                                    <td th:text="${#dates.format(user.createdAt, 'yyyy-MM-dd')}"></td>
+                                    <td th:text="${user.role.roleName}"></td>
+                                    <td th:unless="${user.userId == userId}">
+                                        <form th:action="@{/admin/changeRole/{id}(id=${user.userId})}" method="post">
+                                            <select name="roleId" class="form-control">
+                                                <option th:each="role : ${roles}"
+                                                        th:value="${role.roleId}"
+                                                        th:selected="${role.roleId == user.role.roleId}"
+                                                        th:text="${role.roleName}">
+                                                </option>
+                                            </select>
+                                            <button type="submit" class="btn btn-primary mt-2">Save Role</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <!-- /Main Content -->
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript">
-</script>
+
+<!-- JavaScript Files -->
+<script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
+<script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
+<script th:src="@{/vendors/nprogress/nprogress.js}"></script>
+<script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+<script th:src="@{/build/js/custom.min.js}"></script>
 </body>
 </html>

@@ -42,6 +42,7 @@ public class Products {
     @Column(name="brand_name")
     String brandName;
 
+
     @ManyToOne
     @JoinColumn(name="category_id")
     Category category;
