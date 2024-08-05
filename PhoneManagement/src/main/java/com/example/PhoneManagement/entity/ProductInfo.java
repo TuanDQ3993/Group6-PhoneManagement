@@ -1,3 +1,4 @@
+
 package com.example.PhoneManagement.entity;
 
 import jakarta.persistence.*;
@@ -50,6 +51,5 @@ public class ProductInfo {
 
     @OneToMany(mappedBy = "productInfo")
     private List<OrderDetail> orderDetailList;
-
 
 }

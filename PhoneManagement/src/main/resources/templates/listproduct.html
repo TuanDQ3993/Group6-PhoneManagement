@@ -62,13 +62,13 @@
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
         var colors = /*[[${colors}]]*/ [];
-        console.log(colors); // Kiểm tra dữ liệu trong console
-
         let colorIndex = 0;
 
         function addColor() {
+
+            // Thêm ID màu đã chọn vào danh sách
             const colorOptions = colors.map(color =>
-                `<option value="${color.colorId}">${color.colorName}</option>`
+                <option value="${color.colorId}">${color.colorName}</option>
             ).join('');
             const colorHtml = `
                 <div class="color-group" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; background-color: #f9f9f9;">
@@ -80,8 +80,8 @@
                     <label for="colors${colorIndex}.quantity" style="display: block; margin-top: 5px;">Quantity:</label>
                     <input type="number" id="colors${colorIndex}.quantity" name="colors[${colorIndex}].quantity" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
 
-                    <label for="colors${colorIndex}.price" style="display: block; margin-top: 5px;">Quantity:</label>
-                    <input type="number" id="colors${colorIndex}.price" name="colors[${colorIndex}].price" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
+                    <label for="colors${colorIndex}.price" style="display: block; margin-top: 5px;">Price:</label>
+                    <input type="text" id="colors${colorIndex}.price" name="colors[${colorIndex}].price" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
 
                     <label for="colors${colorIndex}.image" style="display: block; margin-top: 5px;">Image URL:</label>
                     <input type="file" id="colors${colorIndex}.image" name="colors[${colorIndex}].image" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
@@ -183,23 +183,10 @@
 
         <!-- page content -->
         <div class="right_col" role="main">
-            <div class="">
+            <div class="row">
                 <div class="page-title">
                     <div class="title_left">
                         <h3>Product List</h3>
-                    </div>
-
-                    <div class="title_right">
-                        <form method="post" th:action="@{/admin/products/search}">
-                            <div class="col-md-5 col-sm-5   form-group pull-right top_search">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" th:value="${search}" name="search"
-                                           placeholder="Search for...">
-                                    <button class="btn btn-secondary" type="submit">Go!</button>
-                                </div>
-                            </div>
-                        </form>
-
                     </div>
                 </div>
 
@@ -209,47 +196,45 @@
                         <button style="font-size: 17px; padding: 5px 20px; border: none; background: #cdc9c9" id="openModalBtn">Add</button>
                         <div class="x_panel">
                             <div class="x_content">
-                                <form th:action="@{/admin/products}" method="get" style="margin-bottom: 20px; display: inline-block;">
-                                    <div style="display: inline-block;">
-                                        <label for="categoryId" style="font-weight: bold;">Category:</label>
-                                        <select id="categoryId" name="categoryId" style="padding: 5px; margin-right: 10px;">
-                                            <option value="" th:selected="${categoryId == null}">All</option>
-                                            <option th:each="cate : ${category}"
-                                                    th:value="${cate.categoryId}"
-                                                    th:text="${cate.categoryName}"
-                                                    th:selected="${cate.categoryId == categoryId}"></option>
-                                        </select>
-                                    </div>
-                                    <div style="display: inline-block;">
-                                        <label for="sortField">Sort By:</label>
-                                        <select id="sortField" name="sortField">
-                                            <option value="productId" th:text="'ID'" th:selected="${sortField == 'productId'}"></option>
-                                            <option value="productName" th:text="'Name'" th:selected="${sortField == 'productName'}"></option>
-                                        </select>
-                                    </div>
-                                    <div style="display: inline-block;">
-                                        <label for="sortDir">Sort Direction:</label>
-                                        <select id="sortDir" name="sortDir">
-                                            <option value="asc" th:text="'Ascending'" th:selected="${sortDir == 'asc'}"></option>
-                                            <option value="desc" th:text="'Descending'" th:selected="${sortDir == 'desc'}"></option>
-                                        </select>
-                                    </div>
-                                    <button type="submit" style="margin-top: 10px;">Filter</button>
-                                </form>
-                                <form method="get" th:action="@{/admin/products}" style="float: right; margin-bottom: 14px;">
-                                    <div class="form-group">
-                                        <label for="size" style="font-weight: bold;">Products per page:</label>
-                                        <select id="size" name="size" class="form-control" style="padding: 5px;" onchange="this.form.submit()">
-                                            <option th:selected="${pageSize == 5}" value="5">5</option>
-                                            <option th:selected="${pageSize == 10}" value="10">10</option>
-                                            <option th:selected="${pageSize == 20}" value="20">20</option>
-                                        </select>
-                                    </div>
-                                    <input type="hidden" name="page" th:value="${currentPage}" />
-                                    <input type="hidden" name="sortField" th:value="${sortField}" />
-                                    <input type="hidden" name="sortDir" th:value="${sortDir}" />
-                                    <input type="hidden" name="categoryId" th:value="${categoryId}" />
-                                </form>
+                                <div class="row" >
+                                    <form th:action="@{/admin/products}" method="get" style="margin-bottom: 20px; display: inline-block;" class="col-md-8">
+                                        <div style="display: inline-block;">
+                                            <label for="categoryId" style="font-weight: bold;">Category:</label>
+                                            <select id="categoryId" name="categoryId" style="padding: 5px; margin-right: 10px;">
+                                                <option value="" th:selected="${categoryId == null}">All</option>
+                                                <option th:each="cate : ${category}"
+                                                        th:value="${cate.categoryId}"
+                                                        th:text="${cate.categoryName}"
+                                                        th:selected="${cate.categoryId == categoryId}"></option>
+                                            </select>
+                                        </div>
+                                        <div style="display: inline-block;">
+                                            <label for="sortField">Sort By:</label>
+                                            <select id="sortField" name="sortField">
+                                                <option value="productId" th:text="'ID'" th:selected="${sortField == 'productId'}"></option>
+                                                <option value="productName" th:text="'Name'" th:selected="${sortField == 'productName'}"></option>
+                                            </select>
+                                        </div>
+                                        <div style="display: inline-block;">
+                                            <label for="sortDir">Sort Direction:</label>
+                                            <select id="sortDir" name="sortDir">
+                                                <option value="asc" th:text="'Ascending'" th:selected="${sortDir == 'asc'}"></option>
+                                                <option value="desc" th:text="'Descending'" th:selected="${sortDir == 'desc'}"></option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" style="margin-top: 10px;">Filter</button>
+                                    </form>
+                                    <form method="get" th:action="@{/admin/products}" class="col-md-4">
+                                        <div class="col-md-5 col-sm-5 form-group pull-right top_search">
+                                            <div class="input-group"  style="width: 400px;">
+                                                <input type="text" class="form-control" th:value="${search}" name="search"
+                                                       placeholder="Search for...">
+                                                <button class="btn btn-secondary" type="submit">Go!</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
                                 <table class="table table-striped projects">
                                     <thead>
                                     <tr>
@@ -257,11 +242,11 @@
                                         <th style="width: 20%">ProductName</th>
                                         <!--                                        <th>Image</th>-->
                                         <th>Quantity</th>
-                                        <th><a th:href="@{/admin/products(page=${currentPage}, sortField='price', sortDir=${reverseSortDir}, cacategoryId=${categoryId})}">Price</a></th>
+                                        <th style="width: 400px;">Description</th>
                                         <th>Category</th>
                                         <th>CreateAt</th>
                                         <th>WarrantyPeriod</th>
-                                        <th style="width: 20%">Edit</th>
+                                        <th style="width: 20%">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -281,6 +266,10 @@
                                                        th:value="${product.quantity}" style="display: none;">
                                             </td>
                                             <td>
+                                                <span class="view-span" th:text="${product.description}"></span>
+                                                <textarea class="form-control edit-input" name="description" th:text="${product.description}" style="display: none;"></textarea>
+                                            </td>
+                                            <td>
                                                 <span class="view-span" th:each="category : ${category}" th:if="${category.categoryId == product.categoryId}" th:text="${category.categoryName}"></span>
                                                 <select class="form-control edit-input" name="cateId"
                                                         style="display: none;">
@@ -290,19 +279,14 @@
                                                             th:selected="${category.categoryId == product.categoryId}"></option>
                                                 </select>
                                             </td>
-                                            <td>
-                                                <span class="view-span" th:text="${product.createAt}"></span>
-                                                <input type="text" class="form-control edit-input" name="createAt"
-                                                       th:value="${product.createAt}" readonly style="display: none;">
-                                            </td>
+                                            <td th:text="${product.createAt}"></td>
                                             <td>
                                                 <span class="view-span" th:text="${product.warrantyPeriod}"></span>
                                                 <input type="text" class="form-control edit-input" name="warrantyPeriod"
                                                        th:value="${product.warrantyPeriod}" style="display: none;">
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-primary btn-xs edit-btn"><i
-                                                        class="fa fa-folder"></i> Edit
+                                                <button type="button" class="btn btn-primary btn-xs edit-btn"><i class="fa fa-edit"></i> Edit
                                                 </button>
                                                 <button type="button" class="btn btn-primary btn-xs view-btn"><i
                                                         class="fa fa-folder"></i> <a style="color: white;" th:href="@{/admin/products/{productId}(productId=${product.productId})}">View</a>
@@ -319,7 +303,22 @@
                                     </tbody>
                                 </table>
                                 <!-- end project list -->
-                                <div>
+                                <div class="d-flex" style="justify-content: space-between;">
+
+                                    <form method="get" th:action="@{/admin/products}" style="float: right; margin-bottom: 14px;">
+                                        <div class="form-group">
+                                            <label for="size" style="font-weight: bold;">Products per page:</label>
+                                            <select id="size" name="size" class="form-control" style="padding: 5px;" onchange="this.form.submit()">
+                                                <option th:selected="${pageSize == 5}" value="5">5</option>
+                                                <option th:selected="${pageSize == 10}" value="10">10</option>
+                                                <option th:selected="${pageSize == 20}" value="20">20</option>
+                                            </select>
+                                        </div>
+                                        <input type="hidden" name="page" th:value="${currentPage}" />
+                                        <input type="hidden" name="sortField" th:value="${sortField}" />
+                                        <input type="hidden" name="sortDir" th:value="${sortDir}" />
+                                        <input type="hidden" name="categoryId" th:value="${categoryId}" />
+                                    </form>
                                     <ul class="pagination">
                                         <li th:if="${productColorPage.hasPrevious()}" class="page-item">
                                             <a th:if="${categoryId==null}" th:href="@{|/admin/products?page=${productColorPage.number - 1}&size=${pageSize}&sortField=${sortField}&sortDir=${sortDir}&categoryId=|}" class="page-link">Previous</a>
@@ -354,9 +353,6 @@
 
             <label for="description" style="display: block; margin-top: 10px;">Description:</label>
             <textarea id="description" th:field="*{description}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" required></textarea>
-
-            <label for="price" style="display: block; margin-top: 10px;">Price:</label>
-            <input type="number" id="price" th:field="*{price}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"required />
 
             <label for="category" style="display: block; margin-top: 10px;">Category:</label>
             <select id="category" th:field="*{categoryId}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;">
@@ -418,6 +414,7 @@
             row.querySelectorAll('.edit-input').forEach(input => {
                 input.style.display = isEditing ? '' : 'none';
             });
+
             editButtons[index].style.display = isEditing ? 'none' : '';
             saveButtons[index].style.display = isEditing ? '' : 'none';
             cancelButtons[index].style.display = isEditing ? '' : 'none';
