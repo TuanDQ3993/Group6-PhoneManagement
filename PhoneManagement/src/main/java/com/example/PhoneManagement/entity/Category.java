@@ -23,6 +23,9 @@ public class Category {
     @Column(name = "category_name", nullable = false, length = 100)
     String categoryName;
 
+    @Column(name="deleted")
+    boolean deleted;
+
     @OneToMany(mappedBy = "category")
     List<Products> products;
 }
