@@ -332,6 +332,6 @@ public class ProductServiceImp implements ProductService {
     @Override
     public List<Products> getRelatedProductByCategory(int categoryId) {
         Pageable pageable = PageRequest.of(0, 4);
-        return productInfoRepository.findTop4ByCategoryIdOrderByCreatedAtDesc(categoryId, pageable).getContent();
+        return productColorRepository.findTop4ByCategoryIdOrderByCreatedAtDesc(categoryId, pageable).getContent();
     }
 }
