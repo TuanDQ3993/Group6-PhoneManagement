@@ -194,7 +194,7 @@
             </form>
             <div th:each="entry, iterStat : ${groupedOrders}" style="margin-bottom: 20px;">
                 <a class="orderdetail" th:href="@{/home/order/{order}(order=${entry.value[0][0]})}">
-                    <div style="font-family: Arial, sans-serif; width: 80%; margin: auto; border: 1px solid #eee; padding: 20px;">
+                    <div style="font-family: Arial, sans-serif; width: 80%; margin: auto; border: 1px solid #0a0a0a; padding: 20px;">
                         <div style="margin-top: 20px; display: flex; justify-content: space-between;">
                             <p style="margin: 0;">Date <span th:text="${entry.value[0][7] != null ? entry.value[0][7] : '₫0'}"></span></p>
                             <p style="margin: 0;font-size: 18px;"><span th:text="${entry.value[0][9]}"></span></p>
@@ -216,6 +216,7 @@
                                     <!-- Display the price, ensuring default value if null -->
                                     <p style="margin: 5px 0;" th:text="(${order[4] != null ? order[4] : 0} * ${order[6] != null ? order[6] : 0})+'$'"></p>
                                 </div>
+
                             </div>
                         </div>
 
