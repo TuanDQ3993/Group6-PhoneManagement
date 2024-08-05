@@ -5,6 +5,7 @@ import com.example.PhoneManagement.dto.response.ProductTopSeller;
 import com.example.PhoneManagement.entity.OrderDetail;
 import com.example.PhoneManagement.entity.Orders;
 import com.example.PhoneManagement.entity.ProductInfo;
+import com.example.PhoneManagement.entity.Users;
 import com.example.PhoneManagement.repository.*;
 import com.example.PhoneManagement.service.imp.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -244,6 +245,13 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    public void changeSale(int orderId, int saleId) {
+        Orders order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order Not Found"));
+        order.setSalerId(saleId);
+        orderRepository.save(order);
+    }
+
+    @Override
     public Page<Object[]> getOrdersByUserIdWithFilters(UserDTO userDTO, String status , String search, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         int userId = userRepository.findIdByUserName(userDTO.getUserName());
@@ -270,6 +278,11 @@ public class OrderServiceImp implements OrderService {
             productInfo.setQuantity(productInfo.getQuantity() + orderDetail.getQuantity());
             productColorRepository.save(productInfo);
         }
+    }
+
+    @Override
+    public List<Users> getAllSale() {
+        return userRepository.getAllSale();
     }
 
 

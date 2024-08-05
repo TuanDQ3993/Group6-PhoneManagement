@@ -18,10 +18,10 @@ public class AuthenticationController {
     @Autowired
     AuthenticationService authenticationService;
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest registerRequest) {
-    return ResponseEntity.ok(authenticationService.register(registerRequest));
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest registerRequest) {
+//    return ResponseEntity.ok(authenticationService.register(registerRequest));
+//    }
 
     @PostMapping("/autenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
