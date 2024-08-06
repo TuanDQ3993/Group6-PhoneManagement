@@ -1,10 +1,7 @@
 package com.example.PhoneManagement.service;
 
 import com.example.PhoneManagement.dto.request.UserDTO;
-import com.example.PhoneManagement.entity.OrderDetail;
-import com.example.PhoneManagement.entity.Orders;
-import com.example.PhoneManagement.entity.ProductInfo;
-import com.example.PhoneManagement.entity.Users;
+import com.example.PhoneManagement.entity.*;
 import com.example.PhoneManagement.repository.*;
 import com.example.PhoneManagement.service.imp.CartService;
 
@@ -24,6 +21,9 @@ public class CartServiceImp implements CartService {
 
     @Autowired
     ProductColorRepository productColorRepository;
+
+    @Autowired
+    ProductRepository productRepository;
 
     @Autowired
     private OrderRepository orderRepository;
@@ -66,6 +66,12 @@ public class CartServiceImp implements CartService {
             ProductInfo productInfo = productColorRepository.findById(item.getProductColor().getProductcolorId()).get();
             productInfo.setQuantity(productInfo.getQuantity() - item.getQuantity());
             productColorRepository.save(productInfo);
+
+            Products product =productInfo.getProducts();
+            product.setQuantity(product.getQuantity() - item.getQuantity());
+            productRepository.save(product);
+
+
         }
     }
 

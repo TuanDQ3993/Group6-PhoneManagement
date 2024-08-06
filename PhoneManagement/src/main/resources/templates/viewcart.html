@@ -68,6 +68,14 @@
         overflow: hidden;
         background-color: #e9ecef;
     }
+
+    .link-as-h6 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.2;
+        text-decoration: none;
+        color: inherit;
+    }
 </style>
 
 </head>
@@ -258,7 +266,11 @@
                                         <img th:src="@{/uploads/{image}(image=${item.productColor.image})}" alt="">
                                     </div>
                                     <div class="product__cart__item__text">
-                                        <h6 th:text="${item.productColor.products.productName}+' - '+${item.productColor.colors.colorName} "></h6>
+                                        <a th:href="@{/home/detail/{productId}/{productColorId}
+                                                (productId=${item.productColor.products.productId}, productColorId=${item.productColor.productcolorId})}"
+                                           class="link-as-h6"
+                                           th:text="${item.productColor.products.productName} + ' - ' + ${item.productColor.colors.colorName}">
+                                        </a>
                                         <h5 th:text="'$'+${item.price}" class="original-price"></h5>
                                     </div>
                                 </td>
