@@ -108,7 +108,7 @@ public class CartController {
 
         Cart cart = (Cart) session.getAttribute("cart");
         if (cart != null) {
-            if(cart.getItems().size() ==0){
+            if(cart.getItems().isEmpty()){
                 return "redirect:/home/homepage";
             }
             for(Item i : cart.getItems()){
