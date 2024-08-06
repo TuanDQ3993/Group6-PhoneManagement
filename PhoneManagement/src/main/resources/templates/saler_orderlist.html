@@ -21,6 +21,13 @@
     <!-- Custom Theme Style -->
     <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
     <style>
+
+        .button {
+            padding: 10px 15px;
+            margin: 5px;
+            text-align: center;
+        }
+
         .text-complete {
             color: green;
         }
@@ -274,29 +281,22 @@
                                                             order.status == 'Prepay' ? 'text-prepay':'' } "></p>
                                         </td>
                                         <td>
-                                            <th:block th:if="${order.status == 'Pending Confirmation'}">
-                                                <a class="button blue"
-                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=2)}">Confirm</a>
-                                                <a class="button red"
-                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
-                                            </th:block>
-
-                                            <th:block th:if="${order.status == 'Confirm and Shipping'}">
-                                                <a class="button green"
-                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=1)}">Completed</a>
-                                                <a class="button red"
-                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
-                                            </th:block>
-
-                                            <th:block th:if="${order.status == 'Prepay'}">
-                                                <a class="button green"
-                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=1)}">Completed</a>
-                                                <a class="button red"
-                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
-                                            </th:block>
-
-
+                                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                                <th:block th:if="${order.status == 'Pending Confirmation'}">
+                                                    <a class="button blue" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=2)}">Confirm</a>
+                                                    <a class="button red" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
+                                                </th:block>
+                                                <th:block th:if="${order.status == 'Confirm and Shipping'}">
+                                                    <a class="button green" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=1)}">Completed</a>
+                                                    <a class="button red" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
+                                                </th:block>
+                                                <th:block th:if="${order.status == 'Prepay'}">
+                                                    <a class="button green" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=1)}">Completed</a>
+                                                    <a class="button red" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
+                                                </th:block>
+                                            </div>
                                         </td>
+
                                         <td th:if="${user.roleName =='ADMIN'}">
                                             <form action="/saler/changesale" method="POST" class="mb-0">
                                                 <select name="sale" id="sale"

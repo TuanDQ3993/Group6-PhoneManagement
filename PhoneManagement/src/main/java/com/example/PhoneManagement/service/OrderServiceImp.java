@@ -2,10 +2,7 @@ package com.example.PhoneManagement.service;
 
 import com.example.PhoneManagement.dto.request.*;
 import com.example.PhoneManagement.dto.response.ProductTopSeller;
-import com.example.PhoneManagement.entity.OrderDetail;
-import com.example.PhoneManagement.entity.Orders;
-import com.example.PhoneManagement.entity.ProductInfo;
-import com.example.PhoneManagement.entity.Users;
+import com.example.PhoneManagement.entity.*;
 import com.example.PhoneManagement.repository.*;
 import com.example.PhoneManagement.service.imp.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +25,9 @@ public class OrderServiceImp implements OrderService {
 
     @Autowired
     private OrderDetailRepository orderDetailRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -277,6 +277,11 @@ public class OrderServiceImp implements OrderService {
             ProductInfo productInfo = orderDetail.getProductInfo();
             productInfo.setQuantity(productInfo.getQuantity() + orderDetail.getQuantity());
             productColorRepository.save(productInfo);
+
+            Products product=productInfo.getProducts();
+            product.setQuantity(product.getQuantity() + orderDetail.getQuantity());
+            productRepository.save(product);
+
         }
     }
 
