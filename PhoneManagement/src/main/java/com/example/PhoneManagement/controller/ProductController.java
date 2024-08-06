@@ -61,7 +61,7 @@ public class ProductController {
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("productColorPage", productColorPage);
-        model.addAttribute("category", categoryService.findAllCategory());
+        model.addAttribute("category", categoryService.getAllCategoryActive());
         model.addAttribute("colors", colorService.getAllColor());
         model.addAttribute("productDTO", new ProductDTO());
         model.addAttribute("search",name);
@@ -116,16 +116,20 @@ public class ProductController {
                                      @RequestParam("price") String price,
                                      @RequestParam("quantity") int quantity,
                                      Model model, RedirectAttributes redirectAttributes) {
-        Path uploadDir = Paths.get("uploads/");
 
+        // Tạo thư mục upload nếu chưa tồn tại
+        Path uploadDir = Paths.get("uploads/");
         if (!Files.exists(uploadDir)) {
             try {
                 Files.createDirectories(uploadDir);
             } catch (IOException e) {
                 e.printStackTrace();
+                redirectAttributes.addFlashAttribute("errorMessage", "Could not create upload directory.");
+                return "redirect:/admin/products/" + productId;
             }
         }
 
+        // Kiểm tra sự tồn tại của product color
         ProductInfo existingProductColor = productService.getProductColorById(proColorId);
         if (existingProductColor == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Product color not found.");
@@ -133,7 +137,15 @@ public class ProductController {
         }
 
         String fileImage = existingProductColor.getImage();
+
+        // Kiểm tra loại file có phải là ảnh không
         if (image != null && !image.isEmpty()) {
+            String contentType = image.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Only image files are allowed.");
+                return "redirect:/admin/products/" + productId;
+            }
+
             try {
                 String fileName = StringUtils.cleanPath(image.getOriginalFilename());
                 Path filePath = uploadDir.resolve(fileName);
@@ -142,19 +154,28 @@ public class ProductController {
                     Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                 }
 
-                fileImage =  fileName.toLowerCase();
+                fileImage = fileName.toLowerCase();
             } catch (IOException e) {
                 e.printStackTrace();
+                redirectAttributes.addFlashAttribute("errorMessage", "Error uploading file.");
+                return "redirect:/admin/products/" + productId;
             }
         }
 
+        // Tạo request để cập nhật product color
         ProductColorUpdate request = new ProductColorUpdate();
         request.setProductId(productId);
         request.setColorId(colorId);
         request.setImage(fileImage);
-        BigDecimal gia = null;
+
+        // Kiểm tra và xử lý giá
+        BigDecimal gia;
         try {
             gia = new BigDecimal(price);
+            if (gia.compareTo(BigDecimal.ZERO) <= 0) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Price must be greater than 0.");
+                return "redirect:/admin/products/" + productId;
+            }
         } catch (NumberFormatException e) {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("errorMessage", "Invalid price format.");
@@ -164,6 +185,7 @@ public class ProductController {
         request.setPrice(gia);
         request.setQuantity(quantity);
 
+        // Cập nhật product color
         try {
             productService.updateProductColor(proColorId, request);
             redirectAttributes.addFlashAttribute("successMessage", "Product color updated successfully!");
@@ -174,8 +196,10 @@ public class ProductController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred.");
         }
+
         return "redirect:/admin/products/" + productId;
     }
+
 
 
     @PostMapping("/{productId}/add")
@@ -185,7 +209,10 @@ public class ProductController {
                                   @RequestParam("price") String price,
                                   @RequestParam("quantity") int quantity){
         Path uploadDir = Paths.get("uploads/");
-
+        String contentType = image.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            return "redirect:/admin/products/{productId}";
+        }
         if (!Files.exists(uploadDir)) {
             try {
                 Files.createDirectories(uploadDir);
@@ -222,6 +249,7 @@ public class ProductController {
 //            redirectAttributes.addFlashAttribute("errorMessage", "Invalid price format.");
             return "redirect:/admin/products/{productId}";
         }
+        if(gia.compareTo(BigDecimal.ZERO) <=0) return "redirect:/admin/products/{productId}";
         request.setPrice(gia);
         request.setColorId(color);
 

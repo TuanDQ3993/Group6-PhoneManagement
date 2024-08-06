@@ -22,6 +22,11 @@ public class CategoryServiceImp implements CategoryService {
     }
 
     @Override
+    public List<Category> getAllCategoryActive() {
+        return categoryRepository.findAll().stream().filter(active -> active.isDeleted()).toList();
+    }
+
+    @Override
     public void addCategory(CategoryDTO categoryDTO) {
         Category category=new Category();
         category.setCategoryName(categoryDTO.getCateName());
