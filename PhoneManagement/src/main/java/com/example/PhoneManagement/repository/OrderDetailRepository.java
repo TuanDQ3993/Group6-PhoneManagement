@@ -32,12 +32,9 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
             "LIMIT 5;", nativeQuery = true)
     List<Object[]> findTop5Sellers();
 
-    @Query("SELECT p FROM Products p JOIN orderdetail  od ON p.productId = od.productInfo.products.productId " +
-            "GROUP BY p.productId, p.productName ORDER BY SUM(od.quantity) DESC")
+    @Query("SELECT p FROM Products p JOIN p.productInfoList pi JOIN orderdetail od ON p.productId = od.productInfo.products.productId WHERE pi.isDeleted = true GROUP BY p.productId, p.productName ORDER BY SUM(od.quantity) DESC")
     Page<Products> findTopSelling(Pageable pageable);
 
-    @Query("SELECT p FROM Products p JOIN orderdetail od ON p.productId = od.productInfo.products.productId " +
-            "WHERE p.category.categoryId = :categoryId " +
-            "GROUP BY p.productId, p.productName ORDER BY SUM(od.quantity) DESC")
+    @Query("SELECT p FROM Products p JOIN p.productInfoList pi JOIN orderdetail od ON p.productId = od.productInfo.products.productId WHERE pi.isDeleted = true AND p.category.categoryId = :categoryId GROUP BY p.productId, p.productName ORDER BY SUM(od.quantity) DESC")
     Page<Products> findTopSellingByCategory(@Param("categoryId") int categoryId, Pageable pageable);
 }

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        /* Hide the dropdown menu by default */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            min-width: 160px;
+            padding: 12px 16px;
+        }
+
+        /* Show the dropdown menu when the parent has the class 'show' */
+        .nav-item.dropdown.show .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+            color: black;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            margin: 8px 0;
+            overflow: hidden;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+<div th:fragment="header">
+    <!-- HEADER -->
+    <header>
+        <!-- TOP HEADER -->
+        <div id="top-header">
+            <div class="container">
+                <ul class="header-links pull-left">
+                    <li><a href="#"><i class="fa fa-phone"></i> +(84)868-181-880</a></li>
+                    <li><a href="#"><i class="fa fa-envelope-o"></i> Electro@email.com</a></li>
+                    <li><a href="#"><i class="fa fa-map-marker"></i> FPT TOWER</a></li>
+                </ul>
+                <ul class="header-links1 pull-right">
+                    <li th:if="${user == null}">
+                        <a href="/auth/login" style="color: whitesmoke"><i class="fa fa-user-o"></i>Login</a>
+                    </li>
+                    <li th:if="${user != null}" class="nav-item dropdown">
+                        <a href="#" class="nav-link" onclick="toggleDropdown(event)" style="color: whitesmoke">
+                            <i class="fa fa-user-o"></i><span th:text="${user.fullName}"></span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/user/profile">Profile</a>
+                            <a class="dropdown-item" href="/user/change_password">Change Password</a>
+                            <a class="dropdown-item" href="/home/order">My Order</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/auth/logout"><i class="fa fa-sign-out pull-right"></i>Log
+                                Out</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- /TOP HEADER -->
+
+        <!-- MAIN HEADER -->
+        <div id="header">
+            <!-- container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <!-- LOGO -->
+                    <div class="col-md-3">
+                        <div class="header-logo">
+                            <a href="/home/homepage" class="logo">
+                                <img src="/build1/img/logo.png" alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /LOGO -->
+
+                    <!-- SEARCH BAR -->
+                    <div class="col-md-6">
+                        <div class="header-search">
+                            <form>
+                                <input class="input" placeholder="Search here">
+                                <button class="search-btn">Search</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /SEARCH BAR -->
+
+                    <!-- ACCOUNT -->
+                    <div class="col-md-3 clearfix">
+                        <div class="header-ctn">
+                            <!-- Cart -->
+                            <div class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span>Your Cart</span>
+                                    <div class="qty" th:text="${size}">0</div>
+                                </a>
+                                <div class="cart-dropdown">
+                                    <div th:if="${cart != null}" class="cart-list">
+                                        <div th:each="item : ${cart.items}" class="product-widget">
+                                            <div class="product-img">
+                                                <img th:src="@{/uploads/{image}(image=${item.productColor.image})}"
+                                                     alt="">
+                                            </div>
+                                            <div class="product-body">
+                                                <h3 class="product-name"
+                                                    th:text="${item.productColor.products.productName}"><a href="#"></a>
+                                                </h3>
+                                                <h4 class="product-price">
+                                                    <span class="qty" th:text="${item.quantity}+'x'"></span>
+                                                    <th:block th:text="'$' + ${item.price}"></th:block>
+                                                </h4>
+
+                                            </div>
+                                            <form th:action="@{/cart/delete(productColorId=${item.productColor.productcolorId})}"
+                                                  method="post">
+
+                                                <button type="submit" class="delete"><i class="fa fa-close"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="cart-summary">
+                                        <small th:text="${size} +' Item(s) selected'">0 Item(s) selected</small>
+                                        <h5 th:text="'SUBTOTAL: '+${total}">SUBTOTAL:0.00</h5>
+                                    </div>
+                                    <div class="cart-btns">
+                                        <a th:href="@{/cart/viewcart}">View Cart</a>
+                                        <a th:href="@{/cart/checkout}">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Cart -->
+
+                            <!-- Menu Toogle -->
+                            <div class="menu-toggle">
+                                <a href="#">
+                                    <i class="fa fa-bars"></i>
+                                    <span>Menu</span>
+                                </a>
+                            </div>
+                            <!-- /Menu Toogle -->
+                        </div>
+                    </div>
+                    <!-- /ACCOUNT -->
+                </div>
+                <!-- row -->
+            </div>
+            <!-- container -->
+        </div>
+        <!-- /MAIN HEADER -->
+    </header>
+    <!-- /HEADER -->
+</div>
+</body>
+<script>
+    function toggleDropdown(event) {
+        event.preventDefault();
+        var dropdown = event.target.closest('.nav-item.dropdown');
+        dropdown.classList.toggle('show');
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function (event) {
+        if (!event.target.matches('.nav-link') && !event.target.closest('.nav-item.dropdown')) {
+            var dropdowns = document.getElementsByClassName('nav-item dropdown');
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+
+
+</script>
+</html>
