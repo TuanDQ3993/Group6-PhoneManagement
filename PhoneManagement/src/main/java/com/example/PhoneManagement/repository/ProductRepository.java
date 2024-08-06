@@ -26,10 +26,10 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     Page<Products> findByCategoryCategoryIdAndProductNameContainingIgnoreCase(Integer categoryId, String name, Pageable pageable);
 
 
-    @Query("SELECT p FROM Products p ORDER BY p.createdAt DESC")
+    @Query("SELECT p FROM Products p JOIN p.productInfoList pi WHERE pi.isDeleted = true ORDER BY p.createdAt DESC")
     Page<Products> findTop8ByOrderByCreatedAtDesc(Pageable pageable);
 
-    @Query("SELECT p FROM Products p WHERE p.category.categoryId = :categoryId ORDER BY p.createdAt DESC")
+    @Query("SELECT p FROM Products p JOIN p.productInfoList pi WHERE pi.isDeleted = true AND p.category.categoryId = :categoryId ORDER BY p.createdAt DESC")
     Page<Products> findTop8ByCategoryIdOrderByCreatedAtDesc(@Param("categoryId") int categoryId, Pageable pageable);
 
 }

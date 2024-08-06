@@ -34,184 +34,46 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-<style>
-    /* Hide the dropdown menu by default */
-    .dropdown-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-        min-width: 160px;
-        padding: 12px 16px;
-    }
+    <style>
+        /* Hide the dropdown menu by default */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            min-width: 160px;
+            padding: 12px 16px;
+        }
 
-    /* Show the dropdown menu when the parent has the class 'show' */
-    .nav-item.dropdown.show .dropdown-menu {
-        display: block;
-    }
+        /* Show the dropdown menu when the parent has the class 'show' */
+        .nav-item.dropdown.show .dropdown-menu {
+            display: block;
+        }
 
-    .dropdown-item {
-        padding: 8px 16px;
-        text-decoration: none;
-        display: block;
-        color: black;
-    }
+        .dropdown-item {
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+            color: black;
+        }
 
-    .dropdown-item:hover {
-        background-color: #f1f1f1;
-    }
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
 
-    .dropdown-divider {
-        height: 1px;
-        margin: 8px 0;
-        overflow: hidden;
-        background-color: #e9ecef;
-    }
-</style>
+        .dropdown-divider {
+            height: 1px;
+            margin: 8px 0;
+            overflow: hidden;
+            background-color: #e9ecef;
+        }
+    </style>
 
 </head>
 <body>
-<!-- HEADER -->
-<header>
-    <!-- TOP HEADER -->
-    <div id="top-header">
-        <div class="container">
-            <ul class="header-links pull-left">
-                <li><a href="#"><i class="fa fa-phone"></i> +(84)868-181-880</a></li>
-                <li><a href="#"><i class="fa fa-envelope-o"></i> Electro@email.com</a></li>
-                <li><a href="#"><i class="fa fa-map-marker"></i> FPT TOWER</a></li>
-            </ul>
-            <ul class="header-links1 pull-right">
-                <li th:if="${user == null}">
-                    <a href="/auth/login" style="color: whitesmoke"><i class="fa fa-user-o"></i>Login</a>
-                </li>
-                <li th:if="${user != null}" class="nav-item dropdown">
-                    <a href="#" class="nav-link" onclick="toggleDropdown(event)" style="color: whitesmoke">
-                        <i class="fa fa-user-o"></i><span th:text="${user.fullName}"></span>
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="/user/profile">Profile</a>
-                        <a class="dropdown-item" href="/user/change_password">Change Password</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/auth/logout"><i class="fa fa-sign-out pull-right"></i>Log
-                            Out</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <!-- /TOP HEADER -->
-
-    <!-- MAIN HEADER -->
-    <div id="header">
-        <!-- container -->
-        <div class="container">
-            <!-- row -->
-            <div class="row">
-                <!-- LOGO -->
-                <div class="col-md-3">
-                    <div class="header-logo">
-                        <a href="/home/homepage" class="logo">
-                            <img src="/build1/img/logo.png" alt="">
-                        </a>
-                    </div>
-                </div>
-                <!-- /LOGO -->
-
-                <!-- SEARCH BAR -->
-                <div class="col-md-6">
-                    <div class="header-search">
-                        <form>
-                            <input class="input" placeholder="Search here">
-                            <button class="search-btn">Search</button>
-                        </form>
-                    </div>
-                </div>
-                <!-- /SEARCH BAR -->
-
-                <!-- ACCOUNT -->
-                <div class="col-md-3 clearfix">
-                    <div class="header-ctn">
-                        <!-- Cart -->
-                        <div class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                                <i class="fa fa-shopping-cart"></i>
-                                <span>Your Cart</span>
-                                <div class="qty" th:text="${size}">0</div>
-                            </a>
-                            <div class="cart-dropdown">
-                                <div th:if="${cart != null}" class="cart-list">
-                                    <div th:each="item : ${cart.items}" class="product-widget">
-                                        <div class="product-img">
-                                            <img th:src="@{/uploads/{image}(image=${item.productColor.image})}" alt="">
-                                        </div>
-                                        <div class="product-body">
-                                            <h3 class="product-name" th:text="${item.productColor.products.productName}"><a href="#"></a></h3>
-                                            <h4 class="product-price" >
-                                                <span class="qty" th:text="${item.quantity}+'x'"></span><th:block th:text="'$' + ${item.price}"></th:block>
-                                            </h4>
-
-                                        </div>
-                                        <form th:action="@{/cart/delete(productColorId=${item.productColor.productcolorId})}" method="post">
-
-                                            <button type="submit" class="delete"><i class="fa fa-close"></i></button>
-                                        </form>
-                                    </div>
-
-
-                                </div>
-                                <div class="cart-summary">
-                                    <small th:text="${size} +' Item(s) selected'">0 Item(s) selected</small>
-                                    <h5 th:text="'SUBTOTAL: '+${total}">SUBTOTAL:0.00</h5>
-                                </div>
-                                <div class="cart-btns">
-                                    <a th:href="@{/cart/viewcart}">View Cart</a>
-                                    <a th:href="@{/cart/checkout}">Checkout <i class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /Cart -->
-
-                        <!-- Menu Toogle -->
-                        <div class="menu-toggle">
-                            <a href="#">
-                                <i class="fa fa-bars"></i>
-                                <span>Menu</span>
-                            </a>
-                        </div>
-                        <!-- /Menu Toogle -->
-                    </div>
-                </div>
-                <!-- /ACCOUNT -->
-            </div>
-            <!-- row -->
-        </div>
-        <!-- container -->
-    </div>
-    <!-- /MAIN HEADER -->
-</header>
-<!-- /HEADER -->
-
-<!-- NAVIGATION -->
-<nav id="navigation">
-    <!-- container -->
-    <div class="container">
-        <!-- responsive-nav -->
-        <div id="responsive-nav">
-            <!-- NAV -->
-            <ul class="main-nav nav navbar-nav">
-                <li class="active"><a href="/home/homepage">Home</a></li>
-                <li><a href="#">Shop</a></li>
-            </ul>
-            <!-- /NAV -->
-        </div>
-        <!-- /responsive-nav -->
-    </div>
-    <!-- /container -->
-</nav>
-<!-- /NAVIGATION -->
-
+<!--header-->
+<div th:replace="header :: header"></div>
 <!-- BREADCRUMB -->
 <div id="breadcrumb" class="section">
     <!-- container -->
@@ -221,7 +83,7 @@
             <div class="col-md-12">
                 <h3 class="breadcrumb-header">Checkout</h3>
                 <ul class="breadcrumb-tree">
-                    <li><a href="#">Home</a></li>
+                    <li><a href="/home/homepage">Home</a></li>
                     <li class="active">Checkout</li>
                 </ul>
             </div>
@@ -249,38 +111,40 @@
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody  th:if="${cart != null}">
+                        <tbody th:if="${cart != null}">
 
 
-                            <tr th:each="item:${cart.items}">
-                                <td class="product__cart__item">
-                                    <div class="product__cart__item__pic">
-                                        <img th:src="@{/uploads/{image}(image=${item.productColor.image})}" alt="">
+                        <tr th:each="item:${cart.items}">
+                            <td class="product__cart__item">
+                                <div class="product__cart__item__pic">
+                                    <img th:src="@{/uploads/{image}(image=${item.productColor.image})}" alt="">
+                                </div>
+                                <div class="product__cart__item__text">
+                                    <h6 th:text="${item.productColor.products.productName}+' - '+${item.productColor.colors.colorName} "></h6>
+                                    <h5 th:text="'$'+${item.price}" class="original-price"></h5>
+                                </div>
+                            </td>
+                            <td class="quantity__item">
+                                <div class="quantity">
+                                    <div>
+                                        <button style="border: none; border-radius: 12px;background-color: white"><a
+                                                th:href="@{/cart/process(num=-1,id=${item.productColor.productcolorId})}"
+                                                style="color: black"><</a></button>
+                                        &emsp;<span class="qty" th:text="${item.quantity}"></span>&emsp;
+                                        <button style="border: none; border-radius: 12px;background-color: white"><a
+                                                th:href="@{/cart/process(num=1,id=${item.productColor.productcolorId})}"
+                                                style="color: black">></a></button>
+
                                     </div>
-                                    <div class="product__cart__item__text">
-                                        <h6 th:text="${item.productColor.products.productName}+' - '+${item.productColor.colors.colorName} "></h6>
-                                        <h5 th:text="'$'+${item.price}" class="original-price"></h5>
-                                    </div>
-                                </td>
-                                <td class="quantity__item">
-                                    <div class="quantity">
-                                        <div>
-                                            <button style="border: none; border-radius: 12px;background-color: white"><a th:href="@{/cart/process(num=-1,id=${item.productColor.productcolorId})}" style="color: black"><</a></button>
-                                            &emsp;<span class="qty" th:text="${item.quantity}"></span>&emsp;
-                                            <button style="border: none; border-radius: 12px;background-color: white"><a th:href="@{/cart/process(num=1,id=${item.productColor.productcolorId})}" style="color: black">></a></button>
-
-                                        </div>
-                                    </div>
-                                    <div th:if="${errorquantity}">
-                                        <p th:text="${errorquantity}" class="text-danger"></p>
-                                    </div>
-                                </td>
-                                <td class="cart__price original-price " th:text="${item.quantity*item.price}"></td>
-                                <td><a th:href="@{/cart/remove(productColorId=${item.productColor.productcolorId})}" class="cart__close"><i class="fa fa-close"></i></a></td>
-                            </tr>
-
-
-
+                                </div>
+                                <div th:if="${errorquantity}">
+                                    <p th:text="${errorquantity}" class="text-danger"></p>
+                                </div>
+                            </td>
+                            <td class="cart__price original-price " th:text="${item.quantity*item.price}"></td>
+                            <td><a th:href="@{/cart/remove(productColorId=${item.productColor.productcolorId})}"
+                                   class="cart__close"><i class="fa fa-close"></i></a></td>
+                        </tr>
 
 
                         </tbody>
