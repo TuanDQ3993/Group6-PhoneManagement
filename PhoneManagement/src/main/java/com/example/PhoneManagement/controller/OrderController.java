@@ -56,7 +56,7 @@ public class OrderController {
 
         model.addAttribute("user", userDTO.get());
         model.addAttribute("page", page);
-        model.addAttribute("size", size);
+        model.addAttribute("size1", size);
         model.addAttribute("searchQuery", searchQuery);
         model.addAttribute("status", status);
         model.addAttribute("groupedOrders", groupedOrders);

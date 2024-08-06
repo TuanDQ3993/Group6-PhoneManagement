@@ -25,19 +25,16 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
             "JOIN orders o ON od.order_id = o.order_id " +
             "JOIN productinfo pc ON od.product_color_id = pc.product_color_id " +
             "JOIN products p on p.product_id =pc.product_id " +
-            "WHERE MONTH(o.order_date) = MONTH(CURRENT_DATE()) " +
+            "WHERE MONTH(o.order_date) = MONTH(CURRENT_DATE()) and o.status='Completed' " +
             "AND YEAR(o.order_date) = YEAR(CURRENT_DATE()) " +
             "GROUP BY p.product_id, p.product_name,pc.image " +
             "ORDER BY total_quantity_sold DESC " +
             "LIMIT 5;", nativeQuery = true)
     List<Object[]> findTop5Sellers();
 
-    @Query("SELECT p FROM Products p JOIN orderdetail  od ON p.productId = od.productInfo.products.productId " +
-            "GROUP BY p.productId, p.productName ORDER BY SUM(od.quantity) DESC")
+    @Query("SELECT p FROM Products p JOIN p.productInfoList pi JOIN orderdetail od ON p.productId = od.productInfo.products.productId WHERE pi.isDeleted = true GROUP BY p.productId, p.productName ORDER BY SUM(od.quantity) DESC")
     Page<Products> findTopSelling(Pageable pageable);
 
-    @Query("SELECT p FROM Products p JOIN orderdetail od ON p.productId = od.productInfo.products.productId " +
-            "WHERE p.category.categoryId = :categoryId " +
-            "GROUP BY p.productId, p.productName ORDER BY SUM(od.quantity) DESC")
+    @Query("SELECT p FROM Products p JOIN p.productInfoList pi JOIN orderdetail od ON p.productId = od.productInfo.products.productId WHERE pi.isDeleted = true AND p.category.categoryId = :categoryId GROUP BY p.productId, p.productName ORDER BY SUM(od.quantity) DESC")
     Page<Products> findTopSellingByCategory(@Param("categoryId") int categoryId, Pageable pageable);
 }
