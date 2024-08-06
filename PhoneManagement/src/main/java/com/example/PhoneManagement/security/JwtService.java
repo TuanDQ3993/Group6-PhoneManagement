@@ -26,7 +26,12 @@ public class JwtService {
 
     public String generatePasswordResetToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails, 15 * 60 * 1000); // 15 phút hết hạn
+        return createToken(claims, userDetails, 10 * 60 * 1000); // 10 phút hết hạn
+    }
+
+    public String generateActiveAccountToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userDetails, 24*60 * 60 * 1000); // 1 Ngày hết hạn
     }
 
     public String extractUsername(String token) {

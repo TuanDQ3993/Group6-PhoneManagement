@@ -7,9 +7,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.util.IOUtils;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 
 
 import java.io.IOException;
@@ -69,6 +67,14 @@ public class OrderExcelExporter {
 
     private void writeDataRow() {
         int rowCount = 1;
+        double totalAmountSum = 0.0;
+
+        CellStyle total = workbook.createCellStyle();
+        XSSFFont font = workbook.createFont();
+        font.setBold(true);
+        font.setFontHeight(14);
+        font.setColor(new XSSFColor(java.awt.Color.RED, new DefaultIndexedColorMap()));
+        total.setFont(font);
 
         CellStyle dateCellStyle = workbook.createCellStyle();
         short dateFormat = workbook.createDataFormat().getFormat("yyyy-MM-dd");
@@ -94,6 +100,7 @@ public class OrderExcelExporter {
 
             cell = row.createCell(2);
             cell.setCellValue(order.getTotalAmount());
+            totalAmountSum += order.getTotalAmount();
             sheet.autoSizeColumn(2);
 
             cell = row.createCell(3);
@@ -117,6 +124,24 @@ public class OrderExcelExporter {
 //                }
 //            }
         }
+        if(isCompleted()){
+            Row totalRow = sheet.createRow(rowCount);
+            Cell totalLabelCell = totalRow.createCell(6);
+            totalLabelCell.setCellValue("Total:"+ totalAmountSum);
+            totalLabelCell.setCellStyle(total);
+            sheet.autoSizeColumn(6);
+        }
+
+
+    }
+
+    private boolean isCompleted() {
+        for(OrderInfoDTO orderInfo : listOrders) {
+            if(!orderInfo.getStatus().equals("Completed")){
+                return false;
+            }
+        }
+        return true;
     }
 
     private InputStream getImageInputStream(String imagePath) throws IOException {

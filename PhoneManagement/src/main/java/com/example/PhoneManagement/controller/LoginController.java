@@ -1,11 +1,13 @@
 package com.example.PhoneManagement.controller;
 
 import com.example.PhoneManagement.dto.request.AuthenticationRequest;
+import com.example.PhoneManagement.dto.request.RegisterRequest;
 import com.example.PhoneManagement.dto.response.AuthenticationResponse;
 import com.example.PhoneManagement.entity.Users;
 import com.example.PhoneManagement.security.JwtService;
 import com.example.PhoneManagement.service.LoginServiceImp;
 import com.example.PhoneManagement.service.imp.LoginService;
+import com.example.PhoneManagement.service.imp.UserService;
 import com.example.PhoneManagement.util.Cart;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
@@ -32,6 +34,8 @@ public class LoginController {
     @Autowired
     AuthenticationRequest authenticationRequest;
 
+    @Autowired
+    UserService userService;
 
     @Autowired
     JwtService jwtService;
@@ -42,6 +46,28 @@ public class LoginController {
     @Autowired
     HttpServletResponse response;
 
+    @GetMapping("/register")
+    public String formRegister(Model model) {
+        model.addAttribute("registerRequest", new RegisterRequest());
+        return "signup";
+    }
+
+    @PostMapping("/register")
+    public String registerAccount(@ModelAttribute("registerRequest") RegisterRequest request, Model model) {
+        if (userService.existEmail(request.getUserName())) {
+            model.addAttribute("error", "This Username already exists!");
+            return "signup";
+        }
+        userService.createAccount(request);
+        userService.activeAccount(request.getUserName(), model);
+        return "signup";
+    }
+
+    @GetMapping("/active")
+    public String activeAccount(@RequestParam("token") String token, Model model) {
+        userService.activesuccess(token, model);
+        return "login";
+    }
 
     @GetMapping("/login")
     public String login(Model model) {

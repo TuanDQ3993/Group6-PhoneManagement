@@ -35,25 +35,25 @@ public class AuthenticationService {
     AuthenticationManager authenticationManager;
 
 
-    public AuthenticationResponse register(RegisterRequest registerRequest) {
-        if (userRepository.existsByUserName(registerRequest.getUserName())) {
-            throw new IllegalArgumentException("Username/Email is already taken");
-        }
-        var user = Users.builder()
-                .userName(registerRequest.getUserName())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .fullName(registerRequest.getFullName())
-                .address(registerRequest.getAddress())
-                .phoneNumber(registerRequest.getPhoneNumber())
-                .role(roleRepository.findById(registerRequest.getRoleId()))
-                .active(true)
-                .createdAt(new Date())
-                .build();
-
-        userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        return new AuthenticationResponse(jwtToken);
-    }
+//    public AuthenticationResponse register(RegisterRequest registerRequest) {
+//        if (userRepository.existsByUserName(registerRequest.getUserName())) {
+//            throw new IllegalArgumentException("Username/Email is already taken");
+//        }
+//        var user = Users.builder()
+//                .userName(registerRequest.getUserName())
+//                .password(passwordEncoder.encode(registerRequest.getPassword()))
+//                .fullName(registerRequest.getFullName())
+//                .address(registerRequest.getAddress())
+//                .phoneNumber(registerRequest.getPhoneNumber())
+//                .role(roleRepository.findById(4))
+//                .active(true)
+//                .createdAt(new Date())
+//                .build();
+//
+//        userRepository.save(user);
+//        var jwtToken = jwtService.generateToken(user);
+//        return new AuthenticationResponse(jwtToken);
+//    }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(

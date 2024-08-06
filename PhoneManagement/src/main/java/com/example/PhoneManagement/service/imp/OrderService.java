@@ -3,6 +3,7 @@ package com.example.PhoneManagement.service.imp;
 import com.example.PhoneManagement.dto.request.*;
 import com.example.PhoneManagement.dto.response.ProductTopSeller;
 import com.example.PhoneManagement.entity.Orders;
+import com.example.PhoneManagement.entity.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -41,7 +42,11 @@ public interface OrderService {
 
     void changeStatusOrder(int orderId, String status);
 
+    void changeSale(int orderId,int saleId);
+
     void backProduct(int id);
+
+    List<Users> getAllSale();
 
     public Page<Object[]> getOrdersByUserIdWithFilters(UserDTO user, String status, String search, int page, int size);
 
