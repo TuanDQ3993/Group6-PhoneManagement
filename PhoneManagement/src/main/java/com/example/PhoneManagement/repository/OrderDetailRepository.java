@@ -25,7 +25,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
             "JOIN orders o ON od.order_id = o.order_id " +
             "JOIN productinfo pc ON od.product_color_id = pc.product_color_id " +
             "JOIN products p on p.product_id =pc.product_id " +
-            "WHERE MONTH(o.order_date) = MONTH(CURRENT_DATE()) " +
+            "WHERE MONTH(o.order_date) = MONTH(CURRENT_DATE()) and o.status='Completed' " +
             "AND YEAR(o.order_date) = YEAR(CURRENT_DATE()) " +
             "GROUP BY p.product_id, p.product_name,pc.image " +
             "ORDER BY total_quantity_sold DESC " +
