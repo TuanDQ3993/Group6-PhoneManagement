@@ -48,7 +48,7 @@
         <div id="responsive-nav">
             <!-- NAV -->
             <ul class="main-nav nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
+                <li class="active"><a th:href="@{/home/homepage}">Home</a></li>
                 <li><a href="#">Shop</a></li>
             </ul>
             <!-- /NAV -->
@@ -61,10 +61,13 @@
 
 <!-- SECTION -->
 <div class="section">
+
     <!-- container -->
     <div class="container">
+
         <!-- row -->
         <div class="row">
+            <a th:href="@{/home/order}">Order</a>
             <div th:each="entry : ${orderdetail}"
                  style="font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; border: 1px solid #ddd;">
                 <!-- Product 1 -->

@@ -65,6 +65,10 @@ public class ProductServiceImp implements ProductService {
         }
 
         for (ProductColorDTO colorDTO : productDTO.getColors()) {
+            String contentType = colorDTO.getImage().getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                return ;
+            }
             Path uploadDir = Paths.get("uploads/");
 
             if (!Files.exists(uploadDir)) {
@@ -85,12 +89,12 @@ public class ProductServiceImp implements ProductService {
                         Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                     }
 
-                    fileImage = "/uploads/" + fileName.toLowerCase();
+                    fileImage =fileName.toLowerCase();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if (colorDTO.getQuantity() < 0) return;
+            if (colorDTO.getQuantity() <= 0) return;
 
             ProductInfo productInfo = new ProductInfo();
             Colors color = new Colors();
@@ -103,6 +107,7 @@ public class ProductServiceImp implements ProductService {
                 e.printStackTrace();
                 return;
             }
+            if(gia.compareTo(BigDecimal.ZERO) <=0) return;
             productInfo.setPrice(gia);
             productInfo.setImage(fileImage);
             productInfo.setQuantity(colorDTO.getQuantity());

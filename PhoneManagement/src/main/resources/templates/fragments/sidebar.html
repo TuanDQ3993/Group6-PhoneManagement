@@ -38,6 +38,7 @@
                         <a href="/admin/users"><i class="fa fa-edit"></i> AccountList </a>
                     </li>
                     <li th:unless="${roleLogged == 'TECHNICAL STAFF' or roleLogged == 'SALER'}"><a href="/admin/products"><i class="fa fa-edit"></i> ProductList </a></li>
+                    <li th:unless="${roleLogged == 'TECHNICAL STAFF' or roleLogged == 'SALER'}"><a href="/admin/category"><i class="fa fa-edit"></i> Category </a></li>
                     <li th:unless="${roleLogged == 'TECHNICAL STAFF'}"><a href="/saler/orders"><i class="fa fa-edit"></i> OrderList </a></li>
                     <li th:unless="${roleLogged == 'SALER'}"><a href="/technical/warranties"><i class="fa fa-edit"></i> WarrantyList </a></li>
                 </ul>
