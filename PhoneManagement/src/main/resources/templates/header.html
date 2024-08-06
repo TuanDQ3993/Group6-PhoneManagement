@@ -60,7 +60,21 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="/user/profile">Profile</a>
                             <a class="dropdown-item" href="/user/change_password">Change Password</a>
-                            <a class="dropdown-item" href="/home/order">My Order</a>
+                            <th:block>
+                                <div th:if="${user.roleName == 'USER'}">
+                                    <a class="dropdown-item" href="/home/order">My Order</a>
+                                </div>
+                                <div th:if="${user.roleName == 'ADMIN'}">
+                                    <a class="dropdown-item" href="/home/order">Dashboard</a>
+                                </div>
+                                <div th:if="${user.roleName == 'SALER'}">
+                                    <a class="dropdown-item" href="/saler/dashboard">Dashboard</a>
+                                </div>
+                                <div th:if="${user.roleName == 'TECHNICAL STAFF'}">
+                                    <a class="dropdown-item" href="/home/order">Dashboard</a>
+                                </div>
+
+                            </th:block>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/auth/logout"><i class="fa fa-sign-out pull-right"></i>Log
                                 Out</a>
