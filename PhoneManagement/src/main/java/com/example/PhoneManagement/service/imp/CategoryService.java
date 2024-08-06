@@ -15,6 +15,8 @@ import java.util.List;
 public interface CategoryService {
     List<Category> findAllCategory();
 
+    List<Category> getAllCategoryActive();
+
     void addCategory( CategoryDTO categoryDTO);
 
     void editCategory(int cateID, CategoryDTO categoryDTO);
