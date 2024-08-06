@@ -37,7 +37,7 @@ public class HomepageController {
     public String homepage(@RequestParam(value = "categoryId", required = false) Integer categoryId,
                            @RequestParam(value = "categoryIdTS", required = false) Integer categoryIdTS,
                            Model model, Principal principal, HttpSession session) {
-        List<Category> categories = categoryService.findAllCategory();
+        List<Category> categories = categoryService.getAllCategoryActive();
         List<Products> products;
         List<Products> productTS;
 
