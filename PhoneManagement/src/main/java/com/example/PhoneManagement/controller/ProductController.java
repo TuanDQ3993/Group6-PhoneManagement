@@ -142,7 +142,7 @@ public class ProductController {
                     Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                 }
 
-                fileImage = fileName.toLowerCase();
+                fileImage =  fileName.toLowerCase();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -204,7 +204,7 @@ public class ProductController {
                     Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                 }
 
-                fileImage =   fileName.toLowerCase();
+                fileImage = "/uploads/" + fileName.toLowerCase();
             } catch (IOException e) {
                 e.printStackTrace();
             }
