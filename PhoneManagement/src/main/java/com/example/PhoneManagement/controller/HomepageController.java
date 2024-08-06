@@ -53,24 +53,6 @@ public class HomepageController {
             productTS = productService.getTopSellingProduct();
         }
 
-//        //get user
-//        if (principal != null) {
-//            String userName = principal.getName();
-//            Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
-//            userDTO.ifPresent(user -> model.addAttribute("user", user));
-//        }
-//
-//        Cart cart = (Cart) session.getAttribute("cart");
-//        if (cart != null) {
-//            model.addAttribute("cart", cart);
-//            model.addAttribute("size", cart.getItems().size());
-//            model.addAttribute("total", cart.getTotalPrice());
-//        } else {
-//            model.addAttribute("size", 0);
-//            model.addAttribute("total", 0.0);
-//        }
-
-
         model.addAttribute("productTS", productTS);
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
