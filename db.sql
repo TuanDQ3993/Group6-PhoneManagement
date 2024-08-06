@@ -28,7 +28,8 @@ CREATE TABLE useraccount
 CREATE TABLE category
 (
     category_id   INT AUTO_INCREMENT PRIMARY KEY,
-    category_name VARCHAR(100) NOT NULL
+    category_name VARCHAR(100) NOT NULL,
+    deleted       BIT
 );
 
 -- Table to manage products
@@ -141,8 +142,8 @@ VALUES ('quangtuan3903@gmail.com', '$2a$10$c0zBKI./IHXIbP5aHoGwMe7QLMJAA0nqqDWKC
         'Address 6', '0956789012', 4, 1, NULL),
        ('nguyenhoang@gmail.com', '$2a$10$A5.xmwG6yFPVjpBFzoWA.ega1BoA79vptTGhJoPLJIawzYcFAEH/S', 'Nguyen Hoang',
         'Address 8', '0978901234', 4, 1, NULL);
-INSERT INTO category (category_name)
-VALUES ('Smartphones'),('Laptops'),('Accessories');
+INSERT INTO category (category_name, deleted)
+VALUES ('Smartphones',1),('Laptops',1),('Accessories',1);
 
 
 INSERT INTO products (product_name, description, quantity, category_id, warranty_period, created_at, brand_name)
