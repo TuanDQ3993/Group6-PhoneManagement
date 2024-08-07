@@ -7,6 +7,8 @@ import com.example.PhoneManagement.service.imp.CategoryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +19,8 @@ import java.util.List;
 public class CategoryServiceImp implements CategoryService {
     CategoryRepository categoryRepository;
     @Override
-    public List<Category> findAllCategory(){
-        return categoryRepository.findAll();
+    public Page<Category> findAllCategory(Pageable pageable){
+        return categoryRepository.findAll(pageable);
     }
 
     @Override
@@ -29,6 +31,8 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     public void addCategory(CategoryDTO categoryDTO) {
         Category category=new Category();
+        boolean cate=categoryRepository.findAll().stream().anyMatch(cName -> cName.getCategoryName().equals(categoryDTO.getCateName()));
+        if(cate) return;
         category.setCategoryName(categoryDTO.getCateName());
         categoryRepository.save(category);
     }
@@ -36,6 +40,8 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     public void editCategory(int cateId, CategoryDTO categoryDTO) {
         Category category=categoryRepository.findById(cateId).orElseThrow(()->new RuntimeException("Category not existed"));
+        boolean cate=categoryRepository.findAll().stream().anyMatch(cName -> cName.getCategoryName().equals(categoryDTO.getCateName()));
+        if(cate && !category.getCategoryName().equals(categoryDTO.getCateName())) return;
         category.setCategoryName(categoryDTO.getCateName());
         categoryRepository.save(category);
     }
@@ -52,6 +58,11 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     public void saveAll(List<Category> categories) {
         categoryRepository.saveAll(categories);
+    }
+
+    @Override
+    public boolean findByName(String cateName) {
+        return categoryRepository.findAll().stream().anyMatch(cate -> cate.getCategoryName().equals(cateName));
     }
 
 

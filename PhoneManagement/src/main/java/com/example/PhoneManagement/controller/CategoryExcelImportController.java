@@ -33,20 +33,27 @@ public class CategoryExcelImportController {
             Row row = sheet.getRow(i);
             if (row == null) continue;
 
-            Category category = new Category();
+            String categoryName = row.getCell(0) != null ? row.getCell(0).getStringCellValue() : null;
+            if (categoryName == null || categoryName.isEmpty()) continue;
 
-            if (row.getCell(0) != null) {
-                category.setCategoryName(row.getCell(0).getStringCellValue());
+            boolean existingCategory = categoryService.findByName(categoryName);
+
+            if (existingCategory) {
+                System.out.println("Category with name " + categoryName + " already exists, skipping...");
+            } else {
+                Category category = new Category();
+                category.setCategoryName(categoryName);
+
+                if (row.getCell(1) != null && row.getCell(1).getCellType() == CellType.BOOLEAN) {
+                    category.setDeleted(row.getCell(1).getBooleanCellValue());
+                }
+
+                categoryList.add(category);
             }
-
-            if (row.getCell(1) != null && row.getCell(1).getCellType() == CellType.BOOLEAN) {
-                category.setDeleted(row.getCell(1).getBooleanCellValue());
-            }
-
-            categoryList.add(category);
         }
         workbook.close();
         return categoryList;
     }
+
 
 }

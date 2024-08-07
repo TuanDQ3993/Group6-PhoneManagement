@@ -7,6 +7,10 @@ import com.example.PhoneManagement.service.imp.CategoryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +28,14 @@ public class CategoryController {
     CategoryExcelImportController categoryExcelImportController;
 
     @GetMapping
-    public String getCategory(Model model){
-        model.addAttribute("cates", categoryService.findAllCategory());
+    public String getCategory(Model model,@RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "5") int size){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("categoryId").descending());
+        Page<Category> categoryPage = categoryService.findAllCategory(pageable);
+        model.addAttribute("cates", categoryPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", categoryPage.getTotalPages());
+        model.addAttribute("pageSize", size);
         return "category";
     }
 

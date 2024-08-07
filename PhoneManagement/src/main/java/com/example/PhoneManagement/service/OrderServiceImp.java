@@ -6,10 +6,7 @@ import com.example.PhoneManagement.entity.*;
 import com.example.PhoneManagement.repository.*;
 import com.example.PhoneManagement.service.imp.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -252,10 +249,9 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public Page<Object[]> getOrdersByUserIdWithFilters(UserDTO userDTO, String status , String search, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public List<Object[]> getOrdersByUserIdWithFilters(UserDTO userDTO, String status , String search) {
         int userId = userRepository.findIdByUserName(userDTO.getUserName());
-        return orderRepository.findOrdersWithFiltersCategory(userId, status,search, pageable);
+        return orderRepository.findOrdersWithFiltersCategory(userId, status,search);
     }
 
 
