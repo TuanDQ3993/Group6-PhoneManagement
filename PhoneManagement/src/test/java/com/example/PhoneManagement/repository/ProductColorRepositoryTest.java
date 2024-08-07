@@ -7,43 +7,44 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
 import org.springframework.data.domain.Pageable;
+
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @DataJpaTest
-class OrderDetailRepositoryTest {
-
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
-
-    @Autowired
-    private ProductRepository productsRepository;
+public class ProductColorRepositoryTest {
 
     @Autowired
     private ProductColorRepository productColorRepository;
 
     @Autowired
-    private OrderRepository ordersRepository;
+    private ProductRepository productsRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private ColorRepository colorRepository;
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private ColorRepository colorsRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-
     @BeforeEach
-    void setUp() {
+    void setUp() throws ParseException {
         orderDetailRepository.deleteAll();
-        ordersRepository.deleteAll();
+        orderRepository.deleteAll();
         productColorRepository.deleteAll();
         productsRepository.deleteAll();
         userRepository.deleteAll();
-        colorsRepository.deleteAll();
+        colorRepository.deleteAll();
         categoryRepository.deleteAll();
 
         // Tạo người dùng
@@ -58,7 +59,7 @@ class OrderDetailRepositoryTest {
         // Tạo màu sắc
         Colors color = new Colors();
         color.setColorName("Red");
-        colorsRepository.save(color);
+        colorRepository.save(color);
 
         //Tao category
         Category category = new Category();
@@ -91,11 +92,11 @@ class OrderDetailRepositoryTest {
         // Tạo đơn hàng
         Orders order = new Orders();
         order.setSalerId(1);
-        order.setOrderDate(new Date());
+        order.setOrderDate(new SimpleDateFormat("yyyy-MM-dd").parse("2024-07-01"));
         order.setTotalAmount(new BigDecimal("200.00"));
         order.setStatus("Completed");
         order.setUser(user);
-        ordersRepository.save(order);
+        orderRepository.save(order);
 
         // Tạo chi tiết đơn hàng
         OrderDetail orderDetail = new OrderDetail();
@@ -106,43 +107,20 @@ class OrderDetailRepositoryTest {
         orderDetailRepository.save(orderDetail);
     }
 
+
     @Test
-    public void testFindAllOrderDetails() {
-        List<Object[]> result = orderDetailRepository.findAllOrderDetails(1);
-        assertNotNull(result);
-        assertFalse(result.isEmpty(), "Result should not be empty");
-        assertEquals(1, result.size());
-        assertEquals("Product A", result.get(0)[2]);
-        assertEquals("image.png", result.get(0)[3]);
+    void findTop4ByCategoryIdOrderByCreatedAtDesc() {
+        Pageable pageable = PageRequest.of(0, 4);
+        Page<Products> productsPage = productColorRepository.findTop4ByCategoryIdOrderByCreatedAtDesc(1, pageable);
+        assertNotNull(productsPage);
+        assertFalse(productsPage.isEmpty());
+        assertEquals(1, productsPage.getTotalElements());
+        assertEquals("Product A", productsPage.getContent().get(0).getProductName());
     }
 
     @Test
-    public void testFindTop5Sellers() {
-        List<Object[]> result = orderDetailRepository.findTop5Sellers();
-        assertNotNull(result);
-        assertFalse(result.isEmpty(), "Result should not be empty");
-        assertEquals(1, result.size());
-        assertEquals("Product A", result.get(0)[1]);
-        assertEquals("image.png", result.get(0)[2]);
-        assertEquals(2L, ((Number) result.get(0)[3]).longValue());
-    }
-
-    @Test
-    public void testFindTopSelling() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Products> result = orderDetailRepository.findTopSelling(pageable);
-        assertNotNull(result);
-        assertFalse(result.isEmpty(), "Result should not be empty");
-        assertEquals(1, result.getTotalElements());
-        assertEquals("Product A", result.getContent().get(0).getProductName());
-    }
-    @Test
-    public void testFindTopSellingByCategory() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Products> result = orderDetailRepository.findTopSellingByCategory(1, pageable);
-        assertNotNull(result);
-        assertFalse(result.isEmpty(), "Result should not be empty");
-        assertEquals(1, result.getTotalElements());
-        assertEquals("Product A", result.getContent().get(0).getProductName());
+    void getQuantityProduct() {
+        int quantity = productColorRepository.getQuantityProduct(1);
+        assertEquals(5, quantity);
     }
 }
