@@ -153,22 +153,31 @@ VALUES
 INSERT INTO products (product_name, description, quantity, category_id, warranty_period, created_at, brand_name)
 VALUES
 -- Smartphone Category
-('Samsung Galaxy S23 Ultra 512GB', 'Samsung Galaxy S23 Ultra là một chiếc điện thoại thông minh cao cấp với màn hình AMOLED lớn, hiệu năng mạnh mẽ và camera sắc nét.', 50, 1, 12, '2024-01-15', 'Samsung'),
+('Galaxy S23 Ultra 512GB', 'Samsung Galaxy S23 Ultra là một chiếc điện thoại thông minh cao cấp với màn hình AMOLED lớn, hiệu năng mạnh mẽ và camera sắc nét.', 50, 1, 12, '2024-01-15', 'Samsung'),
 ('Sony Xperia 1 IV 256GB', 'Sony Xperia 1 IV mang đến trải nghiệm giải trí tuyệt vời với màn hình 4K và hệ thống camera tiên tiến.', 40, 1, 12, '2024-01-15', 'Sony'),
 ('iPhone 15 Pro 128GB', 'iPhone 15 Pro mang đến hiệu năng vượt trội với nhiều tính năng mới, phù hợp cho người dùng cao cấp.', 90, 1, 12, '2024-01-15', 'Apple'),
-('Samsung Galaxy Z Fold 4 1TB', 'Samsung Galaxy Z Fold 4 là chiếc điện thoại gập cao cấp với màn hình lớn và tính năng đa nhiệm.', 20, 1, 12, '2024-01-15', 'Samsung'),
+('Galaxy Z Fold 4 1TB', 'Samsung Galaxy Z Fold 4 là chiếc điện thoại gập cao cấp với màn hình lớn và tính năng đa nhiệm.', 20, 1, 12, '2024-01-15', 'Samsung'),
 ('iPhone 14 Pro Max 512GB', 'iPhone 14 Pro Max với dung lượng lưu trữ lớn và nhiều cải tiến về camera và hiệu năng.', 80, 1, 12, '2024-01-15', 'Apple'),
+('iPhone 13 Pro Max 128GB', 'iPhone 13 Pro Max chắc chắn sẽ là chiếc smartphone cao cấp được quan tâm nhiều nhất trong năm 2021. Dòng iPhone 13 series được ra mắt vào ngày 14 tháng 9 năm 2021 tại sự kiện "California Streaming" diễn ra trực tuyến tương tự năm ngoái cùng với 3 phiên bản khác là iPhone 13, 13 mini và 13 Pro. Vậy điện thoại 13 Pro Max giá bao nhiêu? Có gì nổi bật? Cùng tìm hiểu ngay nhé!', 55, 1, 24, '2024-01-15', 'Apple'),
+('iPhone 14 Pro Max 128GB', 'iPhone 14 Pro Max với dung lượng lưu trữ lớn và nhiều cải tiến về camera và hiệu năng.', 80, 1, 12, '2024-01-15', 'Apple'),
+('Samsung Galaxy Z Fold6', 'Samsung Galaxy Z Fold 6 là chiếc điện thoại gập cao cấp với màn hình lớn và tính năng đa nhiệm.', 20, 1, 12, '2024-01-15', 'Samsung'),
+('Samsung Galaxy A15 LTE 8GB 128GB', 'Samsung Galaxy A15 LTE được trang bị công nghệ màn hình cao cấp Super AMOLED, với độ phân giải FHD+ 1080 x 2340 pixel. Màn hình của sản phẩm lớn 6.5inch kết hợp với tần số quét nhanh, hạn chế tình trạng bị chớp màn hình hay bị nhòe khi sử dụng. Chiếc điện thoại mới của dòng Samsung Galaxy A này còn có cụm camera sắc nét và bộ nhớ lớn 8B+128GB sử dụng thả ga.', 20, 1, 12, '2024-01-15', 'Samsung'),
+('Samsung Galaxy S23 FE 8GB 256GB', 'Samsung Galaxy S23 được trang bị công nghệ màn hình cao cấp Super AMOLED, với độ phân giải FHD+ 1080 x 2340 pixel. Màn hình của sản phẩm lớn 6.5inch kết hợp với tần số quét nhanh, hạn chế tình trạng bị chớp màn hình hay bị nhòe khi sử dụng. Chiếc điện thoại mới của dòng Samsung Galaxy A này còn có cụm camera sắc nét và bộ nhớ lớn 8B+128GB sử dụng thả ga.', 20, 1, 12, '2024-01-15', 'Samsung'),
+('Samsung Galaxy S24 Ultra 12GB 1TB', 'Samsung Galaxy S24 Ultra 12GB 1TB cao cấp với màn hình lớn và tính năng đa nhiệm.', 20, 1, 12, '2024-01-15', 'Samsung'),
+('Điện thoại Sony Xperia 10VI 8GB 128GB', 'Sony Xperia 10 VI trang bị card đồ họa GPU Adreno kết hợp chipset cao cấp Snapdragon 6 Gen 1 giúp đem lại hiệu suất mạnh mẽ khi sử dụng. Dung lượng lưu trữ 8GB RAM + 128GB ROM cho phép tải nhiều ứng dụng hay hình ảnh về máy. Camera sau lên đến 48 MP và camera trước 8 MP hỗ trợ khả năng chụp ảnh rõ ràng và ấn tượng hơn. Điện thoại Sony Xperia 10 VI được trang bị dung lượng pin 5000 mAh, giúp thực hiện các hoạt động khác nhau mà không lo nhanh hết pin', 40, 1, 12, '2024-01-15', 'Sony'),
 
 -- Laptops Category
 ('Dell XPS 13 9310', 'Dell XPS 13 với hiệu năng mạnh mẽ và thiết kế mỏng nhẹ, lý tưởng cho người dùng chuyên nghiệp.', 30, 2, 24, '2024-01-15', 'Dell'),
 ('MacBook Air M2 2023', 'MacBook Air M2 với bộ xử lý mới và thiết kế mỏng nhẹ, mang đến hiệu suất cao và thời lượng pin lâu.', 45, 2, 24, '2024-01-15', 'Apple'),
+('MacBook Pro 16 inch M1 Max 10 CPU - 32 GPU 32GB 1TB 2021', 'Không chỉ là điểm nhận biết trên các thiết bị smartphone, hiện nay tai thỏ đã xuất hiện trên thế hệ Macbook mới nhất. Macbook Pro M1 Max với thiết kế độc đáo, màn hình chất lượng mang lại trải nghiệm vượt  trội. Máy tính Macbook Pro 16 inch 2021 được trang bị cấu hình cực khủng với chip Apple M1 Max với 10CPU, 32GPU đi kèm dung lượng lên đến RAM 32GB và bộ nhớ SSD 1TB mang lại hiệu suất vượt trội.', 45, 2, 24, '2024-01-15', 'Apple'),
+
 
 -- Accessories Category
 ('Apple AirPods Pro', 'Apple AirPods Pro với tính năng chống ồn chủ động và chất lượng âm thanh tuyệt vời.', 120, 3, 12, '2024-01-15', 'Apple'),
 ('Sony WH-1000XM4', 'Sony WH-1000XM4 là tai nghe chống ồn chủ động với chất lượng âm thanh cao và khả năng kết nối không dây.', 70, 3, 12, '2024-01-15', 'Sony');
 
 INSERT INTO color(color_name)
-VALUES('Xanh'),('Vàng'),('Đen'),('Hồng'),('Trắng');
+VALUES('Xanh'),('Vàng'),('Đen'),('Hồng'),('Trắng'),('Bạc');
 
 INSERT INTO productinfo (product_id, image, color_id, quantity, last_updated, price, isdeleted)
 VALUES
@@ -181,4 +190,29 @@ VALUES
 (7,'dell-xps-13-9310-i7-jgnh61-2-org.jpg',3,54, '2023-05-12', 1499,1),
 (8,'macbook-air-15-inch-m2-2023-70w-1.jpg',5, 89, '2023-07-21', 1299,1),
 (9, 'tai-nghe-bluetooth-airpods-pro-2nd-gen-usb-c-charge-apple-1.jpg',5,91,'2023-08-12', 249,1),
-(10, 'pdp_wh-1000xm4.jpg', 3, 43, '2024-01-29', 349,1);
+(10, 'pdp_wh-1000xm4.jpg', 3, 43, '2024-01-29', 349,1),
+(11, 'iphone-13-pro-max.jpg', 1, 55, '2024-01-29', 2000, 1),
+(11, '4_36_3_2_1_9.jpg', 5, 55, '2024-01-29', 2000, 1),
+(11, '2_61_8_2_1_12.jpg', 3, 55, '2024-01-29', 1999, 1),
+(12, 'v_ng_18.jpg', 2, 55, '2024-01-29', 2199, 1),
+(12, 'b_c_1_9.jpg', 2, 55, '2024-01-29', 2000, 1),
+(13, 'samsung-galaxy-z-fold-6-xanh_5_.jpg', 1, 55, '2024-01-29', 3999, 1),
+(13, 'image_1171.jpg', 4, 55, '2024-01-29', 3999, 1),
+(14, 'galaxy-a15-vang.jpg', 2, 55, '2024-01-29', 1599, 1),
+(14, 'galaxy-a15-den.jpg', 2, 55, '2024-01-29', 1599, 1),
+(15, 'macbook-pro-2021-004_3.jpg', 5, 55, '2024-01-29', 3999, 1),
+(15, 'macbook-pro-2021-001_3.jpg', 6, 55, '2024-01-29', 3999, 1),
+(16, 'samsung-s23-fe_1.jpg', 1, 55, '2024-01-29', 899, 1),
+(16, 'samsung-galaxy-s23-fe_16__2.jpg', 3, 55, '2024-01-29', 899, 1),
+(17, 'samsung-galaxy-s24-ultra_10__2.jpg', 1, 55, '2024-01-29', 899, 1),
+(17, 'ss-s24-ultra-xam-222_2.jpg', 6, 55, '2024-01-29', 899, 1),
+(18, 'dien-thoai-sony-xperia-10-vi_1_.jpg', 3, 55, '2024-01-29', 599, 1),
+(18, 'dien-thoai-sony-xperia-10-vi.jpg', 1, 55, '2024-01-29', 599, 1);
+INSERT INTO warrantyrepair (product_name, image, status, user_id, technical_id, issue_description, is_deleted, repair_date, type, order_id)
+VALUES 
+('iPhone 15 Pro Max 256GB', 'iphone-15-pro-max-blue-1-1.jpg', 'Pending', 9, 6, 'Screen not responding', 0, '2024-01-10', 'Warranty', 1),
+('Galaxy S23 Ultra 512GB', 'samsung-galaxy-s23-ultra-1-1.jpg', 'In Progress', 10, 7, 'Battery draining quickly', 0, '2024-02-05', 'Repair', 2),
+('Sony Xperia 1 IV 256GB', 'sony-xperia-1-iv-1-600x600.jpg', 'Completed', 11, 8, 'Camera malfunctioning', 0, '2024-02-20', 'Warranty', 3),
+('iPhone 15 Pro 128GB', 'iphone-15-pro-max-blue-1-1.jpg', 'Pending', 9, 6, 'Touchscreen issue', 0, '2024-03-15', 'Repair', 4),
+('Galaxy Z Fold 4 1TB', 'samsung-galaxy-z-fold-3-silver-1-600x600.jpg', 'In Progress', 10, 7, 'Hinge problem', 0, '2024-03-25', 'Warranty', 5),
+('iPhone 14 Pro Max 512GB', '2023_3_7_638138235534641283_iphone-14-vang-1.jpg', 'Completed', 11, 8, 'Battery not charging', 0, '2024-04-01', 'Repair', 6);
