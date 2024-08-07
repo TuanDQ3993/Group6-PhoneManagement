@@ -165,24 +165,27 @@
 <body>
 <!--header-->
 <div th:include="header.html"></div>
-<!-- NAVIGATION -->
-<nav id="navigation">
+
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
     <!-- container -->
     <div class="container">
-        <!-- responsive-nav -->
-        <div id="responsive-nav">
-            <!-- NAV -->
-            <ul class="main-nav nav navbar-nav">
-                <li class=""><a href="/home/homepage">Home</a></li>
-                <li><a href="#">Shop</a></li>
-            </ul>
-            <!-- /NAV -->
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="breadcrumb-header">Product Detail</h3>
+                <ul class="breadcrumb-tree">
+                    <li><a href="/home/homepage">Home</a></li>
+                    <li><a href="#">Shop</a></li>
+                    <li class="active">Product Detail</li>
+                </ul>
+            </div>
         </div>
-        <!-- /responsive-nav -->
+        <!-- /row -->
     </div>
     <!-- /container -->
-</nav>
-<!-- /NAVIGATION -->
+</div>
+<!-- /BREADCRUMB -->
 
 
 <!-- SECTION -->
