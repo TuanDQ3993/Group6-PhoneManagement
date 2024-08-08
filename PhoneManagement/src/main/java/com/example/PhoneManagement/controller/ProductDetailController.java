@@ -35,12 +35,6 @@ public class ProductDetailController {
         ProductInfo selectedProductInfo = productService.getProductInfoById(productColorId);
 
         List<Products> relatedProducts = productService.getRelatedProductByCategory(products.getCategory().getCategoryId());
-//        if (principal != null) {
-//            String userName = principal.getName();
-//            Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
-//            userDTO.ifPresent(user -> model.addAttribute("user", user));
-//        }
-
         if(selectedProductInfo != null) {
             int stock = productColorRepository.getQuantityProduct(productColorId);
             selectedProductInfo.setQuantity(stock);
