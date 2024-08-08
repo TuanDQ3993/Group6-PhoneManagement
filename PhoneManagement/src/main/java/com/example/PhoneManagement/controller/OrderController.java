@@ -73,6 +73,7 @@ public class OrderController {
     @PostMapping("/order")
     public String updateStatusOrder(@RequestParam("orderId") int oderId){
         orderService.changeStatusOrder(oderId,"Canceled");
+        orderService.backProduct(oderId);
         return "redirect:/home/order";
     }
 
