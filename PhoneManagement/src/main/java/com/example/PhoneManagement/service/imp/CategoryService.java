@@ -28,4 +28,6 @@ public interface CategoryService {
     void saveAll(List<Category> categories);
 
     boolean findByName(String cateName);
+
+    public List<Category> findAll();
 }

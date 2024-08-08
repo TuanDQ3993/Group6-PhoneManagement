@@ -150,17 +150,9 @@
                                         <button type="submit">Import</button>
                                     </form>
                                     <div class="x_panel">
-                                        <form method="post" class="text-right" style="width: 400px;float: right;">
-                                            <div class="input-group">
-                                                <input type="text" name="search" class="form-control"
-                                                       placeholder="Search for...">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-secondary" type="button">Go!</button>
-                                                </span>
-                                            </div>
-                                        </form>
-                                        <p th:if="${cates.getSize()==0}">Not exist category</p>
-                                        <div class="x_content" th:unless="${cates.getSize()==0}">
+
+                                        <p th:if="${cates.totalElements==0}">Not exist category</p>
+                                        <div class="x_content" th:unless="${cates.totalElements==0}">
                                             <!-- Project List Table -->
                                             <table class="table table-striped projects">
                                                 <thead>
@@ -171,9 +163,6 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr th:if="${cates.getSize()==0}">
-                                                    <td colspan="3">No categories exist</td>
-                                                </tr>
                                                 <tr th:each="cate : ${cates}">
                                                     <form th:action="@{/admin/category/{cateId}(cateId=${cate.categoryId})}" method="post" id="update_form" enctype="multipart/form-data">
                                                         <td th:text="${cate.categoryId}"></td>
@@ -279,6 +268,7 @@
             </form>
         </div>
     </div>
+
 </div>
 
 <!-- jQuery -->
@@ -400,7 +390,6 @@
 
 
     $(document).ready(function () {
-        // Function to show the modal with a message
         function showModal(message) {
             $('#modalMessage').text(message);
             $('#messageModal').show(); // Hiển thị modal

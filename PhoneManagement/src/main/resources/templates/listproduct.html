@@ -235,7 +235,8 @@
                                     </form>
                                 </div>
 
-                                <table class="table table-striped projects">
+                                <p th:if="${productColorPage.totalElements==0}">Not exist product</p>
+                                <table class="table table-striped projects" th:unless="${productColorPage.totalElements==0}">
                                     <thead>
                                     <tr>
                                         <th style="width: 1%"><a th:href="@{/admin/products(page=${currentPage}, sortField='productId', sortDir=${reverseSortDir}, cacategoryId=${categoryId})}">ID</a></th>

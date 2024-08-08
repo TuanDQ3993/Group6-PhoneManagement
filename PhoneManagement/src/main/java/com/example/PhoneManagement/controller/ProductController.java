@@ -61,7 +61,8 @@ public class ProductController {
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("productColorPage", productColorPage);
-        model.addAttribute("category", categoryService.getAllCategoryActive());
+//        model.addAttribute("category", categoryService.getAllCategoryActive());
+        model.addAttribute("category", categoryService.findAll());
         model.addAttribute("colors", colorService.getAllColor());
         model.addAttribute("productDTO", new ProductDTO());
         model.addAttribute("search",name);
