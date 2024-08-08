@@ -355,7 +355,7 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public ProductInfo getProductInfoById(int productColorId) {
-        return productColorRepository.findById(productColorId).orElse(null);
+        return productColorRepository.findByProductcolorIdAndIsDeletedTrue(productColorId).orElse(null);
     }
 
     @Override

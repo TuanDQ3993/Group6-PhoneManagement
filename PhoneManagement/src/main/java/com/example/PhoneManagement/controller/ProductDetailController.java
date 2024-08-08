@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequestMapping("/home")
 @Controller
@@ -35,15 +36,20 @@ public class ProductDetailController {
         ProductInfo selectedProductInfo = productService.getProductInfoById(productColorId);
 
         List<Products> relatedProducts = productService.getRelatedProductByCategory(products.getCategory().getCategoryId());
-        if(selectedProductInfo != null) {
+        if (selectedProductInfo != null) {
             int stock = productColorRepository.getQuantityProduct(productColorId);
             selectedProductInfo.setQuantity(stock);
             model.addAttribute("stock", stock);
         }
+        // Lọc danh sách các `ProductInfo` có `isDeleted = true`
+        List<ProductInfo> availableProductInfo = products.getProductInfoList().stream()
+                .filter(ProductInfo::isDeleted)
+                .collect(Collectors.toList());
+
         model.addAttribute("relatedProducts", relatedProducts);
         model.addAttribute("product", products);
         model.addAttribute("selectedProductInfo", selectedProductInfo);
-        model.addAttribute("productInfo", products.getProductInfoList());
+        model.addAttribute("productInfo", availableProductInfo);
         return "product";
     }
 

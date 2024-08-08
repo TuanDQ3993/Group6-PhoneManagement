@@ -2,6 +2,7 @@ package com.example.PhoneManagement.controller;
 
 import com.example.PhoneManagement.dto.request.UserDTO;
 import com.example.PhoneManagement.entity.Category;
+import com.example.PhoneManagement.entity.ProductInfo;
 import com.example.PhoneManagement.entity.Products;
 import com.example.PhoneManagement.repository.CategoryRepository;
 import com.example.PhoneManagement.service.UserServiceImp;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequestMapping("/home")
 @Controller
@@ -51,6 +53,14 @@ public class HomepageController {
             productTS = productService.getTopSellingProductsByCategory(categoryIdTS);
         } else {
             productTS = productService.getTopSellingProduct();
+        }
+
+        for (Products product : products) {
+            product.setProductInfoList(
+                    product.getProductInfoList().stream()
+                            .filter(ProductInfo::isDeleted)
+                            .collect(Collectors.toList())
+            );
         }
 
         model.addAttribute("productTS", productTS);
