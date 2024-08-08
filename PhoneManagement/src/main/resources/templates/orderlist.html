@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Electro - HTML Ecommerce Template</title>
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/bootstrap.min.css}"/>
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/slick.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/slick-theme.css}"/>
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/nouislider.min.css}"/>
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" th:href="@{/build1/css/font-awesome.min.css}">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/style.css}"/>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script th:src="@{https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js}"></script>
+    <script th:src="@{https://oss.maxcdn.com/respond/1.4.2/respond.min.js}"></script>
+    <![endif]-->
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<!-- HEADER -->
+<header>
+    <!-- TOP HEADER -->
+    <div id="top-header">
+        <div class="container">
+            <ul class="header-links pull-left">
+                <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+                <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+                <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+            </ul>
+            <ul class="header-links pull-right">
+                <li><a href="auth/login"><i class="fa fa-user-o"></i> My Account</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- /TOP HEADER -->
+
+    <!-- MAIN HEADER -->
+    <div id="header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="header-logo">
+                        <a href="#" class="logo">
+                            <img src="/build1/img/logo.png" alt="">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="header-search">
+                        <form>
+                            <input class="input" placeholder="Search here">
+                            <button class="search-btn">Search</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-3 clearfix">
+                    <div class="header-ctn">
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>Your Cart</span>
+                                <div class="qty">3</div>
+                            </a>
+                            <div class="cart-dropdown">
+                                <div class="cart-list">
+                                    <div class="product-widget">
+                                        <div class="product-img">
+                                            <img src="/build1/img/product01.png" alt="">
+                                        </div>
+                                        <div class="product-body">
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
+                                        </div>
+                                        <button class="delete"><i class="fa fa-close"></i></button>
+                                    </div>
+
+                                    <div class="product-widget">
+                                        <div class="product-img">
+                                            <img src="/build1/img/product02.png" alt="">
+                                        </div>
+                                        <div class="product-body">
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
+                                        </div>
+                                        <button class="delete"><i class="fa fa-close"></i></button>
+                                    </div>
+                                </div>
+                                <div class="cart-summary">
+                                    <small>3 Item(s) selected</small>
+                                    <h5>SUBTOTAL: $2940.00</h5>
+                                </div>
+                                <div class="cart-btns">
+                                    <a href="#">View Cart</a>
+                                    <a href="#">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="menu-toggle">
+                            <a href="#">
+                                <i class="fa fa-bars"></i>
+                                <span>Menu</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- NAVIGATION -->
+<nav id="navigation">
+    <div class="container">
+        <div id="responsive-nav">
+            <ul class="main-nav nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="#">Shop</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- SECTION -->
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <form th:action="@{/home/order}" method="get"
+                  style="display: flex; justify-content: space-evenly; align-items: center; margin-bottom: 20px;">
+                <input type="text" name="search" placeholder="Search..." th:value="${searchQuery}"
+                       style="padding: 10px; width: 25%; border: 1px solid #ccc; border-radius: 4px;">
+
+                <select name="status" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="all" th:selected="${status == 'all'}">All Statuses</option>
+                    <option value="Completed" th:selected="${status == 'Completed'}">Completed</option>
+                    <option value="Confirm and Shipping" th:selected="${status == 'Confirm and Shipping'}">Confirm and
+                        Shipping
+                    </option>
+                    <option value="Canceled" th:selected="${status == 'Cancelled'}">Cancelled</option>
+                    <option value="Pending Confirm" th:selected="${status == 'Pending Confirm'}">Pending Confirm
+                    </option>
+                    <option value="Prepay" th:selected="${status == 'Prepay'}">Prepay</option>
+                </select>
+
+                <button type="submit"
+                        style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Search
+                </button>
+            </form>
+
+            <button type="button" class="btn btn-primary btn-xs"
+                    style="height: 40px; margin-left: 116px;margin-bottom: 15px;margin-top: 20px;"
+                    id="openModalBtn2">
+                <i class="fa fa-refresh"></i> List product can warranty
+            </button>
+            <div th:each="entry, iterStat : ${groupedOrders}" style="margin-bottom: 20px;">
+                <a class="orderdetail" th:href="@{/home/order/{order}(order=${entry.value[0][0]})}">
+                    <div style="font-family: Arial, sans-serif; width: 80%; margin: auto; border: 1px solid #eee; padding: 20px;">
+                        <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                            <p style="margin: 0;">Date <span
+                                    th:text="${entry.value[0][7] != null ? entry.value[0][7] : '₫0'}"></span></p>
+                            <p style="margin: 0;font-size: 18px;"><span th:text="${entry.value[0][9]}"></span></p>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <div th:each="order : ${entry.value}"
+                                 style="display: flex; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                                <img th:src="@{/uploads/{image}(image=${order[3]})}" alt="Product Image"
+                                     style="width: 100px; height: 100px; margin-right: 20px;"
+                                     th:if="${order[3] != null}">
+                                <div>
+                                    <input type="hidden" name="orderIdStatus" th:value="${order[0]}">
+                                    <p style="margin: 0; font-size: 16px;"
+                                       th:text="${order[1] != null ? order[1] : 'Product Name'}"></p>
+                                    <p style="margin: 5px 0;"
+                                       th:text="'Category: ' + (${order[8] != null ? order[8] : 'Unknown'})"></p>
+                                    <p style="margin: 5px 0;"
+                                       th:text="'x' + (${order[6] != null ? order[6] : '0'})"></p>
+                                    <p style="color: red" th:if="${!isWarrantyExpiredMap[order[0] + '_' + order[1]]}"
+                                       th:text="'Warranty period to: ' + ${warrantyExpiryDates[order[0] + '_' + order[1]]}"></p>
+                                    <p style="color: blue" th:if="${isWarrantyExpiredMap[order[0] + '_' + order[1]]}"
+                                       th:text="'Warranty period was ended at: ' + ${warrantyExpiryDates[order[0] + '_' + order[1]]}"></p>
+                                    <p style="color: green"
+                                       th:text="${warrantyStatuses[order[0] + '_' + order[1]]}"></p>
+                                </div>
+                                <div style="margin-left: auto; text-align: right;">
+                                    <p style="margin: 5px 0;"
+                                       th:text="(${order[4] != null ? order[4] : 0} * ${order[6] != null ? order[6] : 0})+'$'"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                            <form th:if="${entry.value[0][9]}== 'Pending Confirmation'" method="post"
+                                  th:action="@{/home/order}">
+                                <input th:value="${entry.value[0][0]}" type="hidden" name="orderId">
+                                <button type="submit" style="padding: 8px 20px;">Reject</button>
+                            </form>
+
+                            <p style="margin: 0; margin-left: auto;">Total Amount: <span
+                                    style="color: red; font-size: 24px;"
+                                    th:text="${entry.value[0][5] != null ? entry.value[0][5] : '₫0'}"></span></p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <h5>Enter Information</h5>
+        <form id="warrantyForm" th:action="@{/home/createWarrantyRepair}" th:object="${warrantyDTO}" method="post"
+              style="border: 1px solid #ccc; padding: 20px; border-radius: 10px;">
+            <input type="hidden" id="selectedProductId" name="selectedProductId" />
+            <label for="image" style="display: block; margin-top: 10px;">Image:</label>
+            <input type="file" id="image" th:field="*{image}"
+                   style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
+                   required/>
+            <label for="description" style="display: block; margin-top: 10px;">Issues Description:</label>
+            <textarea type="text" id="description" th:field="*{issueDescription}"
+                      style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px; resize: vertical;"
+                      required></textarea>
+
+            <!-- Thẻ input ẩn để truyền orderId -->
+            <input type="hidden" name="orderId" th:value="${orderId}">
+            <input type="hidden" name="productName" th:value="${productName}">
+            <label for="quantity" style="display: block; margin-top: 10px;">Quantity:</label>
+            <input type="number" id="quantity" th:field="*{quantity}"
+                   th:attr="max=${maxQuantity}" data-max-quantity="${maxQuantity}"
+                   style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
+                   required/>
+            <div id="quantityError" class="error">Invalid quantity</div>
+
+            <button type="submit"
+                    style="display: block; margin-top: 20px; background-color: #008CBA; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
+                Save
+            </button>
+        </form>
+
+    </div>
+</div>
+
+<!-- Modal hiển thị danh sách sản phẩm có thể bảo hành -->
+<div id="productWarrantyModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeProductWarrantyModalBtn">&times;</span>
+        <h5>List of Products That Can Be Warrantied</h5>
+        <div id="productList">
+            <form id="productSelectionForm">
+                <div th:each="entry : ${groupedOrders}">
+                    <div th:if="${entry.value[0][9] == 'Completed'} and ${isWarrantyExpiredMap[order[0] + '_' + order[1]] == false} or ${entry.value[0][9] == 'Warranty Reject'} or ${entry.value[0][9] == 'Warranty Completed'} "
+                         th:each="order : ${entry.value}" style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <input type="radio" name="productId" th:value="${order[0]}" />
+                        <img th:src="@{/uploads/{image}(image=${order[3]})}" alt="Product Image" style="width: 50px; height: 50px; margin-left: 10px; margin-right: 10px;" th:if="${order[3] != null}">
+                        <div>
+                            <label th:text="${order[1]}" style="font-weight: bold;"></label>
+                            <p th:text="'Price: $' + ${order[4]}"></p>
+                            <p th:text="'Warranty period to: ' + ${warrantyExpiryDates[order[0] + '_' + order[1]]}"></p>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" style="margin-top: 20px;">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer">
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">About Us</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
+                            ut.</p>
+                        <ul class="footer-links">
+                            <li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
+                            <li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
+                            <li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">Categories</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">Hot deals</a></li>
+                            <li><a href="#">Laptops</a></li>
+                            <li><a href="#">Smartphones</a></li>
+                            <li><a href="#">Cameras</a></li>
+                            <li><a href="#">Accessories</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="clearfix visible-xs"></div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">Information</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Orders and Returns</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">Service</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">My Account</a></li>
+                            <li><a href="#">View Cart</a></li>
+                            <li><a href="#">Wishlist</a></li>
+                            <li><a href="#">Track My Order</a></li>
+                            <li><a href="#">Help</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeErrorModalBtn">&times;</span>
+            <h5>Error</h5>
+            <div id="errorMessage" class="alert alert-danger" role="alert"></div>
+        </div>
+    </div>
+    <div id="bottom-footer" class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <ul class="footer-payments">
+                        <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+                        <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
+                    </ul>
+                    <span class="copyright">
+                        Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i
+                            class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com"
+                                                                                target="_blank">Colorlib</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- JavaScript -->
+<script>
+    // Lấy các phần tử modal, nút mở và nút đóng
+    var modal = document.getElementById("myModal");
+    var btn = document.getElementById("openModalBtn");
+    var span = document.getElementById("closeModalBtn");
+
+    // Lấy các phần tử modal, nút mở và nút đóng cho modal sản phẩm
+    var productWarrantyModal = document.getElementById("productWarrantyModal");
+    var productWarrantyBtn = document.getElementById("openModalBtn2");
+    var closeProductWarrantySpan = document.getElementById("closeProductWarrantyModalBtn");
+
+    // Khi người dùng nhấp vào nút, mở modal và ngăn chặn submit form
+    if (btn) {
+        btn.onclick = function (event) {
+            event.preventDefault(); // Ngăn chặn hành động submit mặc định
+            modal.style.display = "block";
+        }
+    }
+
+    // Khi người dùng nhấp vào nút, mở modal sản phẩm và ngăn chặn submit form
+    if (productWarrantyBtn) {
+        productWarrantyBtn.onclick = function (event) {
+            event.preventDefault(); // Ngăn chặn hành động submit mặc định
+            productWarrantyModal.style.display = "block";
+        }
+    }
+
+    // Khi người dùng nhấp vào <span> (x), đóng modal
+    if (span) {
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+    }
+
+    // Khi người dùng nhấp vào <span> (x), đóng modal sản phẩm
+    if (closeProductWarrantySpan) {
+        closeProductWarrantySpan.onclick = function () {
+            productWarrantyModal.style.display = "none";
+        }
+    }
+
+    // Khi người dùng nhấp vào bất cứ đâu bên ngoài modal, đóng modal
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        if (event.target == productWarrantyModal) {
+            productWarrantyModal.style.display = "none";
+        }
+    }
+
+    function showErrorModal(message) {
+        document.getElementById("errorMessage").innerText = message;
+        errorModal.style.display = "block";
+    }
+
+    var errors = [
+        /*[[${error}]]*/
+    ];
+
+    errors.forEach(function (error) {
+        if (error !== 'null' && error.trim() !== '') {
+            showErrorModal(error);
+        }
+    });
+
+    // Xử lý sự kiện submit của form chọn sản phẩm
+    document.getElementById("productSelectionForm").onsubmit = function(event) {
+        event.preventDefault(); // Ngăn chặn hành động submit mặc định
+        var selectedProductElement = document.querySelector('input[name="productId"]:checked');
+        if (selectedProductElement) {
+            var selectedProductId = selectedProductElement.value;
+            document.getElementById("selectedProductId").value = selectedProductId;
+            productWarrantyModal.style.display = "none";
+            modal.style.display = "block";
+        }
+    }
+
+    document.getElementById("warrantyForm").onsubmit = function(event) {
+        var quantityInput = document.getElementById("quantity");
+        var quantityValue = parseInt(quantityInput.value);
+        var maxQuantity = parseInt(quantityInput.getAttribute('data-max-quantity'));
+        var errorElement = document.getElementById("quantityError");
+
+        if (quantityValue <= 0 || quantityValue > maxQuantity) {
+            event.preventDefault(); // Ngăn chặn hành động submit
+            errorElement.style.display = "block";
+        } else {
+            errorElement.style.display = "none";
+        }
+    }
+
+</script>
+
+<!-- jQuery Plugins -->
+<script th:src="@{/build1/js/jquery.min.js}"></script>
+<script th:src="@{/build1/js/bootstrap.min.js}"></script>
+<script th:src="@{/build1/js/slick.min.js}"></script>
+<script th:src="@{/build1/js/nouislider.min.js}"></script>
+<script th:src="@{/build1/js/jquery.zoom.min.js}"></script>
+<script th:src="@{/build1/js/main.js}"></script>
+
+</body>
+</html>

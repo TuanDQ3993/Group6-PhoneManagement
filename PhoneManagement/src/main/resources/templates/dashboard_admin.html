@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+
+    <!-- Bootstrap -->
+    <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link th:href="@{/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+    <!-- NProgress -->
+    <link th:href="@{/vendors/nprogress/nprogress.css}" rel="stylesheet">
+    <!-- iCheck -->
+    <link th:href="@{/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
+
+    <link th:href="@{/build/css/app.css}" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
+    <style>
+        .table {
+            margin: 20px;
+            border: 1px solid #ddd;
+        }
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table img {
+            max-width: 100px;
+            height: auto;
+        }
+        .table thead th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        .d-none.d-xl-table-cell {
+            display: table-cell;
+        }
+        .d-none.d-md-table-cell {
+            display: table-cell;
+        }
+        .d-xl-table-cell {
+            display: table-cell;
+        }
+        .d-md-table-cell {
+            display: table-cell;
+        }
+    </style>
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div th:insert="~{fragments/sidebar.html}"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <main class="content">
+                    <div class="container-fluid p-0">
+
+                        <h1 class="h3 mb-3"><strong>Admin</strong> Dashboard</h1>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">Total of product</h5>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="truck"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3" th:text="${totalProduct}"></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">Total of account</h5>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="users"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3" th:text="${totalAccount}">64</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">Total of request warranty</h5>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="users"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3" th:text="${sumAllByAdmin}"></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">Total request completed</h5>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="users"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3" th:text="${sumByStatusByAdmin}"></h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-sm-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">Total of order</h5>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="truck"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3" th:text="${order}"></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">Order earn this month</h5>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="truck"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3" th:text="${totalamount}+ '$'">64</h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="card flex-fill">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Warranty Statistics</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="warrantyChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card flex-fill">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Order Statistics</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="orderChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- jQuery -->
+<script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{/vendors/nprogress/nprogress.js}"></script>
+<!-- bootstrap-progressbar -->
+<script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+<!-- Chart.js -->
+<script th:src="@{/vendors/chart.js/Chart.min.js}"></script>
+
+<script th:src="@{/build/js/app.js}"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Warranty Chart
+        var warrantyCtx = document.getElementById("warrantyChart").getContext("2d");
+        var totalOrders = [[${sumAllByAdmin}]]; // Giá trị mặc định là 0 nếu không có dữ liệu
+        var completedOrders = [[${sumByStatusByAdmin}]]; // Giá trị mặc định là 0 nếu không có dữ liệu
+
+        var warrantyChart = new Chart(warrantyCtx, {
+            type: 'line', // Loại biểu đồ: 'bar' hoặc 'line' tùy theo yêu cầu
+            data: {
+                labels: ["Total Request", "Completed Request"], // Các nhãn
+                datasets: [
+                    {
+                        label: 'Number of Request Warranty',
+                        data: [totalOrders, completedOrders], // Dữ liệu tổng đơn và đơn thành công
+                        backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
+                        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Order Chart
+        var orderCtx = document.getElementById("orderChart").getContext("2d");
+        var totalOrdersValue = [[${order}]]; // Giá trị mặc định là 0 nếu không có dữ liệu
+        var orderEarnings = [[${totalamount}]]; // Giá trị mặc định là 0 nếu không có dữ liệu
+
+        var orderChart = new Chart(orderCtx, {
+            type: 'line', // Loại biểu đồ: 'bar' hoặc 'line' tùy theo yêu cầu
+            data: {
+                labels: ["Total Orders", "Order Earnings"], // Các nhãn
+                datasets: [
+                    {
+                        label: 'Order Statistics',
+                        data: [totalOrdersValue, orderEarnings], // Dữ liệu tổng đơn và doanh thu
+                        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(255, 206, 86, 0.2)'],
+                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(255, 206, 86, 1)'],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

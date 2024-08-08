@@ -123,24 +123,29 @@
                                     <td th:text="${#dates.format(warrantyRepair.repairDate, 'yyyy-MM-dd')}"></td>
                                     <td th:text="${warrantyRepair.status}"></td>
                                     <td>
-                                        <form th:if="${warrantyRepair.status != 'Pending'}"
-                                                th:action="@{/technical/changeStatus/{id}(id=${warrantyRepair.warrantyId})}"
-                                              th:onsubmit="return confirm('Are you sure to change status of this?')"
-                                              method="post" style="    margin-top: -0.5rem !important;">
-                                            <select name="status" class="form-control" type="text">
-                                                <option value="">Select Status</option>
-                                                <option value="In Process">In Process</option>
-                                                <option value="Completed" >Completed</option>
-                                                <option value="Rejected" >Rejected</option>
+                                        <form th:if="${warrantyRepair.status != 'Warranty Pending'} and ${warrantyRepair.status != 'Warranty Completed'} and ${warrantyRepair.status != 'Warranty Rejected'} "
+                                              th:action="@{/technical/changeStatus/{id}(id=${warrantyRepair.warrantyId})}"
+                                              onsubmit="return checkStatusChange(event, this)"
+                                              method="post" style="margin-top: -0.5rem !important;">
+                                            <select id="statusSelect" name="status" class="form-control" data-current-status="${warrantyRepair.status}">
+                                                <option value="Warranty In Process" th:selected="${warrantyRepair.status == 'Warranty In Process'}">In Process</option>
+                                                <option value="Warranty Completed" th:selected="${warrantyRepair.status == 'Warranty Completed'}">Completed</option>
+                                                <option value="Warranty Rejected" th:selected="${warrantyRepair.status == 'Warranty Rejected'}">Rejected</option>
                                             </select>
                                             <button type="submit" class="btn btn-primary mt-2">Save Status</button>
                                         </form>
 
-                                        <form th:if="${warrantyRepair.status == 'Pending'}"
-                                              th:action="@{/technical/acceptWarranty/{id}(id=${warrantyRepair.order.orderId})}"
+                                        <form th:if="${warrantyRepair.status == 'Warranty Pending'}"
+                                              th:action="@{/technical/acceptWarranty/{id}(id=${warrantyRepair.warrantyId})}"
                                               th:onsubmit="return confirm('Are you sure to accept this ?')"
-                                              method="post" style="    margin-top: -0.5rem !important;">
-                                            <button type="submit" class="btn btn-primary mt-2">Accept</button>
+                                              method="post" style="margin-top: -0.5rem !important;">
+                                            <button type="submit" class="btn btn-primary mt-2" style="font-size: 11px;">Accept</button>
+                                        </form>
+                                        <form th:if="${warrantyRepair.status == 'Warranty Pending'}"
+                                              th:action="@{/technical/rejectWarranty/{id}(id=${warrantyRepair.warrantyId})}"
+                                              th:onsubmit="return confirm('Are you sure to reject this ?')"
+                                              method="post" style="margin-top: -0.5rem !important;">
+                                            <button type="submit" class="btn btn-danger mt-2" style="font-size: 11px;width: 60px">Reject</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -160,6 +165,24 @@
     <span class="close" onclick="closeModal()">&times;</span>
     <div class="modal-content">
         <img class="modal-img" id="img01" style="width:100%">
+    </div>
+</div>
+
+<!-- Warning Modal Structure -->
+<div id="warningModal" class="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Warning</h5>
+                <button type="button" class="close" onclick="closeWarningModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>You have selected the current status. Please choose a different status.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeWarningModal()">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -184,6 +207,25 @@
     function currentSlide(n) {
         var imgSrc = event.target.src;
         document.getElementById("img01").src = imgSrc;
+    }
+
+    function closeWarningModal() {
+        document.getElementById("warningModal").style.display = "none";
+    }
+
+    // JavaScript for checking status change
+    function checkStatusChange(event, form) {
+        var selectBox = form.querySelector('#statusSelect');
+        var currentStatus = selectBox.getAttribute('data-current-status');
+        var selectedStatus = selectBox.value;
+
+        if (currentStatus === selectedStatus) {
+            event.preventDefault();
+            document.getElementById("warningModal").style.display = "block";
+            selectBox.value = ""; // Reset select box value
+            return false; // Prevent form submission
+        }
+        return true; // Allow form submission
     }
 </script>
 

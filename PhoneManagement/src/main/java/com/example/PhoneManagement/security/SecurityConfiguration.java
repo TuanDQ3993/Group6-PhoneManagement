@@ -29,16 +29,23 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests()
-                .requestMatchers("/auth/login", "/auth/logout", "/auth/register", "/vendors/**", "/build/**", "/password/**", "/build1/**", "/home/**", "/uploads/**")
+                .requestMatchers("/auth/login", "/auth/logout", "/auth/register", "/vendors/**", "/build/**", "/password/**", "/build1/**", "/home/**", "/uploads/**","/cart/**")
                 .permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/saler/**").hasAnyRole("ADMIN","SALER")
+                .requestMatchers("/saler/**").hasAnyRole("SALER", "ADMIN")
                 .requestMatchers("/technical/**").hasAnyRole( "ADMIN","TECHNICAL STAFF")
+                .requestMatchers("/user/**").hasAnyRole( "ADMIN","TECHNICAL STAFF","SALER","USER")
                 .anyRequest().authenticated()
                 .and()
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .logoutSuccessUrl("/home/homepage")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID", "Authorization")
+                );
         return http.build();
     }
 

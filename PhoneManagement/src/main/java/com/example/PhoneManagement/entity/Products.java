@@ -33,8 +33,6 @@ public class Products {
     @Column(name = "quantity")
     int quantity;
 
-
-
     @Column(name="warranty_period")
     int warrantyPeriod;
 
@@ -43,6 +41,7 @@ public class Products {
 
     @Column(name="brand_name")
     String brandName;
+
 
     @ManyToOne
     @JoinColumn(name="category_id")

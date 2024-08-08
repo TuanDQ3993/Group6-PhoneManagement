@@ -28,7 +28,7 @@ public interface WarrantyRepairRepository extends JpaRepository<WarrantyRepair, 
     boolean existsWarrantyRepairsByRepairDate(Date repairDate);
 
 
-    // Dash board
+    // Dash board technical
     @Query("SELECT COUNT(w) FROM warrantyrepair w WHERE w.technical.userId = :technicalId AND w.isDeleted = false")
     long sumWarrantyRepairs(@Param("technicalId") int technicalId);
 
@@ -40,8 +40,16 @@ public interface WarrantyRepairRepository extends JpaRepository<WarrantyRepair, 
 
     @Query("SELECT COUNT(w) FROM warrantyrepair w WHERE w.technical.userId = :technicalId AND w.status = 'Completed' AND w.isDeleted = false")
     long countAllWarrantyRepairsAndStatus(@Param("technicalId") int technicalId);
+
     @Query("SELECT w.repairDate, COUNT(w) FROM warrantyrepair w WHERE w.isDeleted = false AND w.technical.userId = :technicalId GROUP BY w.repairDate ORDER BY w.repairDate")
     List<Object[]> findCountByRepairDate(@Param("technicalId") int technicalId);
+
+    // Dashboard admin
+    @Query("SELECT COUNT(w) FROM warrantyrepair w WHERE w.isDeleted = false")
+    long countAllBy();
+
+    @Query("SELECT COUNT(w) FROM warrantyrepair w WHERE w.status = 'Completed' AND w.isDeleted = false")
+    long countWarrantyRepairBy();
 
     // Technical
     @Query("SELECT u FROM warrantyrepair u WHERE u.user.fullName LIKE %:query% OR u.productName  LIKE %:query% and u.isDeleted = false  and  u.technical.userId=:technicalId order by u.repairDate desc ")
@@ -73,5 +81,23 @@ public interface WarrantyRepairRepository extends JpaRepository<WarrantyRepair, 
     @Query("SELECT w FROM warrantyrepair w WHERE  w.repairDate = :repairDate and w.isDeleted = false  order by w.repairDate desc")
     List<WarrantyRepair> findAllByTechnicalUserIdAndRepairDate(@Param("repairDate") Date repairDate);
 
+    @Query(value = "SELECT \n" +
+            "    technical_id \n" +
+            "FROM (\n" +
+            "    SELECT \n" +
+            "        s.user_id AS technical_id, \n" +
+            "        COUNT(o.warranty_id) AS order_count \n" +
+            "    FROM phonemanagement.useraccount s \n" +
+            "    LEFT JOIN phonemanagement.warrantyrepair o ON s.user_id = o.technical_id \n" +
+            "    AND DATE(o.repair_date) = CURDATE() \n" +
+            "    WHERE s.role_id = 3 AND s.active = 1\n" +
+            "    GROUP BY s.user_id \n" +
+            ") AS order_counts \n" +
+            "ORDER BY order_count ASC \n" +
+            "LIMIT 1;",
+            nativeQuery = true)
+    int getTechnicalMinOrder();
 
+    @Query("select w from warrantyrepair w where w.order.orderId = :orderId and w.productName = :productName")
+    List<WarrantyRepair> findByOrderAndProduct(@Param("orderId") int orderId, @Param("productName") String productName);
 }

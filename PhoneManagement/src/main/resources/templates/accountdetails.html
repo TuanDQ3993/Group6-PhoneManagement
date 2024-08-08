@@ -121,7 +121,7 @@
                                     <td th:text="${user.fullName}"></td>
                                     <td th:text="${user.address}"></td>
                                     <td th:text="${user.phoneNumber}"></td>
-                                    <td th:text="${user.active ? 'Đang hoạt động' : 'Dừng hoạt động'}"></td>
+                                    <td th:text="${user.active ? 'Active' : 'Inactive'}"></td>
                                     <td th:text="${#dates.format(user.createdAt, 'yyyy-MM-dd')}"></td>
                                     <td th:text="${user.role.roleName}"></td>
                                     <td th:unless="${user.userId == userId}">

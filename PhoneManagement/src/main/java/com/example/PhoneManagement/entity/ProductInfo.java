@@ -1,3 +1,4 @@
+
 package com.example.PhoneManagement.entity;
 
 import jakarta.persistence.*;
@@ -41,10 +42,14 @@ public class ProductInfo {
     @Column(name="price", precision = 10, scale = 2)
     BigDecimal price ;
 
+    @Column(name="isdeleted")
+    boolean isDeleted;
+
     @Column(name = "last_updated")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated;
 
     @OneToMany(mappedBy = "productInfo")
     private List<OrderDetail> orderDetailList;
+
 }

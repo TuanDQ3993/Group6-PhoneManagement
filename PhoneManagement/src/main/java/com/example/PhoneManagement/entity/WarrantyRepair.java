@@ -39,6 +39,8 @@ public class WarrantyRepair {
     @Temporal(TemporalType.TIMESTAMP)
     Date repairDate;
 
+    @Column(name = "quantity")
+    int quantity;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     Users user;
@@ -47,9 +49,9 @@ public class WarrantyRepair {
     @JoinColumn(name = "technical_id", referencedColumnName = "user_id")
     Users technical;
 
-
     @ManyToOne
     @JoinColumn(name="order_id")
     Orders order;
+
 }
 

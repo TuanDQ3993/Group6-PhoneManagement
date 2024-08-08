@@ -48,7 +48,8 @@ public interface AccountRepository extends JpaRepository<Users, Integer> {
     boolean existsByPhoneNumber(String phoneNumber);
     boolean existsByUserName(String email);
 
-
+@Query("select count(a) from useraccount a where a.active = true")
+    long countAllBy();
 
 
 

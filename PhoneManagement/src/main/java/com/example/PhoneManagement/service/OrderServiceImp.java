@@ -2,11 +2,10 @@ package com.example.PhoneManagement.service;
 
 import com.example.PhoneManagement.dto.request.*;
 import com.example.PhoneManagement.dto.response.ProductTopSeller;
+import com.example.PhoneManagement.entity.OrderDetail;
 import com.example.PhoneManagement.entity.Orders;
-import com.example.PhoneManagement.repository.OrderDetailRepository;
-import com.example.PhoneManagement.repository.OrderRepository;
-import com.example.PhoneManagement.repository.ProductRepository;
-import com.example.PhoneManagement.repository.UserRepository;
+import com.example.PhoneManagement.entity.ProductInfo;
+import com.example.PhoneManagement.repository.*;
 import com.example.PhoneManagement.service.imp.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +30,9 @@ public class OrderServiceImp implements OrderService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    ProductColorRepository productColorRepository;
 
 
     @Override
@@ -79,16 +81,8 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public OrderDetailInfoDTO getOrderInfo(int orderId) {
-        List<Object[]> results = orderRepository.findOrderInfo(orderId);
-        Object[] result = results.get(0);
-        OrderDetailInfoDTO dto = new OrderDetailInfoDTO();
-        dto.setTotalAmount(((Number) result[0]).doubleValue());
-        dto.setOrderDate((Date) result[1]);
-        dto.setAddress((String) result[2]);
-        dto.setCustomerName((String) result[3]);
-        dto.setPhoneNumber((String) result[4]);
-        return dto;
+    public Optional<Orders> getOrderInfo(int orderId) {
+        return orderRepository.findById(orderId);
     }
 
     public LocalDate convertToLocalDate(Date date) {
@@ -248,6 +242,37 @@ public class OrderServiceImp implements OrderService {
         order.setStatus(status);
         orderRepository.save(order);
     }
+
+    @Override
+    public Page<Object[]> getOrdersByUserIdWithFilters(UserDTO userDTO, String status , String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        int userId = userRepository.findIdByUserName(userDTO.getUserName());
+        return orderRepository.findOrdersWithFiltersCategory(userId, status,search, pageable);
+    }
+
+
+    @Override
+    public int countTotalOrders(UserDTO user) {
+        int userId = userRepository.findIdByUserName(user.getUserName());
+        return orderRepository.countOrdersByUserId(userId);
+    }
+
+    @Override
+    public List<Object[]> findOrderDetail(int orderId){
+        return orderRepository.findOrderDetail(orderId);
+    }
+
+    @Override
+    public void backProduct(int id) {
+        Orders order= orderRepository.findById(id).get();
+        for (OrderDetail orderDetail : order.getOrderDetails()) {
+            ProductInfo productInfo = orderDetail.getProductInfo();
+            productInfo.setQuantity(productInfo.getQuantity() + orderDetail.getQuantity());
+            productColorRepository.save(productInfo);
+        }
+    }
+
+
 
 
 

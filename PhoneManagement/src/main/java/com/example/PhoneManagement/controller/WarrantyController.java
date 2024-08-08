@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -39,14 +41,16 @@ public class WarrantyController {
 
     @GetMapping("/dashboard_technical")
     public String dashBoard(Model model, Authentication authentication) {
-
         Users user = (Users) authentication.getPrincipal();
         int technicalId = user.getUserId();
         Map<String, Long> warrantyCountByDate = warrantyRepairService.getWarrantyCountByDate(technicalId);
+        LocalDate localDate = LocalDate.now();
+
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         model.addAttribute("warrantyCountByDate", warrantyCountByDate);
-        model.addAttribute("sumWarrantyRepairsByDate", warrantyRepairService.sumWarrantyRepairsByRepairDate(technicalId, new Date()));
+        model.addAttribute("sumWarrantyRepairsByDate", warrantyRepairService.sumWarrantyRepairsByRepairDate(technicalId, date));
         model.addAttribute("sumWarrantyRepairsAll", warrantyRepairService.sumWarrantyRepairs(technicalId));
-        model.addAttribute("countWarrantyRepairsByRepairDateAndStatus", warrantyRepairService.countWarrantyRepairsByRepairDateAndStatus(technicalId, new Date()));
+        model.addAttribute("countWarrantyRepairsByRepairDateAndStatus", warrantyRepairService.countWarrantyRepairsByRepairDateAndStatus(technicalId, date));
         model.addAttribute("countAllWarrantyRepairsAndStatus", warrantyRepairService.countAllWarrantyRepairsAndStatus(technicalId));
         return "dashboard_technical";
     }
@@ -163,7 +167,7 @@ public class WarrantyController {
         }
         List<WarrantyRepair> warrantyRepairList = null;
         if (users.getRole().getRoleName().equals("ADMIN")) {
-            warrantyRepairList = warrantyRepairService.getWarrantyByIdAndRepairDate(technicalId, date);
+            warrantyRepairList = warrantyRepairService.getWarrantyByIdAndRepairDateByAdmin(date);
         } else {
             warrantyRepairList = warrantyRepairService.getWarrantyByIdAndRepairDate(technicalId, date);
         }
@@ -196,6 +200,14 @@ public class WarrantyController {
     public String acceptWarranty(
             @PathVariable int id) {
         warrantyRepairService.acceptWarranty(id);
+        warrantyRepairService.changeStatus(id," Warranty In Process");
+        return "redirect:/technical/warranties";
+    }
+
+    @PostMapping("/rejectWarranty/{id}")
+    public String rejectWarranty(
+            @PathVariable int id) {
+        warrantyRepairService.rejectWarranty(id);
         return "redirect:/technical/warranties";
     }
 
@@ -206,17 +218,13 @@ public class WarrantyController {
         String roleName = users.getRole().getRoleName();
 
         if (roleName.equals("ADMIN")) {
-            // Lấy thông tin bảo hành theo ID được yêu cầu
             warrantyRepair = warrantyRepairService.getById(id);
         } else {
-            // Lấy thông tin bảo hành chỉ khi nó thuộc về người dùng kỹ thuật hiện tại
             warrantyRepair = warrantyRepairService.getById(id);
             if (warrantyRepair != null && warrantyRepair.getTechnical() != null) {
                 int userId = warrantyRepair.getTechnical().getUserId();
                 if (userId != users.getUserId()) {
-                    // Nếu bảo hành không thuộc về người dùng kỹ thuật hiện tại, không trả về kết quả
-                    model.addAttribute("error", "Bạn không có quyền truy cập thông tin này.");
-                    return "error";
+                    return "redirect:/technical/warranties";
                 }
             }
         }
@@ -224,7 +232,6 @@ public class WarrantyController {
         model.addAttribute("warrantyRepair", warrantyRepair);
         return "viewwarranty";
     }
-
 
 
     @PostMapping("/delete/{id}")

@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Gentelella Alela! | Warranty Details</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+
     <!-- Bootstrap -->
     <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
     <!-- Font Awesome -->
@@ -11,144 +16,273 @@
     <link th:href="@{/vendors/nprogress/nprogress.css}" rel="stylesheet">
     <!-- iCheck -->
     <link th:href="@{/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
+
+    <link th:href="@{/build/css/app.css}" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
     <style>
-        .form-inline .form-group {
-            margin-left: -9px;
+        .table {
+            margin: 20px;
+            border: 1px solid #ddd;
         }
-
-        .pagination .page-item.active .page-link {
-            background-color: #007bff; /* Change to your preferred color */
-            border-color: #007bff; /* Ensure the border color matches the background if needed */
-            color: white; /* Change text color for better visibility */
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
         }
-
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            padding-top: 100px; /* Location of the box */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0, 0, 0); /* Fallback color */
-            background-color: rgba(0, 0, 0, 0.9); /* Black w/ opacity */
+        .table img {
+            max-width: 100px;
+            height: auto;
         }
-
-        /* Modal Content (image) */
-        .modal-content {
-            margin: auto;
-            display: block;
-            width: 80%;
-            max-width: 700px;
-        }
-
-        /* The Close Button */
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 35px;
-            color: #f1f1f1;
-            font-size: 40px;
+        .table thead th {
+            background-color: #f8f9fa;
             font-weight: bold;
-            transition: 0.3s;
         }
-
-        .close:hover,
-        .close:focus {
-            color: #bbb;
-            text-decoration: none;
-            cursor: pointer;
+        .table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
         }
-
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: #f9f9f9; /* Make the odd rows a bit lighter */
+        .table tbody tr:hover {
+            background-color: #e9ecef;
         }
-
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+        .d-none.d-xl-table-cell {
+            display: table-cell;
         }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
+        .d-none.d-md-table-cell {
+            display: table-cell;
         }
-
+        .d-xl-table-cell {
+            display: table-cell;
+        }
+        .d-md-table-cell {
+            display: table-cell;
+        }
     </style>
 </head>
 
 <body class="nav-md">
 <div class="container body">
-    <div class="sidebar">
-        <!-- Thêm sidebar tại đây -->
-        <div th:insert="~{fragments/sidebar.html}"></div>
-    </div>
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a th:href="@{/vendors/bootstrap-daterangepicker/example/amd/index.html}" class="site_title"><i
+                            class="fa fa-paw"></i> <span>Phone Manager</span></a>
+                </div>
 
-    <div class="main-content">
-        <div class="right_col" role="main">
-            <div class="page-title">
-                <div class="col-md-12">
-                    <h3>Statistic Of Warranty</h3>
+                <div class="clearfix"></div>
+
+                <!-- menu profile quick info -->
+                <div class="profile clearfix">
+                    <div class="profile_pic">
+                        <img th:src="@{${avatar}}" alt="Profile Picture" class="img-circle profile_img">
+                    </div>
+                    <div class="profile_info">
+                        <span>Welcome,</span>
+                        <h2 th:text="${fullname}">User</h2>
+                    </div>
                 </div>
+                <!-- /menu profile quick info -->
+
+                <br/>
+
+                <!-- sidebar menu -->
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <h3>General</h3>
+                        <ul class="nav side-menu">
+                            <li><a href="/technical/dashboard_technical"><i class="fa fa-home"></i> DashBoard</a>
+                            </li>
+                            <li><a href="/technical/warranties"><i class="fa fa-edit"></i> WarrantyList </a>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                </div>
+                <!-- /sidebar menu -->
+
+                <!-- /menu footer buttons -->
+
+                <!-- /menu footer buttons -->
             </div>
-            <div>
-                <p>Total of request warranty: <span th:text="${sumWarrantyRepairsAll}"></span></p>
-                <p>Request warranty in day: <span th:text="${sumWarrantyRepairsByDate}"></span></p>
-                <p>Total Completed: <span th:text="${countAllWarrantyRepairsAndStatus}"></span></p>
-                <p>Total Completed in day: <span th:text="${countWarrantyRepairsByRepairDateAndStatus}"></span></p>
-                <h2>Network Activities Graph</h2>
-                <div class="chart-container">
-                    <canvas id="networkActivitiesChart"></canvas>
-                </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <nav class="nav navbar-nav">
+                    <ul class=" navbar-right">
+                        <li class="nav-item dropdown open" style="padding-left: 15px;">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true"
+                               id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                                <img th:src="@{${avatar}}" alt="">
+                            </a>
+                            <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/user/profile"> Profile</a>
+                                <a class="dropdown-item" href="/user/change_password">
+
+                                    <span>Change Password</span>
+                                </a>
+
+                                <a class="dropdown-item" href="/auth/logout"><i class="fa fa-sign-out pull-right"></i>
+                                    Log Out</a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <main class="content">
+                    <div class="container-fluid p-0">
+
+                        <h1 class="h3 mb-3"><strong>Technical</strong> Dashboard</h1>
+
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">Total of request warranty</h5>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="users"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3" th:text="${sumWarrantyRepairsAll}"></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">Request warranty in day:</h5>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="users"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3" th:text="${sumWarrantyRepairsByDate}"></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">Total completed</h5>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="truck"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3" th:text="${countAllWarrantyRepairsAndStatus}"></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">Total completed in day</h5>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="truck"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3" th:text="${countWarrantyRepairsByRepairDateAndStatus}"></h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-12 col-lg-12 col-xxl-12 d-flex">
+                                <div class="card flex-fill">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Order Statistics</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="orderChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </main>
             </div>
         </div>
     </div>
 </div>
 
-<script type="text/javascript" th:inline="javascript">
-    /*<![CDATA[*/
-    var warrantyCountByDate = /*[[${warrantyCountByDate}]]*/ {};
 
-    var labels = Object.keys(warrantyCountByDate);
-    var data = Object.values(warrantyCountByDate);
+<!-- jQuery -->
+<script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{/vendors/nprogress/nprogress.js}"></script>
+<!-- bootstrap-progressbar -->
+<script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+<!-- Chart.js -->
+<script th:src="@{/vendors/chart.js/Chart.min.js}"></script>
 
-    var ctx = document.getElementById('networkActivitiesChart').getContext('2d');
-    var networkActivitiesChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Warranty Count',
-                data: data,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false, // Điều chỉnh để đảm bảo biểu đồ đúng tỷ lệ
-            scales: {
-                y: {
-                    beginAtZero: true
+<script th:src="@{/build/js/app.js}"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var ctx = document.getElementById("orderChart").getContext("2d");
+        var totalOrders = [[${sumWarrantyRepairsAll}]]; // Giá trị mặc định là 0 nếu không có dữ liệu
+        var completedOrders = [[${countAllWarrantyRepairsAndStatus}]]; // Giá trị mặc định là 0 nếu không có dữ liệu
+
+        var orderChart = new Chart(ctx, {
+            type: 'line', // Loại biểu đồ: 'bar' hoặc 'line' tùy theo yêu cầu
+            data: {
+                labels: ["Total Request", "Completed Request"], // Các nhãn
+                datasets: [
+                    {
+                        label: 'Number of Orders',
+                        data: [totalOrders, completedOrders], // Dữ liệu tổng đơn và đơn thành công
+                        backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
+                        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        }
+        });
     });
-    /*]]>*/
 </script>
-
-<script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
-<script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
-<script th:src="@{/vendors/nprogress/nprogress.js}"></script>
-<script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
-<script th:src="@{/build/js/custom.min.js}"></script>
 </body>
-</html>
-
 </html>
