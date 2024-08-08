@@ -19,12 +19,24 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     @Query(value = "select n from Products n")
     List<Products> getListProduct();
 
-    Page<Products> findByCategoryCategoryId(int categoryId, Pageable pageable);
+    Page<Products> findByCategoryCategoryId(Integer categoryId, Pageable pageable);
+
+    Page<Products> findByProductNameContainingIgnoreCase(String name, Pageable pageable);
+
+    Page<Products> findByCategoryCategoryIdAndProductNameContainingIgnoreCase(Integer categoryId, String name, Pageable pageable);
+
 
     @Query("SELECT p FROM Products p ORDER BY p.createdAt DESC")
     Page<Products> findTop8ByOrderByCreatedAtDesc(Pageable pageable);
 
     @Query("SELECT p FROM Products p WHERE p.category.categoryId = :categoryId ORDER BY p.createdAt DESC")
     Page<Products> findTop8ByCategoryIdOrderByCreatedAtDesc(@Param("categoryId") int categoryId, Pageable pageable);
+
+    @Query("SELECT p FROM Products p " +
+            "JOIN p.productInfoList pi " +
+            "JOIN pi.orderDetailList od " +
+            "JOIN od.order o " +
+            "WHERE o.orderId = :orderId AND o.user.userId = :userId")
+    Products findByOrderIdAndUserId(@Param("orderId") int orderId, @Param("userId") int userId);
 
 }

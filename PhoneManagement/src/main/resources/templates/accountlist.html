@@ -88,7 +88,7 @@
                     <form th:action="@{/admin/saveAccount}" th:object="${userForm}" method="post"
                           style="border: 1px solid #ccc; padding: 20px; border-radius: 10px;">
                         <label for="username" style="display: block; margin-top: 10px;">Email:</label>
-                        <input type="text" id="username" th:field="*{userName}"
+                        <input type="email" id="username" th:field="*{userName}"
                                style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
                                required/>
 
@@ -187,7 +187,7 @@
                                     <td th:text="${user.fullName}"></td>
                                     <td th:text="${user.address}"></td>
                                     <td th:text="${user.phoneNumber}"></td>
-                                    <td th:text="${user.active ? 'Hoạt động' : 'Ngừng Hoạt động'}"></td>
+                                    <td th:text="${user.active ? 'Active' : 'Inactive'}"></td>
                                     <td th:text="${user.role.roleName}"></td>
                                     <td th:text="${#dates.format(user.createdAt, 'dd-MM-yyyy')}"></td>
                                     <td>

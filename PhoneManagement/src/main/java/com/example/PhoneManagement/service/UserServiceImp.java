@@ -143,4 +143,9 @@ public class UserServiceImp implements UserService {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
     }
+
+    @Override
+    public Users getUserByName(String email) {
+        return userRepository.findByUserName(email).get();
+    }
 }
