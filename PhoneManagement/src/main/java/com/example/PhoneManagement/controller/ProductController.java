@@ -61,7 +61,7 @@ public class ProductController {
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("productColorPage", productColorPage);
-        model.addAttribute("category", categoryService.getAllCategoryActive());
+        model.addAttribute("category", categoryService.findAll());
         model.addAttribute("colors", colorService.getAllColor());
         model.addAttribute("productDTO", new ProductDTO());
         model.addAttribute("search",name);
@@ -103,7 +103,7 @@ public class ProductController {
     public String getProduct(@PathVariable("productId") int productId, Model model){
         ProductViewRequest products=productService.getProduct(productId);
         model.addAttribute("product",products);
-        model.addAttribute("category",categoryService.findAllCategory());
+        model.addAttribute("category",categoryService.getAllCategoryActive());
         model.addAttribute("colors",colorService.getAllColor());
         model.addAttribute("size",products.getImage().size()) ;
         return "e_commerce";

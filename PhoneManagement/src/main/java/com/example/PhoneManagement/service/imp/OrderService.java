@@ -48,7 +48,7 @@ public interface OrderService {
 
     List<Users> getAllSale();
 
-    public Page<Object[]> getOrdersByUserIdWithFilters(UserDTO user, String status, String search, int page, int size);
+    public List<Object[]> getOrdersByUserIdWithFilters(UserDTO user, String status, String search);
 
     public int countTotalOrders(UserDTO user);
 
