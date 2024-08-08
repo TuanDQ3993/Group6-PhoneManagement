@@ -121,7 +121,7 @@
                                 <div style="margin-left: auto; text-align: right;">
                                     <!-- Display the price, ensuring default value if null -->
                                     <p style="margin: 5px 0;"
-                                       th:text="(${order[4] != null ? order[4] : 0} * ${order[6] != null ? order[6] : 0})+'$'"></p>
+                                       th:text="('$' +${order[4] != null ? order[4] : 0} * ${order[6] != null ? order[6] : 0})"></p>
                                 </div>
 
                             </div>
@@ -137,7 +137,7 @@
                             <!-- Display the total amount, ensuring default value if null -->
                             <p style="margin: 0; margin-left: auto;">Total Amount: <span
                                     style="color: red; font-size: 24px;"
-                                    th:text="${entry.value[0][5] != null ? entry.value[0][5] : '₫0'}"></span></p>
+                                    th:text="'$' + ${entry.value[0][5] != null ? entry.value[0][5] : '₫0'}"></span></p>
                         </div>
                     </div>
                 </a>
