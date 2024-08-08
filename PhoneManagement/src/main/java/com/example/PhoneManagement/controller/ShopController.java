@@ -49,7 +49,7 @@ public class ShopController {
         Page<ProductShop> productShops = productService.findPaginated(pageableDTO, effectiveCategoryId, effectiveBrand, effectiveSearch);
 
         model.addAttribute("size1", pageSize);
-        model.addAttribute("category", categoryService.findAllCategory());
+        model.addAttribute("category", categoryService.getAllCategoryActive());
         model.addAttribute("brand", productService.getAllBrand());
         model.addAttribute("productShops", productShops);
         model.addAttribute("productName", search);
@@ -82,7 +82,7 @@ public class ShopController {
             products = productService.getProductShops();
         }
 
-        List<Category> categories = categoryService.findAllCategory();
+        List<Category> categories = categoryService.getAllCategoryActive();
 
         model.addAttribute("product", products);
         model.addAttribute("brand", productService.getAllBrand());

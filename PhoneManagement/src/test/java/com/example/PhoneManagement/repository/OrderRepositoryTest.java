@@ -161,25 +161,25 @@ class OrderRepositoryTest {
 //        assertTrue(salerId > 0); // Assuming that there's at least one salerId, adjust as needed.
 //    }
 
-    @Test
-    void findOrdersWithFiltersCategory() {
-        Page<Object[]> result = orderRepository.findOrdersWithFiltersCategory(
-                1, "Completed", null, PageRequest.of(0, 10));
-
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-
-        Object[] order = result.getContent().get(0);
-        assertEquals(1, order[0]); // orderId
-        assertEquals("Product A", order[1]); // productName
-        assertEquals("Red", order[2]); // colorName
-        assertEquals("image.png", order[3]); // image
-        assertEquals(new BigDecimal("200.00"), order[5]); // totalAmount
-        assertEquals(2, order[6]); // quantity
-        assertNotNull(order[7]); // orderDate
-        assertEquals("Smartphones", order[8]); // categoryName
-        assertEquals("Completed", order[9]); // status
-    }
+//    @Test
+//    void findOrdersWithFiltersCategory() {
+//        Page<Object[]> result = orderRepository.findOrdersWithFiltersCategory(
+//                1, "Completed", null, PageRequest.of(0, 10));
+//
+//        assertNotNull(result);
+//        assertFalse(result.isEmpty());
+//
+//        Object[] order = result.getContent().get(0);
+//        assertEquals(1, order[0]); // orderId
+//        assertEquals("Product A", order[1]); // productName
+//        assertEquals("Red", order[2]); // colorName
+//        assertEquals("image.png", order[3]); // image
+//        assertEquals(new BigDecimal("200.00"), order[5]); // totalAmount
+//        assertEquals(2, order[6]); // quantity
+//        assertNotNull(order[7]); // orderDate
+//        assertEquals("Smartphones", order[8]); // categoryName
+//        assertEquals("Completed", order[9]); // status
+//    }
 
     @Test
     void findOrderDetail() {

@@ -18,9 +18,7 @@ public interface CategoryService {
     public Page<Category> findAllCategory(Pageable pageable);
 
     List<Category> getAllCategoryActive();
-
-    List<Category> getAllCategoryActive();
-
+    
     void addCategory( CategoryDTO categoryDTO);
 
     void editCategory(int cateID, CategoryDTO categoryDTO);
