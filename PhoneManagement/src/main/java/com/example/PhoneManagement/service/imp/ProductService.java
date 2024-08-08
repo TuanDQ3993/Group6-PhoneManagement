@@ -49,5 +49,11 @@ public interface ProductService {
     void isDeletedProduct(int proId);
 
     List<Colors> findColorByProductId(int productId);
-
+    List<String> getAllBrand();
+    List<ProductShop> getProductShops();
+    Page<ProductShop> findPaginated(PageableDTO pageable, int categoryId, String brandName, String productName);
+    List<ProductShop> findProductShopByCategoryId(int categoryId);
+    List<ProductShop> findProductShopByBrand(String brandName);
+    List<ProductShop> findProductShopByCategoryIdAndBrand(int categoryId, String brandName);
+    List<ProductShop> findProductShopByProductName(String productName);
 }
