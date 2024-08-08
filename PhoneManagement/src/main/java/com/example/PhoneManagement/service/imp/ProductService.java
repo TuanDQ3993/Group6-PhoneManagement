@@ -56,4 +56,6 @@ public interface ProductService {
     List<ProductShop> findProductShopByBrand(String brandName);
     List<ProductShop> findProductShopByCategoryIdAndBrand(int categoryId, String brandName);
     List<ProductShop> findProductShopByProductName(String productName);
+
+    void updateQuantityProduct(int prodId, int quantity);
 }

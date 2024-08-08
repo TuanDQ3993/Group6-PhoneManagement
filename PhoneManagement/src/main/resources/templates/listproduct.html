@@ -210,19 +210,19 @@
                                         </div>
                                         <div style="display: inline-block;">
                                             <label for="sortField">Sort By:</label>
-                                            <select id="sortField" name="sortField">
+                                            <select id="sortField" name="sortField" style="padding: 5px; margin-right: 10px;">
                                                 <option value="productId" th:text="'ID'" th:selected="${sortField == 'productId'}"></option>
                                                 <option value="productName" th:text="'Name'" th:selected="${sortField == 'productName'}"></option>
                                             </select>
                                         </div>
                                         <div style="display: inline-block;">
                                             <label for="sortDir">Sort Direction:</label>
-                                            <select id="sortDir" name="sortDir">
+                                            <select id="sortDir" name="sortDir" style="padding: 5px; margin-right: 10px;">
                                                 <option value="asc" th:text="'Ascending'" th:selected="${sortDir == 'asc'}"></option>
                                                 <option value="desc" th:text="'Descending'" th:selected="${sortDir == 'desc'}"></option>
                                             </select>
                                         </div>
-                                        <button type="submit" style="margin-top: 10px;">Filter</button>
+                                        <button type="submit" style="margin-top: 10px;padding: 3px 10px;">Filter</button>
                                     </form>
                                     <form method="get" th:action="@{/admin/products}" class="col-md-4">
                                         <div class="col-md-5 col-sm-5 form-group pull-right top_search">
@@ -245,6 +245,7 @@
                                         <th>Quantity</th>
                                         <th style="width: 400px;">Description</th>
                                         <th>Category</th>
+                                        <th>Brand</th>
                                         <th>CreateAt</th>
                                         <th>WarrantyPeriod</th>
                                         <th style="width: 20%">Action</th>
@@ -279,6 +280,10 @@
                                                             th:text="${category.categoryName}"
                                                             th:selected="${category.categoryId == product.categoryId}"></option>
                                                 </select>
+                                            </td>
+                                            <td>
+                                                <span class="view-span" th:text="${product.brandName}"></span>
+                                                <textarea class="form-control edit-input" name="brandName" th:text="${product.brandName}" style="display: none;"></textarea>
                                             </td>
                                             <td th:text="${product.createAt}"></td>
                                             <td>
@@ -359,6 +364,9 @@
             <select id="category" th:field="*{categoryId}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;">
                 <option th:each="cat : ${category}" th:value="${cat.categoryId}" th:text="${cat.categoryName}"></option>
             </select>
+
+            <label for="brandName" style="display: block; margin-top: 10px;">Brand Name:</label>
+            <input type="text" id="brandName" th:field="*{brandName}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" required/>
 
             <label for="warrantyPeriod" style="display: block; margin-top: 10px;">Warranty Period (months):</label>
             <input type="number" id="warrantyPeriod" th:field="*{warrantyPeriod}" style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;" required/>

@@ -81,7 +81,8 @@ public class ProductController {
                                 @RequestParam("cateId") int cateId,
                                 @RequestParam("quantity") int quantity,
                                 @RequestParam("description") String description,
-                                @RequestParam("warrantyPeriod") int warrantyPeriod
+                                @RequestParam("warrantyPeriod") int warrantyPeriod,
+                                @RequestParam("brandName") String brand
     ) {
         ProductUpdateRequest request=new ProductUpdateRequest();
         request.setProductName(productName);
@@ -89,6 +90,7 @@ public class ProductController {
         request.setQuantity(quantity);
         request.setDescription(description);
         request.setWarrantyPeriod(warrantyPeriod);
+        request.setBrandName(brand);
         productService.updateProduct(proId, request);
         return "redirect:/admin/products";
     }
@@ -116,8 +118,6 @@ public class ProductController {
                                      @RequestParam("price") String price,
                                      @RequestParam("quantity") int quantity,
                                      Model model, RedirectAttributes redirectAttributes) {
-
-        // Tạo thư mục upload nếu chưa tồn tại
         Path uploadDir = Paths.get("uploads/");
         if (!Files.exists(uploadDir)) {
             try {
@@ -129,7 +129,6 @@ public class ProductController {
             }
         }
 
-        // Kiểm tra sự tồn tại của product color
         ProductInfo existingProductColor = productService.getProductColorById(proColorId);
         if (existingProductColor == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Product color not found.");
@@ -138,7 +137,6 @@ public class ProductController {
 
         String fileImage = existingProductColor.getImage();
 
-        // Kiểm tra loại file có phải là ảnh không
         if (image != null && !image.isEmpty()) {
             String contentType = image.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
@@ -162,13 +160,11 @@ public class ProductController {
             }
         }
 
-        // Tạo request để cập nhật product color
         ProductColorUpdate request = new ProductColorUpdate();
         request.setProductId(productId);
         request.setColorId(colorId);
         request.setImage(fileImage);
 
-        // Kiểm tra và xử lý giá
         BigDecimal gia;
         try {
             gia = new BigDecimal(price);
@@ -185,9 +181,15 @@ public class ProductController {
         request.setPrice(gia);
         request.setQuantity(quantity);
 
-        // Cập nhật product color
         try {
             productService.updateProductColor(proColorId, request);
+            ProductViewRequest productViewRequest=productService.getProduct(productId);
+            List<Integer> proInfoId=productViewRequest.getQuantity();
+            int total=0;
+            for(Integer pro: proInfoId){
+                total+=pro;
+            }
+            productService.updateQuantityProduct(productId,total);
             redirectAttributes.addFlashAttribute("successMessage", "Product color updated successfully!");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
