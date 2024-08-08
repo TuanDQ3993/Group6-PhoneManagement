@@ -32,8 +32,9 @@ public class CategoryServiceImp implements CategoryService {
     public void addCategory(CategoryDTO categoryDTO) {
         Category category=new Category();
         boolean cate=categoryRepository.findAll().stream().anyMatch(cName -> cName.getCategoryName().equals(categoryDTO.getCateName()));
-        if(cate) return;
-        if(categoryDTO.getCateName().length()>100) return;
+        if(cate) throw new IllegalArgumentException("Category Name already existed");
+        if(categoryDTO.getCateName().length()>100) throw new IllegalArgumentException("Category Name no more than 100 characters");
+        if(categoryDTO.getCateName().trim().isEmpty()) throw new IllegalArgumentException("category name cannot be empty");
         category.setCategoryName(categoryDTO.getCateName());
         categoryRepository.save(category);
     }

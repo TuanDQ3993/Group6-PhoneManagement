@@ -1,6 +1,7 @@
 package com.example.PhoneManagement.controller;
 
 import com.example.PhoneManagement.dto.request.CategoryDTO;
+import com.example.PhoneManagement.dto.request.ProductViewRequest;
 import com.example.PhoneManagement.entity.Category;
 import com.example.PhoneManagement.entity.Users;
 import com.example.PhoneManagement.service.imp.CategoryService;
@@ -23,14 +24,14 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/category")
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CategoryController {
     CategoryService categoryService;
     CategoryExcelImportController categoryExcelImportController;
 
     @GetMapping
-    public String getCategory(Model model,@RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "5") int size){
+    public String getCategory(Model model, @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("categoryId").descending());
         Page<Category> categoryPage = categoryService.findAllCategory(pageable);
         model.addAttribute("cates", categoryPage);
@@ -41,25 +42,42 @@ public class CategoryController {
     }
 
     @PostMapping()
-    public String addCategory(@RequestParam("name") String name){
-        CategoryDTO categoryDTO=new CategoryDTO();
-
+    public String addCategory(@RequestParam("name") String name,RedirectAttributes redirectAttributes) {
+        CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setCateName(name);
-        categoryService.addCategory(categoryDTO);
+        try {
+            categoryService.addCategory(categoryDTO);
+            redirectAttributes.addFlashAttribute("successMessage", "Category update successfully!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred.");
+        }
         return "redirect:/admin/category";
     }
 
     @PostMapping("/{cateId}")
-    public String editCategory(@RequestParam("categoryName") String name, @PathVariable("cateId") int cateId){
-        CategoryDTO categoryDTO=new CategoryDTO();
+    public String editCategory(@RequestParam("categoryName") String name, @PathVariable("cateId") int cateId, RedirectAttributes redirectAttributes) {
+        CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setCateId(cateId);
         categoryDTO.setCateName(name);
-        categoryService.editCategory(cateId,categoryDTO);
+        try {
+            categoryService.editCategory(cateId, categoryDTO);
+            redirectAttributes.addFlashAttribute("successMessage", "Category update successfully!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred.");
+        }
         return "redirect:/admin/category";
     }
 
     @PostMapping("/delete")
-    public String deleteCategory(@RequestParam("cateId") int cateId){
+    public String deleteCategory(@RequestParam("cateId") int cateId) {
         categoryService.deleteCategory(cateId);
         return "redirect:/admin/category";
     }
