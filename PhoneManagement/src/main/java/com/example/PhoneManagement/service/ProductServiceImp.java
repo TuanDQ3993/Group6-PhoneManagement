@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -379,5 +380,109 @@ public class ProductServiceImp implements ProductService {
             color.add(pro.getColors());
         }
         return color;
+    }
+
+
+    @Override
+    public List<String> getAllBrand() {
+        return productRepository.getAllBrand();
+    }
+
+    @Override
+    public List<ProductShop> getProductShops() {
+        List<Object[]> results = productRepository.getAllProductShop();
+        List<ProductShop> shop = new ArrayList<>();
+        for (Object[] result : results) {
+            ProductShop productShop = new ProductShop();
+            productShop.setId(((Number) result[0]).intValue());
+            productShop.setProductName((String) result[1]);
+            productShop.setPrice(BigDecimal.valueOf(((Number) result[2]).doubleValue()));
+            productShop.setImage((String) result[3]);
+            productShop.setCategory_id(((Number) result[4]).intValue());
+            productShop.setDescription((String) result[5]);
+            productShop.setColor_id(((Number) result[6]).intValue());
+            productShop.setQuantity(((Number) result[7]).intValue());
+            shop.add(productShop);
+        }
+        return shop;
+    }
+
+    @Override
+    public Page<ProductShop> findPaginated(PageableDTO pageable, int categoryId, String brandName, String productName) {
+        try {
+            int pageSize = pageable.getPageSize();
+            int currentPage = pageable.getPageNumber();
+            int startItem = currentPage * pageSize;
+
+            List<ProductShop> productShops;
+
+            if (categoryId > 0 && !brandName.isEmpty()) {
+                productShops = findProductShopByCategoryIdAndBrand(categoryId, brandName);
+            } else if (categoryId > 0) {
+                productShops = findProductShopByCategoryId(categoryId);
+            } else if (!brandName.isEmpty()) {
+                productShops = findProductShopByBrand(brandName);
+            }else if(productName != null && !productName.isEmpty()){
+                productShops = findProductShopByProductName(productName);
+            }else {
+                productShops = getProductShops();
+            }
+
+            int totalItems = productShops.size();
+
+            if (startItem >= totalItems) {
+                productShops = Collections.emptyList();
+            } else {
+                int toIndex = Math.min(startItem + pageSize, totalItems);
+                productShops = productShops.subList(startItem, toIndex);
+            }
+
+            return new PageImpl<ProductShop>(productShops, PageRequest.of(currentPage, pageSize), totalItems);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    @Override
+    public List<ProductShop> findProductShopByCategoryId(int categoryId) {
+        List<Object[]> results = productRepository.findProductsByCategoryId(categoryId);
+        return mapResultsToProductShops(results);
+    }
+
+    @Override
+    public List<ProductShop> findProductShopByBrand(String brandName) {
+        List<Object[]> results = productRepository.findProductsByBrandName(brandName);
+        return mapResultsToProductShops(results);
+    }
+
+    @Override
+    public List<ProductShop> findProductShopByCategoryIdAndBrand(int categoryId, String brandName) {
+        List<Object[]> results = productRepository.findProductsByCategoryIdAndBrand(categoryId, brandName);
+        return mapResultsToProductShops(results);
+    }
+
+    @Override
+    public List<ProductShop> findProductShopByProductName(String productName) {
+        List<Object[]> results = productRepository.findProductShopByProductName(productName);
+        return  mapResultsToProductShops(results);
+    }
+
+    private List<ProductShop> mapResultsToProductShops(List<Object[]> results) {
+        List<ProductShop> shops = new ArrayList<>();
+        for (Object[] result : results) {
+            ProductShop productShop = new ProductShop();
+            productShop.setId(((Number) result[0]).intValue());
+            productShop.setProductName((String) result[1]);
+            productShop.setPrice(BigDecimal.valueOf(((Number) result[2]).doubleValue()));
+            productShop.setImage((String) result[3]);
+            productShop.setCategory_id(((Number) result[4]).intValue());
+            productShop.setDescription((String) result[5]);
+            productShop.setColor_id(((Number) result[6]).intValue());
+            productShop.setQuantity(((Number) result[7]).intValue());
+            shops.add(productShop);
+        }
+        return shops;
     }
 }

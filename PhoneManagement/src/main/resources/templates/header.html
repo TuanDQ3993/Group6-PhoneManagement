@@ -104,8 +104,8 @@
                     <!-- SEARCH BAR -->
                     <div class="col-md-6">
                         <div class="header-search">
-                            <form>
-                                <input class="input" placeholder="Search here">
+                            <form th:action="@{/home/shop}" method="get">
+                                <input class="input" placeholder="Search here" id="search" name="productName">
                                 <button class="search-btn">Search</button>
                             </form>
                         </div>
