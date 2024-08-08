@@ -7,13 +7,17 @@ import com.example.PhoneManagement.repository.ColorRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 
 public interface CategoryService {
-    List<Category> findAllCategory();
+    public Page<Category> findAllCategory(Pageable pageable);
+
+    List<Category> getAllCategoryActive();
 
     List<Category> getAllCategoryActive();
 
@@ -24,4 +28,8 @@ public interface CategoryService {
     void deleteCategory(int cateId);
 
     void saveAll(List<Category> categories);
+
+    boolean findByName(String cateName);
+
+    public List<Category> findAll();
 }
