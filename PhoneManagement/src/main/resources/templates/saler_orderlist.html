@@ -283,16 +283,34 @@
                                         <td>
                                             <div style="display: flex; flex-direction: column; gap: 10px;">
                                                 <th:block th:if="${order.status == 'Pending Confirmation'}">
-                                                    <a class="button blue" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=2)}">Confirm</a>
-                                                    <a class="button red" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
+                                                    <a class="button green"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=2)}"
+                                                       onclick="return confirmAction(event, this)">Confirm</a>
+                                                    <a class="button red"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=0)}"
+                                                       onclick="return confirmAction(event, this)">Cancel</a>
                                                 </th:block>
                                                 <th:block th:if="${order.status == 'Confirm and Shipping'}">
-                                                    <a class="button green" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=1)}">Completed</a>
-                                                    <a class="button red" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
+                                                    <a class="button green"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=1)}"
+                                                       onclick="return confirmAction(event, this)">Completed</a>
+                                                    <a class="button red"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=0)}"
+                                                       onclick="return confirmAction(event, this)">Cancel</a>
                                                 </th:block>
                                                 <th:block th:if="${order.status == 'Prepay'}">
-                                                    <a class="button green" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=1)}">Completed</a>
-                                                    <a class="button red" th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
+                                                    <a class="button green"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=1)}"
+                                                       onclick="return confirmAction(event, this)">Completed</a>
+                                                    <a class="button red"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=0)}"
+                                                       onclick="return confirmAction(event, this)">Cancel</a>
                                                 </th:block>
                                             </div>
                                         </td>
@@ -384,6 +402,17 @@
 
 <!-- Custom Theme Scripts -->
 <script th:src="@{/build/js/custom.min.js}"></script>
+
+<script type="text/javascript">
+    function confirmAction(event, link) {
+        if (!confirm("Bạn có chắc chắn muốn thực hiện hành động này?")) {
+            event.preventDefault(); // Ngăn không cho liên kết mặc định nếu người dùng chọn "Cancel"
+        } else {
+            window.location.assign(link.getAttribute('href')); // Chuyển hướng đến URL nếu xác nhận
+        }
+    }
+</script>
+
 
 </body>
 </html>
