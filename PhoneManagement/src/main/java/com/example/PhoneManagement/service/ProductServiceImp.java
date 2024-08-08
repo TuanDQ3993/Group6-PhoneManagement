@@ -469,6 +469,13 @@ public class ProductServiceImp implements ProductService {
         return  mapResultsToProductShops(results);
     }
 
+    @Override
+    public void updateQuantityProduct(int prodId, int quantity) {
+        Products products = productRepository.findById(prodId).orElseThrow(() -> new RuntimeException("product not exist"));
+        products.setQuantity(quantity);
+        productRepository.save(products);
+    }
+
     private List<ProductShop> mapResultsToProductShops(List<Object[]> results) {
         List<ProductShop> shops = new ArrayList<>();
         for (Object[] result : results) {
