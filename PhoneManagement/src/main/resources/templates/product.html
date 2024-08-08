@@ -176,7 +176,7 @@
                 <h3 class="breadcrumb-header">Product Detail</h3>
                 <ul class="breadcrumb-tree">
                     <li><a href="/home/homepage">Home</a></li>
-                    <li><a href="#">Shop</a></li>
+                    <li><a href=/home/shop>Shop</a></li>
                     <li class="active">Product Detail</li>
                 </ul>
             </div>
@@ -283,7 +283,7 @@
                     </form>
                     <ul class="product-links">
                         <li>Category:</li>
-                        <li><a href="#" th:text="${product.category.categoryName}">Category Name</a></li>
+                        <li><a th:href="@{/home/shop(categoryId = ${product.category.categoryId})}" th:text="${product.category.categoryName}">Category Name</a></li>
                     </ul>
                 </div>
             </div>
