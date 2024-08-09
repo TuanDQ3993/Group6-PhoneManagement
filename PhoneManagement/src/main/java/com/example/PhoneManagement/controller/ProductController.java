@@ -47,7 +47,7 @@ public class ProductController {
     public String getAllProduct(Model model,
                                 @RequestParam(name = "page", defaultValue = "0") int page,
                                 @RequestParam(name = "size", defaultValue = "5") int size,
-                                @RequestParam(name = "sortField", defaultValue = "productId") String sortField,
+                                @RequestParam(name = "sortField", defaultValue = "createdAt") String sortField,
                                 @RequestParam(name = "sortDir", defaultValue = "desc") String sortDir,
                                 @RequestParam(name = "categoryId", required = false) Integer categoryId,
                                 @RequestParam(name = "search", required = false) String name) {

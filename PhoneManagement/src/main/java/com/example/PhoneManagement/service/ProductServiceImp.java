@@ -189,6 +189,7 @@ public class ProductServiceImp implements ProductService {
             products.setDescription(request.getDescription());
             products.setWarrantyPeriod(request.getWarrantyPeriod());
             products.setBrandName(request.getBrandName());
+            products.setCreatedAt(new Date());
             productRepository.save(products);
         } catch (IllegalArgumentException ex) {
             throw ex;

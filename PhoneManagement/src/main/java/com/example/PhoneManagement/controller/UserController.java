@@ -4,15 +4,21 @@ import com.example.PhoneManagement.dto.request.ChangePasswordRequest;
 import com.example.PhoneManagement.dto.request.UserDTO;
 import com.example.PhoneManagement.dto.request.UserUpdateRequest;
 import com.example.PhoneManagement.service.imp.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +36,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
+    @Autowired
+    private HttpServletResponse httpServletResponse;
 
 //    // Test treen Postman
 //    @GetMapping("/profile")
@@ -114,18 +124,44 @@ public class UserController {
     }
 
     @PostMapping("/change_password")
-    public String changePassword(ChangePasswordRequest request, BindingResult bindingResult, Authentication authentication, Model model) {
+    public String changePassword(ChangePasswordRequest request, BindingResult bindingResult, Authentication authentication, HttpServletRequest req, HttpServletResponse res, Model model, RedirectAttributes redirectAttributes) {
+
         if (bindingResult.hasErrors()) {
             return "change_password";
         }
         try {
             userService.changePassword(request, authentication);
-            model.addAttribute("success", "Change Password Success");
+
+            // Thêm thông báo vào RedirectAttributes
+            redirectAttributes.addFlashAttribute("message", "Change password successful! Please login");
+
+            // Thực hiện logout thủ công
+            new SecurityContextLogoutHandler().logout(req, res, authentication);
+
+            // Xóa tất cả cookie liên quan
+            Cookie[] cookies = req.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("JSESSIONID") || cookie.getName().equals("Authorization")) {
+                        cookie.setPath("/");
+                        cookie.setMaxAge(0);
+                        res.addCookie(cookie);
+                    }
+                }
+            }
+
+            // Thiết lập lại SecurityContext
+            SecurityContextHolder.clearContext();
+
+            // Chuyển hướng đến trang đăng nhập
+            return "redirect:/auth/login";
+
         } catch (IllegalArgumentException e) {
             model.addAttribute("errors", e.getMessage());
+            return "change_password";
         }
-        return "change_password";
     }
+
 
     @PutMapping("/{userid}")
     public ResponseEntity<?> updateUser(@PathVariable int userid, @RequestBody UserUpdateRequest request) {

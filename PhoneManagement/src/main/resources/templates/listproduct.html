@@ -232,6 +232,7 @@
                                             <select id="sortField" name="sortField" style="padding: 5px; margin-right: 10px;">
                                                 <option value="productId" th:text="'ID'" th:selected="${sortField == 'productId'}"></option>
                                                 <option value="productName" th:text="'Name'" th:selected="${sortField == 'productName'}"></option>
+                                                <option value="createdAt" th:text="'CreatedAt'" th:selected="${sortField == 'CreatedAt'}"></option>
                                             </select>
                                         </div>
                                         <div style="display: inline-block;">
@@ -302,7 +303,7 @@
                                             <td th:text="${product.createAt}"></td>
                                             <td>
                                                 <span class="view-span" th:text="${product.warrantyPeriod}"></span>
-                                                <input type="text" class="form-control edit-input" name="warrantyPeriod"
+                                                <input type="number" class="form-control edit-input" name="warrantyPeriod"
                                                        th:value="${product.warrantyPeriod}" style="display: none;">
                                             </td>
                                             <td>
