@@ -48,8 +48,8 @@ public class ProductServiceImp implements ProductService {
         int total = 0;
         Products product = new Products();
         boolean result = productRepository.findAll().stream().anyMatch(p -> p.getProductName().equals(productDTO.getProductName()));
-        if (result) return;
-        if (productDTO.getWarrantyPeriod() < 0) return;
+        if (result) throw new IllegalArgumentException("Product Name already existed");;
+        if (productDTO.getWarrantyPeriod() < 0) throw new IllegalArgumentException("WarrantyPeriod cannot be negative");;
         product.setProductName(productDTO.getProductName());
         product.setDescription(productDTO.getDescription());
 
@@ -68,7 +68,7 @@ public class ProductServiceImp implements ProductService {
         for (ProductColorDTO colorDTO : productDTO.getColors()) {
             String contentType = colorDTO.getImage().getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
-                return ;
+                throw new IllegalArgumentException("Could not create upload directory");
             }
             Path uploadDir = Paths.get("uploads/");
 
@@ -95,7 +95,7 @@ public class ProductServiceImp implements ProductService {
                     e.printStackTrace();
                 }
             }
-            if (colorDTO.getQuantity() <= 0) return;
+            if (colorDTO.getQuantity() <= 0) throw new IllegalArgumentException("Quantity cannot be negative");
 
             ProductInfo productInfo = new ProductInfo();
             Colors color = new Colors();
@@ -108,7 +108,7 @@ public class ProductServiceImp implements ProductService {
                 e.printStackTrace();
                 return;
             }
-            if(gia.compareTo(BigDecimal.ZERO) <=0) return;
+            if(gia.compareTo(BigDecimal.ZERO) <=0) throw new IllegalArgumentException("Price cannot be negative");
             productInfo.setPrice(gia);
             productInfo.setImage(fileImage);
             productInfo.setQuantity(colorDTO.getQuantity());
@@ -179,13 +179,17 @@ public class ProductServiceImp implements ProductService {
         try {
             Products products = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("product not exist"));
             Category category = categoryRepository.findById(request.getCategory()).orElseThrow(() -> new RuntimeException("Category not exist"));
+            if(request.getWarrantyPeriod()<=0) throw new IllegalArgumentException("WarrantyPeriod cannot be negative");
             products.setProductName(request.getProductName());
             products.setCategory(category);
             products.setDescription(request.getDescription());
             products.setWarrantyPeriod(request.getWarrantyPeriod());
             products.setBrandName(request.getBrandName());
             productRepository.save(products);
-        } catch (Exception e) {
+        }catch (IllegalArgumentException ex){
+            throw ex;
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -227,9 +231,9 @@ public class ProductServiceImp implements ProductService {
             Colors color = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
             List<Colors> colors = findColorByProductId(productId);
             for (Colors c : colors) {
-                if (c.getColorId() == request.getColorId()) return;
+                if (c.getColorId() == request.getColorId()) throw new IllegalArgumentException("Color already exists for the product");
             }
-            if (request.getQuantity() < 0) return;
+            if (request.getQuantity() < 0) throw new IllegalArgumentException("Quantity cannot be negative");
             productInfo.setProducts(products);
             productInfo.setColors(color);
             productInfo.setImage(request.getImage());
@@ -238,7 +242,11 @@ public class ProductServiceImp implements ProductService {
             productInfo.setLastUpdated(new Date());
 
             productColorRepository.save(productInfo);
-        } catch (Exception e) {
+        }
+        catch (IllegalArgumentException ex){
+            throw ex;
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

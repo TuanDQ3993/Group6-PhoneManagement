@@ -82,8 +82,7 @@ public class ProductController {
                                 @RequestParam("quantity") int quantity,
                                 @RequestParam("description") String description,
                                 @RequestParam("warrantyPeriod") int warrantyPeriod,
-                                @RequestParam("brandName") String brand
-    ) {
+                                @RequestParam("brandName") String brand,RedirectAttributes redirectAttributes) {
         ProductUpdateRequest request=new ProductUpdateRequest();
         request.setProductName(productName);
         request.setCategory(cateId);
@@ -91,13 +90,31 @@ public class ProductController {
         request.setDescription(description);
         request.setWarrantyPeriod(warrantyPeriod);
         request.setBrandName(brand);
-        productService.updateProduct(proId, request);
+        try {
+            productService.updateProduct(proId, request);
+            redirectAttributes.addFlashAttribute("successMessage", "Product color updated successfully!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred.");
+        }
         return "redirect:/admin/products";
     }
 
     @PostMapping("/add")
-    public String addProduct(@ModelAttribute("productDTO") ProductDTO productDTO) {
-        productService.saveProduct(productDTO);
+    public String addProduct(@ModelAttribute("productDTO") ProductDTO productDTO,RedirectAttributes redirectAttributes) {
+        try {
+            productService.saveProduct(productDTO);
+            redirectAttributes.addFlashAttribute("successMessage", "Product color updated successfully!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred.");
+        }
         return "redirect:/admin/products";
     }
 
@@ -202,17 +219,17 @@ public class ProductController {
         return "redirect:/admin/products/" + productId;
     }
 
-
-
     @PostMapping("/{productId}/add")
     public String addProductColor(@PathVariable("productId") int proId,
                                   @RequestParam("color") int color,
                                   @RequestParam("image") MultipartFile image,
                                   @RequestParam("price") String price,
-                                  @RequestParam("quantity") int quantity){
+                                  @RequestParam("quantity") int quantity,
+                                  RedirectAttributes redirectAttributes){
         Path uploadDir = Paths.get("uploads/");
         String contentType = image.getContentType();
         if (contentType == null || !contentType.startsWith("image/")) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Only image files are allowed.");
             return "redirect:/admin/products/{productId}";
         }
         if (!Files.exists(uploadDir)) {
@@ -233,7 +250,7 @@ public class ProductController {
                     Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                 }
 
-                fileImage = "/uploads/" + fileName.toLowerCase();
+                fileImage = fileName.toLowerCase();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -248,14 +265,31 @@ public class ProductController {
             gia = new BigDecimal(price);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-//            redirectAttributes.addFlashAttribute("errorMessage", "Invalid price format.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Invalid price format.");
             return "redirect:/admin/products/{productId}";
         }
         if(gia.compareTo(BigDecimal.ZERO) <=0) return "redirect:/admin/products/{productId}";
         request.setPrice(gia);
         request.setColorId(color);
 
-        productService.addProductColor(request,proId);
+
+        try {
+            productService.addProductColor(request,proId);
+            ProductViewRequest productViewRequest=productService.getProduct(proId);
+            List<Integer> proInfoId=productViewRequest.getQuantity();
+            int total=0;
+            for(Integer pro: proInfoId){
+                total+=pro;
+            }
+            productService.updateQuantityProduct(proId,total);
+            redirectAttributes.addFlashAttribute("successMessage", "Product color add successfully!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred.");
+        }
         return "redirect:/admin/products/{productId}";
     }
 
