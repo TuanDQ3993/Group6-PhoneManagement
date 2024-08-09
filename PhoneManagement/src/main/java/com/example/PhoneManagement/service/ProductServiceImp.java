@@ -180,6 +180,10 @@ public class ProductServiceImp implements ProductService {
             Category category = categoryRepository.findById(request.getCategory()).orElseThrow(() -> new RuntimeException("Category not exist"));
             if (request.getWarrantyPeriod() <= 0)
                 throw new IllegalArgumentException("WarrantyPeriod cannot be negative");
+            boolean result = productRepository.findAll().stream().anyMatch(pro -> pro.getProductName().equals(request.getProductName()));
+            if (result && !products.getProductName().equals(request.getProductName())) {
+                throw new IllegalArgumentException("Product Name already exist");
+            }
             products.setProductName(request.getProductName());
             products.setCategory(category);
             products.setDescription(request.getDescription());
@@ -397,6 +401,7 @@ public class ProductServiceImp implements ProductService {
             }
         }
         updateQuantityProduct(productInfo.getProducts().getProductId(), total);
+
     }
 
     @Override
