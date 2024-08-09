@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
-                        .logoutSuccessUrl("/home/homepage")
+                        .logoutSuccessUrl("/auth/login")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID", "Authorization")
                 ).exceptionHandling(exceptionHandling ->

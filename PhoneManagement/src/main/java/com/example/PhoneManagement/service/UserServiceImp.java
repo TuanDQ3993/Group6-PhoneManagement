@@ -130,8 +130,8 @@ public class UserServiceImp implements UserService {
     }
 
     public void changePassword(ChangePasswordRequest request, Authentication authentication) {
-        var user = (Users) authentication.getPrincipal();
-
+        Users user = (Users) authentication.getPrincipal();
+        Users getUser = userRepository.findById(user.getUserId()).orElseThrow((null));
         // check password
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Current password is incorrect.");
@@ -139,8 +139,8 @@ public class UserServiceImp implements UserService {
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new IllegalArgumentException("New password and confirmation do not match.");
         }
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        userRepository.save(user);
+        getUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(getUser);
     }
 
 
@@ -197,7 +197,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public void activesuccess(String token,Model model) {
+    public void activesuccess(String token, Model model) {
         String username = jwtService.extractUsername(token);
         if (username != null && !jwtService.isTokenExpired(token)) {
             Users user = findByEmail(username).orElseThrow();

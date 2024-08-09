@@ -283,7 +283,7 @@
                     </form>
                     <ul class="product-links">
                         <li>Category:</li>
-                        <li><a th:href="@{/home/shop(categoryId = ${product.category.categoryId})}" th:text="${product.category.categoryName}">Category Name</a></li>
+                        <li><a th:href="@{/home/shop(categoryId = ${product.category.categoryId}, brand= ${null}, minprice=${0}, maxprice=${9999})}" th:text="${product.category.categoryName}">Category Name</a></li>
                     </ul>
                 </div>
             </div>
