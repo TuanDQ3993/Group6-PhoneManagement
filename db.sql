@@ -110,7 +110,7 @@ CREATE TABLE warrantyrepair (
     issue_description VARCHAR(255),
     is_deleted BIT,
     repair_date DATE,
-    type VARCHAR(50),
+    note_technical VARCHAR(255),
     order_id INT, -- Thêm cột để liên kết với bảng orders
     FOREIGN KEY (technical_id) REFERENCES useraccount(user_id),
     FOREIGN KEY (order_id) REFERENCES orders(order_id) 
