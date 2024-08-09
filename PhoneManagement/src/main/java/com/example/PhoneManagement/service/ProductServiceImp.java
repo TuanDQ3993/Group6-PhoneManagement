@@ -26,10 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,8 +45,10 @@ public class ProductServiceImp implements ProductService {
         int total = 0;
         Products product = new Products();
         boolean result = productRepository.findAll().stream().anyMatch(p -> p.getProductName().equals(productDTO.getProductName()));
-        if (result) throw new IllegalArgumentException("Product Name already existed");;
-        if (productDTO.getWarrantyPeriod() < 0) throw new IllegalArgumentException("WarrantyPeriod cannot be negative");;
+        if (result) throw new IllegalArgumentException("Product Name already existed");
+        ;
+        if (productDTO.getWarrantyPeriod() < 0) throw new IllegalArgumentException("WarrantyPeriod cannot be negative");
+        ;
         product.setProductName(productDTO.getProductName());
         product.setDescription(productDTO.getDescription());
 
@@ -90,7 +89,7 @@ public class ProductServiceImp implements ProductService {
                         Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                     }
 
-                    fileImage =fileName.toLowerCase();
+                    fileImage = fileName.toLowerCase();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -108,7 +107,7 @@ public class ProductServiceImp implements ProductService {
                 e.printStackTrace();
                 return;
             }
-            if(gia.compareTo(BigDecimal.ZERO) <=0) throw new IllegalArgumentException("Price cannot be negative");
+            if (gia.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Price cannot be negative");
             productInfo.setPrice(gia);
             productInfo.setImage(fileImage);
             productInfo.setQuantity(colorDTO.getQuantity());
@@ -179,17 +178,17 @@ public class ProductServiceImp implements ProductService {
         try {
             Products products = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("product not exist"));
             Category category = categoryRepository.findById(request.getCategory()).orElseThrow(() -> new RuntimeException("Category not exist"));
-            if(request.getWarrantyPeriod()<=0) throw new IllegalArgumentException("WarrantyPeriod cannot be negative");
+            if (request.getWarrantyPeriod() <= 0)
+                throw new IllegalArgumentException("WarrantyPeriod cannot be negative");
             products.setProductName(request.getProductName());
             products.setCategory(category);
             products.setDescription(request.getDescription());
             products.setWarrantyPeriod(request.getWarrantyPeriod());
             products.setBrandName(request.getBrandName());
             productRepository.save(products);
-        }catch (IllegalArgumentException ex){
+        } catch (IllegalArgumentException ex) {
             throw ex;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -231,7 +230,8 @@ public class ProductServiceImp implements ProductService {
             Colors color = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
             List<Colors> colors = findColorByProductId(productId);
             for (Colors c : colors) {
-                if (c.getColorId() == request.getColorId()) throw new IllegalArgumentException("Color already exists for the product");
+                if (c.getColorId() == request.getColorId())
+                    throw new IllegalArgumentException("Color already exists for the product");
             }
             if (request.getQuantity() < 0) throw new IllegalArgumentException("Quantity cannot be negative");
             productInfo.setProducts(products);
@@ -242,11 +242,9 @@ public class ProductServiceImp implements ProductService {
             productInfo.setLastUpdated(new Date());
 
             productColorRepository.save(productInfo);
-        }
-        catch (IllegalArgumentException ex){
+        } catch (IllegalArgumentException ex) {
             throw ex;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -325,6 +323,14 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
+    public void updateQuantityProduct(int prodId, int quantity) {
+        Products products = productRepository.findById(prodId).orElseThrow(() -> new RuntimeException("product not exist"));
+        products.setQuantity(quantity);
+        productRepository.save(products);
+    }
+
+
+    @Override
     public List<ProductDTO> findAllProduct() {
         return productRepository.findAll()
                 .stream()
@@ -378,6 +384,19 @@ public class ProductServiceImp implements ProductService {
             productInfo.setDeleted(false);
         } else productInfo.setDeleted(true);
         productColorRepository.save(productInfo);
+        ProductViewRequest productViewRequest = getProduct(productInfo.getProducts().getProductId());
+        List<Integer> proInfoId = productViewRequest.getQuantity();
+        List<Boolean> deleted = productViewRequest.getIsDeleted();
+        int total = 0;
+        if (proInfoId == null || deleted == null) {
+            total = 0;
+        }
+        for (int i = 0; i < proInfoId.size(); i++) {
+            if (deleted.get(i)) {
+                total += proInfoId.get(i);
+            }
+        }
+        updateQuantityProduct(productInfo.getProducts().getProductId(), total);
     }
 
     @Override
@@ -416,36 +435,57 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductShop> findPaginated(PageableDTO pageable, int categoryId, String brandName, String productName) {
+    public Page<ProductShop> findPaginated(PageableDTO pageable, Integer categoryId, String brandName, String productName, String minprice, String maxprice) {
         try {
             int pageSize = pageable.getPageSize();
             int currentPage = pageable.getPageNumber();
-            int startItem = currentPage * pageSize;
+            String sort = pageable.getSort();
 
             List<ProductShop> productShops;
+            System.out.println("categoryId:" + categoryId);
+            System.out.println("brandName:" + brandName);
+            System.out.println("min: " + minprice);
+            System.out.println("max: " + maxprice);
+            System.out.println("sort: " + sort);
 
             if (categoryId > 0 && !brandName.isEmpty()) {
-                productShops = findProductShopByCategoryIdAndBrand(categoryId, brandName);
+                productShops = findProductsByCategoryIdAndBrandAndPrice(categoryId, brandName, minprice, maxprice);
             } else if (categoryId > 0) {
-                productShops = findProductShopByCategoryId(categoryId);
+                productShops = findProductShopByCategoryId(categoryId, minprice, maxprice);
             } else if (!brandName.isEmpty()) {
-                productShops = findProductShopByBrand(brandName);
-            }else if(productName != null && !productName.isEmpty()){
+                productShops = findProductShopByBrand(brandName, minprice, maxprice);
+            } else if (productName != null && !productName.isEmpty()) {
                 productShops = findProductShopByProductName(productName);
-            }else {
+            } else if (!maxprice.isEmpty() && !minprice.isEmpty()) {
+                productShops = findProductShopByPrice(minprice, maxprice);
+            } else {
                 productShops = getProductShops();
             }
 
-            int totalItems = productShops.size();
+            if (sort != null && !sort.isEmpty()) {
+                switch (sort) {
+                    case "price_asc":
+                        productShops.sort(Comparator.comparing(ProductShop::getPrice));
+                        break;
+                    case "price_desc":
+                        productShops.sort(Comparator.comparing(ProductShop::getPrice).reversed());
+                        break;
 
-            if (startItem >= totalItems) {
-                productShops = Collections.emptyList();
-            } else {
-                int toIndex = Math.min(startItem + pageSize, totalItems);
-                productShops = productShops.subList(startItem, toIndex);
+                }
             }
 
-            return new PageImpl<ProductShop>(productShops, PageRequest.of(currentPage, pageSize), totalItems);
+            int totalItems = productShops.size();
+            int startItem = currentPage * pageSize;
+
+            List<ProductShop> paginatedList;
+            if (startItem >= totalItems) {
+                paginatedList = Collections.emptyList();
+            } else {
+                int toIndex = Math.min(startItem + pageSize, totalItems);
+                paginatedList = productShops.subList(startItem, toIndex);
+            }
+
+            return new PageImpl<>(paginatedList, PageRequest.of(currentPage, pageSize), totalItems);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -454,14 +494,15 @@ public class ProductServiceImp implements ProductService {
 
 
     @Override
-    public List<ProductShop> findProductShopByCategoryId(int categoryId) {
-        List<Object[]> results = productRepository.findProductsByCategoryId(categoryId);
+    public List<ProductShop> findProductShopByCategoryId(int categoryId, String minprice, String maxprice) {
+        List<Object[]> results = productRepository.findProductsByCategoryId(categoryId, minprice, maxprice);
         return mapResultsToProductShops(results);
     }
 
+
     @Override
-    public List<ProductShop> findProductShopByBrand(String brandName) {
-        List<Object[]> results = productRepository.findProductsByBrandName(brandName);
+    public List<ProductShop> findProductShopByBrand(String brandName, String minprice, String maxprice) {
+        List<Object[]> results = productRepository.findProductsByBrandName(brandName, minprice, maxprice);
         return mapResultsToProductShops(results);
     }
 
@@ -474,14 +515,20 @@ public class ProductServiceImp implements ProductService {
     @Override
     public List<ProductShop> findProductShopByProductName(String productName) {
         List<Object[]> results = productRepository.findProductShopByProductName(productName);
-        return  mapResultsToProductShops(results);
+        return mapResultsToProductShops(results);
     }
 
     @Override
-    public void updateQuantityProduct(int prodId, int quantity) {
-        Products products = productRepository.findById(prodId).orElseThrow(() -> new RuntimeException("product not exist"));
-        products.setQuantity(quantity);
-        productRepository.save(products);
+    public List<ProductShop> findProductsByCategoryIdAndBrandAndPrice(int categoryId, String brandName, String minprice, String maxprice) {
+        List<Object[]> results = productRepository.findProductsByCategoryIdAndBrandAndPrice(categoryId, brandName, minprice, maxprice);
+        return mapResultsToProductShops(results);
+
+    }
+
+    @Override
+    public List<ProductShop> findProductShopByPrice(String minprice, String maxprice) {
+        List<Object[]> results = productRepository.findProductsByPrice(minprice, maxprice);
+        return mapResultsToProductShops(results);
     }
 
     private List<ProductShop> mapResultsToProductShops(List<Object[]> results) {

@@ -51,11 +51,13 @@ public interface ProductService {
     List<Colors> findColorByProductId(int productId);
     List<String> getAllBrand();
     List<ProductShop> getProductShops();
-    Page<ProductShop> findPaginated(PageableDTO pageable, int categoryId, String brandName, String productName);
-    List<ProductShop> findProductShopByCategoryId(int categoryId);
-    List<ProductShop> findProductShopByBrand(String brandName);
+    Page<ProductShop> findPaginated(PageableDTO pageable, Integer categoryId, String brandName, String productName, String maxprice, String minprice);
+    List<ProductShop> findProductShopByCategoryId(int categoryId,String maxprice, String minprice);
+    List<ProductShop> findProductShopByBrand(String brandName , String maxprice, String minprice);
     List<ProductShop> findProductShopByCategoryIdAndBrand(int categoryId, String brandName);
     List<ProductShop> findProductShopByProductName(String productName);
+    List<ProductShop> findProductsByCategoryIdAndBrandAndPrice(int categoryId, String brandName, String minPrice, String maxPrice);
+    List<ProductShop> findProductShopByPrice(String minprice, String maxprice);
 
     void updateQuantityProduct(int prodId, int quantity);
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,34 +28,40 @@ public class ShopController {
     @Autowired
     private ProductService productService;
 
-
     @GetMapping("/shop")
     public String shop(@RequestParam("page") Optional<Integer> page,
                        @RequestParam("size") Optional<Integer> size,
                        @RequestParam(value = "categoryId", required = false) Integer categoryId,
                        @RequestParam(value = "brand", required = false) String brand,
                        @RequestParam(value = "productName", required = false) String search,
+                       @RequestParam(value = "minprice", required = false) String minprice,
+                       @RequestParam(value = "maxprice", required = false) String maxprice,
+                       @RequestParam(value = "sort", required = false) String sort,
                        Model model) {
 
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(6);
 
-        PageableDTO pageableDTO = new PageableDTO(currentPage - 1, pageSize);
-
+        PageableDTO pageableDTO = new PageableDTO(currentPage - 1, pageSize, sort);
 
         int effectiveCategoryId = (categoryId != null) ? categoryId : 0;
         String effectiveBrand = (brand != null) ? brand : "";
         String effectiveSearch = (search != null) ? search : "";
+        String effectiveMinprice = (minprice != null) ? minprice : "";
+        String effectiveMaxprice = maxprice != null ? maxprice : "";
 
-        Page<ProductShop> productShops = productService.findPaginated(pageableDTO, effectiveCategoryId, effectiveBrand, effectiveSearch);
+        Page<ProductShop> productShops = productService.findPaginated(pageableDTO, effectiveCategoryId, effectiveBrand, effectiveSearch, effectiveMinprice, effectiveMaxprice);
 
         model.addAttribute("size1", pageSize);
+        model.addAttribute("minprice", minprice);
+        model.addAttribute("maxprice", maxprice);
         model.addAttribute("category", categoryService.getAllCategoryActive());
         model.addAttribute("brand", productService.getAllBrand());
         model.addAttribute("productShops", productShops);
         model.addAttribute("productName", search);
         model.addAttribute("selectedCategoryId", categoryId);
         model.addAttribute("selectedBrand", brand);
+        model.addAttribute("selectedSort", sort);
 
         int totalPages = productShops.getTotalPages();
         if (totalPages > 0) {
@@ -64,36 +71,8 @@ public class ShopController {
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
-        return "store";
+        return "store.html";
     }
-    @GetMapping("/search")
-    public String searchProducts(@RequestParam(value = "categoryId", required = false) Integer categoryId,
-                                 @RequestParam(value = "brand", required = false) String brand,
-                                 Model model) {
-        List<ProductShop> products;
-
-        if (categoryId != null && categoryId != 0 && brand != null && !brand.isEmpty()) {
-            products = productService.findProductShopByCategoryIdAndBrand(categoryId, brand);
-        } else if (categoryId != null && categoryId != 0) {
-            products = productService.findProductShopByCategoryId(categoryId);
-        } else if (brand != null && !brand.isEmpty()) {
-            products = productService.findProductShopByBrand(brand);
-        } else {
-            products = productService.getProductShops();
-        }
-
-        List<Category> categories = categoryService.getAllCategoryActive();
-
-        model.addAttribute("product", products);
-        model.addAttribute("brand", productService.getAllBrand());
-        model.addAttribute("category", categories);
-        model.addAttribute("selectedCategoryId", categoryId);
-        model.addAttribute("selectedBrand", brand);
-
-        return "store";
-    }
-
-
-
-
 }
+
+

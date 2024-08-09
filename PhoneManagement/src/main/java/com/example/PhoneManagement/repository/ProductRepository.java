@@ -37,18 +37,17 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     @Query(value = "select distinct brand_name from products", nativeQuery = true)
     List<String> getAllBrand();
 
-    @Query(value = "SELECT p.product_id, p.product_name, \n" +
-            "       MAX(pi.price) AS price, \n" +
-            "       MAX(pi.image) AS image, \n" +
-            "       p.category_id, \n" +
-            "       p.description, \n" +
-            "       MAX(pi.color_id) AS color_id, \n" +
-            "       MAX(pi.quantity) AS quantity\n" +
+    @Query(value = "SELECT p.product_id, p.product_name,\n" +
+            " MAX(pi.price) AS price,\n" +
+            " MAX(pi.image) AS image,\n" +
+            " p.category_id,\n" +
+            "p.description,\n" +
+            "MAX(pi.product_color_id) AS color_id,\n" +
+            "MAX(p.quantity) AS quantity\n" +
             "FROM products p\n" +
             "JOIN productinfo pi ON p.product_id = pi.product_id \n" +
-            "WHERE pi.isdeleted = 1\n" +
-            "GROUP BY p.product_id, p.product_name, p.category_id, p.description\n" +
-            "LIMIT 0, 1000;\n", nativeQuery = true)
+            "WHERE  pi.isdeleted = 1 GROUP BY p.product_id, p.product_name, p.category_id, p.description\n" +
+            "LIMIT 0, 1000;", nativeQuery = true)
     List<Object[]> getAllProductShop();
 
     @Query(value = "SELECT p.product_id, p.product_name, \n" +
@@ -56,38 +55,38 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
             "       MAX(pi.image) AS image, \n" +
             "       p.category_id, \n" +
             "       p.description, \n" +
-            "       MAX(pi.color_id) AS color_id, \n" +
-            "       MAX(pi.quantity) AS quantity\n" +
+            "       MAX(pi.product_color_id) AS color_id, \n" +
+            "       MAX(p.quantity) AS quantity\n" +
             "FROM products p\n" +
             "JOIN productinfo pi ON p.product_id = pi.product_id \n" +
-            "where p.category_id = :categoryId and pi.isdeleted = 1 GROUP BY p.product_id, p.product_name, p.category_id, p.description\n" +
+            "where p.category_id = :categoryId and price between :minprice and :maxprice and pi.isdeleted = 1 GROUP BY p.product_id, p.product_name, p.category_id, p.description\n" +
             "LIMIT 0, 1000;\n", nativeQuery = true)
-    List<Object[]> findProductsByCategoryId(@Param("categoryId") int categoryId);
+    List<Object[]> findProductsByCategoryId(@Param("categoryId") int categoryId,@Param("minprice")String minprice, @Param("maxprice")String maxprice);
 
     @Query(value = "SELECT p.product_id, p.product_name, \n" +
             "       MAX(pi.price) AS price, \n" +
             "       MAX(pi.image) AS image, \n" +
             "       p.category_id, \n" +
             "       p.description, \n" +
-            "       MAX(pi.color_id) AS color_id, \n" +
-            "       MAX(pi.quantity) AS quantity\n" +
+            "       MAX(pi.product_color_id) AS color_id, \n" +
+            "       MAX(p.quantity) AS quantity\n" +
             "FROM products p\n" +
             "JOIN productinfo pi ON p.product_id = pi.product_id \n" +
-            "where brand_name =:brandName and pi.isdeleted = 1 GROUP BY p.product_id, p.product_name, p.category_id, p.description\n" +
+            "where brand_name =:brandName and price between :minprice and :maxprice and pi.isdeleted = 1 GROUP BY p.product_id, p.product_name, p.category_id, p.description\n" +
             "LIMIT 0, 1000;\n", nativeQuery = true)
-    List<Object[]> findProductsByBrandName(@Param("brandName") String brandName);
+    List<Object[]> findProductsByBrandName(@Param("brandName") String brandName,@Param("minprice")String minprice, @Param("maxprice")String maxprice);
 
     @Query(value = "SELECT p.product_id, p.product_name, \n" +
             "       MAX(pi.price) AS price, \n" +
             "       MAX(pi.image) AS image, \n" +
             "       p.category_id, \n" +
             "       p.description, \n" +
-            "       MAX(pi.color_id) AS color_id, \n" +
-            "       MAX(pi.quantity) AS quantity\n" +
+            "       MAX(pi.product_color_id) AS color_id, \n" +
+            "       MAX(p.quantity) AS quantity\n" +
             "FROM products p\n" +
             "JOIN productinfo pi ON p.product_id = pi.product_id " +
             "WHERE p.category_id = :categoryId " +
-            "AND p.brand_name = :brandName and pi.isdeleted = 1 GROUP BY p.product_id, p.product_name, p.category_id, p.description\n" +
+            "AND p.brand_name = :brandName and  pi.isdeleted = 1 GROUP BY p.product_id, p.product_name, p.category_id, p.description\n" +
             "LIMIT 0, 1000;\n", nativeQuery = true)
     List<Object[]> findProductsByCategoryIdAndBrand(@Param("categoryId") int categoryId, @Param("brandName") String brandName);
 
@@ -96,11 +95,39 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
             "       MAX(pi.image) AS image, \n" +
             "       p.category_id, \n" +
             "       p.description, \n" +
-            "       MAX(pi.color_id) AS color_id, \n" +
-            "       MAX(pi.quantity) AS quantity\n" +
+            "       MAX(pi.product_color_id) AS color_id, \n" +
+            "       MAX(p.quantity) AS quantity\n" +
             "FROM products p\n" +
             "JOIN productinfo pi ON p.product_id = pi.product_id  " +
             "WHERE product_name LIKE %:search%  and pi.isdeleted = 1 GROUP BY p.product_id, p.product_name, p.category_id, p.description\n" +
             "LIMIT 0, 1000;\n",nativeQuery = true)
     List<Object[]> findProductShopByProductName(@Param("search") String search);
+
+    @Query(value = "SELECT p.product_id, p.product_name,\n" +
+            " MAX(pi.price) AS price,\n" +
+            " MAX(pi.image) AS image,\n" +
+            " p.category_id,\n" +
+            "p.description,\n" +
+            " MAX(pi.product_color_id) AS color_id,\n" +
+            "MAX(pi.quantity) AS quantity\n" +
+            "FROM products p\n" +
+            "JOIN productinfo pi ON p.product_id = pi.product_id \n" +
+            "WHERE p.category_id = :categoryId\n" +
+            "AND p.brand_name = :brandName and price between :minprice and :maxprice and pi.isdeleted = 1 GROUP BY p.product_id, p.product_name, p.category_id, p.description\n" +
+            "LIMIT 0, 1000;", nativeQuery = true)
+    List<Object[]> findProductsByCategoryIdAndBrandAndPrice(@Param("categoryId") int categoryId, @Param("brandName") String brandName, @Param("minprice")String minprice, @Param("maxprice")String maxprice);
+
+    @Query(value = "SELECT p.product_id, p.product_name,\n" +
+            " MAX(pi.price) AS price,\n" +
+            " MAX(pi.image) AS image,\n" +
+            " p.category_id,\n" +
+            "p.description,\n" +
+            " MAX(pi.product_color_id) AS color_id,\n" +
+            "MAX(p.quantity) AS quantity\n" +
+            "FROM products p\n" +
+            "JOIN productinfo pi ON p.product_id = pi.product_id \n" +
+            "WHERE price between :minprice and :maxprice and pi.isdeleted = 1 GROUP BY p.product_id, p.product_name, p.category_id, p.description\n" +
+            "LIMIT 0, 1000;", nativeQuery = true)
+    List<Object[]> findProductsByPrice(@Param("minprice")String minprice, @Param("maxprice")String maxprice);
+
 }
