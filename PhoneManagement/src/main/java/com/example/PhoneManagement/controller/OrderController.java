@@ -8,7 +8,7 @@ import com.example.PhoneManagement.service.imp.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.cglib.core.Local;
+import java.util.LinkedHashMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -33,8 +33,6 @@ public class OrderController {
 
     @GetMapping("/order")
     public String loadOrders(
-            @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "5") Integer size,
             @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "search", required = false) String searchQuery,
             Model model, Principal principal) {
@@ -47,16 +45,14 @@ public class OrderController {
             status = "all";
         }
 //        size=orderService.countTotalOrders(userDTO.get());
-        Page<Object[]> orders = orderService.getOrdersByUserIdWithFilters(
-                userDTO.get(), status, searchQuery, page - 1, size
-        );
+        List<Object[]> orders = orderService.getOrdersByUserIdWithFilters(
+                userDTO.get(), status, searchQuery);
 
-        Map<Integer, List<Object[]>> groupedOrders = orders.getContent().stream()
-                .collect(Collectors.groupingBy(order -> (Integer) order[0]));
+
+        Map<Integer, List<Object[]>> groupedOrders = orders.stream()
+                .collect(Collectors.groupingBy(order -> (Integer) order[0], LinkedHashMap::new, Collectors.toList()));
 
         model.addAttribute("user", userDTO.get());
-        model.addAttribute("page", page);
-        model.addAttribute("size", size);
         model.addAttribute("searchQuery", searchQuery);
         model.addAttribute("status", status);
         model.addAttribute("groupedOrders", groupedOrders);
@@ -77,6 +73,7 @@ public class OrderController {
     @PostMapping("/order")
     public String updateStatusOrder(@RequestParam("orderId") int oderId){
         orderService.changeStatusOrder(oderId,"Canceled");
+        orderService.backProduct(oderId);
         return "redirect:/home/order";
     }
 

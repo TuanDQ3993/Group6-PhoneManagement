@@ -70,11 +70,11 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             "JOIN Category c2 ON c2.categoryId = p2.category.categoryId " +
             "WHERE o1.user.userId = :userId " +
             "AND (:status = 'all' OR o1.status = :status) " +
-            "AND (:searchTerm IS NULL OR LOWER(p2.productName) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) ")
-    Page<Object[]> findOrdersWithFiltersCategory(@Param("userId") int userId,
+            "AND (:searchTerm IS NULL OR LOWER(p2.productName) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
+            "ORDER BY o1.orderDate DESC")
+    List<Object[]> findOrdersWithFiltersCategory(@Param("userId") int userId,
                                                  @Param("status") String status,
-                                                 @Param("searchTerm") String searchTerm,
-                                                 Pageable pageable);
+                                                 @Param("searchTerm") String searchTerm);
 
     @Query(value = "SELECT o1.orderId, p2.productName, c1.colorName, p1.image, p1.price, o1.totalAmount, o2.quantity, o1.orderDate, c2.categoryName," +
             "o1.receiver, o1.note, o1.address, o1.phoneNumber, o1.payment " +

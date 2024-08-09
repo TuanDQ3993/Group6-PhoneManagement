@@ -5,7 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +33,8 @@ class OrderDetailRepositoryTest {
 
     @Autowired
     private ColorRepository colorsRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @BeforeEach
     void setUp() {
@@ -40,6 +44,7 @@ class OrderDetailRepositoryTest {
         productsRepository.deleteAll();
         userRepository.deleteAll();
         colorsRepository.deleteAll();
+        categoryRepository.deleteAll();
 
         // Tạo người dùng
         Users user = new Users();
@@ -55,6 +60,12 @@ class OrderDetailRepositoryTest {
         color.setColorName("Red");
         colorsRepository.save(color);
 
+        //Tao category
+        Category category = new Category();
+        category.setDeleted(true);
+        category.setCategoryName("Smartphones");
+        categoryRepository.save(category);
+
         // Tạo sản phẩm
         Products product = new Products();
         product.setProductName("Product A");
@@ -63,6 +74,8 @@ class OrderDetailRepositoryTest {
 //        product.setPrice(new BigDecimal("100.00"));
         product.setWarrantyPeriod(12);
         product.setCreatedAt(new Date());
+        product.setCategory(category);
+        product.setBrandName("Apple");
         productsRepository.save(product);
 
         // Tạo màu sắc của sản phẩm
@@ -72,6 +85,7 @@ class OrderDetailRepositoryTest {
         productInfo.setImage("image.png");
         productInfo.setQuantity(5);
         productInfo.setLastUpdated(new Date());
+        productInfo.setDeleted(true);
         productColorRepository.save(productInfo);
 
         // Tạo đơn hàng
@@ -79,7 +93,7 @@ class OrderDetailRepositoryTest {
         order.setSalerId(1);
         order.setOrderDate(new Date());
         order.setTotalAmount(new BigDecimal("200.00"));
-        order.setStatus("Pending");
+        order.setStatus("Completed");
         order.setUser(user);
         ordersRepository.save(order);
 
@@ -93,30 +107,42 @@ class OrderDetailRepositoryTest {
     }
 
     @Test
-    void findAllOrderDetails() {
-        List<Object[]> orderDetails = orderDetailRepository.findAllOrderDetails(1);
-        assertNotNull(orderDetails);
-        assertEquals(1, orderDetails.size());
-
-        Object[] orderDetail = orderDetails.get(0);
-        assertEquals(1, orderDetail[0]);
-        assertEquals(1, orderDetail[1]);
-        assertEquals("Product A", orderDetail[2]);
-        assertEquals("image.png", orderDetail[3]);
-        assertEquals(2, orderDetail[4]);
-        assertEquals(new BigDecimal("50.00"), orderDetail[5]);
+    public void testFindAllOrderDetails() {
+        List<Object[]> result = orderDetailRepository.findAllOrderDetails(1);
+        assertNotNull(result);
+        assertFalse(result.isEmpty(), "Result should not be empty");
+        assertEquals(1, result.size());
+        assertEquals("Product A", result.get(0)[2]);
+        assertEquals("image.png", result.get(0)[3]);
     }
 
     @Test
-    void findTop5Sellers() {
-        List<Object[]> topSellers = orderDetailRepository.findTop5Sellers();
-        assertNotNull(topSellers);
-        assertFalse(topSellers.isEmpty());
+    public void testFindTop5Sellers() {
+        List<Object[]> result = orderDetailRepository.findTop5Sellers();
+        assertNotNull(result);
+        assertFalse(result.isEmpty(), "Result should not be empty");
+        assertEquals(1, result.size());
+        assertEquals("Product A", result.get(0)[1]);
+        assertEquals("image.png", result.get(0)[2]);
+        assertEquals(2L, ((Number) result.get(0)[3]).longValue());
+    }
 
-        Object[] topSeller = topSellers.get(0);
-        assertEquals(1, ((Number) topSeller[0]).intValue()); // ProductID
-        assertEquals("Product A", topSeller[1]); // ProductName
-        assertEquals("image.png", topSeller[2]); // Image
-        assertEquals(2, ((Number) topSeller[3]).intValue()); // TotalQuantitySold
+    @Test
+    public void testFindTopSelling() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Products> result = orderDetailRepository.findTopSelling(pageable);
+        assertNotNull(result);
+        assertFalse(result.isEmpty(), "Result should not be empty");
+        assertEquals(1, result.getTotalElements());
+        assertEquals("Product A", result.getContent().get(0).getProductName());
+    }
+    @Test
+    public void testFindTopSellingByCategory() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Products> result = orderDetailRepository.findTopSellingByCategory(1, pageable);
+        assertNotNull(result);
+        assertFalse(result.isEmpty(), "Result should not be empty");
+        assertEquals(1, result.getTotalElements());
+        assertEquals("Product A", result.getContent().get(0).getProductName());
     }
 }

@@ -28,7 +28,7 @@ public interface WarrantyRepairRepository extends JpaRepository<WarrantyRepair, 
     boolean existsWarrantyRepairsByRepairDate(Date repairDate);
 
 
-    // Dash board
+    // Dashboard
     @Query("SELECT COUNT(w) FROM warrantyrepair w WHERE w.technical.userId = :technicalId AND w.isDeleted = false")
     long sumWarrantyRepairs(@Param("technicalId") int technicalId);
 
@@ -72,6 +72,4 @@ public interface WarrantyRepairRepository extends JpaRepository<WarrantyRepair, 
 
     @Query("SELECT w FROM warrantyrepair w WHERE  w.repairDate = :repairDate and w.isDeleted = false  order by w.repairDate desc")
     List<WarrantyRepair> findAllByTechnicalUserIdAndRepairDate(@Param("repairDate") Date repairDate);
-
-
 }

@@ -15,6 +15,14 @@ public class PageableDTO {
 
     Integer PageNumber;
 
+
+    private String sort;
+
+    public PageableDTO(int currentPage, int pageSize, String sort) {
+        this.PageNumber = currentPage;
+        this.PageSize = pageSize;
+        this.sort = sort;
+    }
     public PageableDTO(int currentPage, int pageSize) {
         this.PageNumber = currentPage;
         this.PageSize = pageSize;
