@@ -65,6 +65,9 @@
                 <div th:if="${error}">
                   <p th:text="${error}" class="text-danger"></p>
                 </div>
+                <div th:if="${param.error}">
+                  <p th:text="${param.error}" class="text-danger"></p>
+                </div>
                 <div th:if="${message}">
                   <p th:text="${message}" class="text-success"></p>
                 </div>

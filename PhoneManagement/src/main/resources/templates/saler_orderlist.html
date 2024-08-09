@@ -350,6 +350,7 @@
                                             <input type="hidden" name="status" th:value="${status}">
                                             <input type="hidden" name="searchQuery" th:value="${searchQuery}">
                                         </form>
+                                        <th:block th:if="${orderlist.totalPages > 0}">
                                         <ul class="pagination mb-0">
                                             <li class="page-item"
                                                 th:classappend="${orderlist.hasPrevious()} ? '': 'disabled'">
@@ -375,6 +376,7 @@
                                                 </a>
                                             </li>
                                         </ul>
+                                        </th:block>
 
 
                                     </div>
