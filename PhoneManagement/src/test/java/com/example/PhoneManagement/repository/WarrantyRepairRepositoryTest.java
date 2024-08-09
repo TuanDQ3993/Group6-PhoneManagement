@@ -68,7 +68,7 @@ public class WarrantyRepairRepositoryTest {
         warrantyRepair = new WarrantyRepair();
         warrantyRepair.setProductName("Product A");
         warrantyRepair.setImage("image_link");
-        warrantyRepair.setStatus("Pending");
+        warrantyRepair.setStatus("Warranty Pending");
         warrantyRepair.setIssueDescription("Issue Description");
         warrantyRepair.setDeleted(false);
         warrantyRepair.setRepairDate(new Date());
@@ -155,14 +155,14 @@ public class WarrantyRepairRepositoryTest {
     @Test
     void testFindAllByStatus() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<WarrantyRepair> page = warrantyRepairRepository.findAllByStatus("Pending", pageable, technical.getUserId());
+        Page<WarrantyRepair> page = warrantyRepairRepository.findAllByStatus("Warranty Pending", pageable, technical.getUserId());
         assertEquals(1, page.getTotalElements());
     }
 
     @Test
     void testFindAllByProductNameOrUserAndStatusAndRepairDateOrderByTechnical() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<WarrantyRepair> page = warrantyRepairRepository.findAllByProductNameOrUserAndStatusAndRepairDateOrderByTechnical("Product A", warrantyRepair.getRepairDate(), "Pending", pageable, technical.getUserId());
+        Page<WarrantyRepair> page = warrantyRepairRepository.findAllByProductNameOrUserAndStatusAndRepairDateOrderByTechnical("Product A", warrantyRepair.getRepairDate(), "Warranty Pending", pageable, technical.getUserId());
         assertEquals(1, page.getTotalElements());
     }
 
@@ -183,14 +183,14 @@ public class WarrantyRepairRepositoryTest {
     @Test
     void testFindAllByStatusAdmin() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<WarrantyRepair> page = warrantyRepairRepository.findAllByStatus("Pending", pageable);
+        Page<WarrantyRepair> page = warrantyRepairRepository.findAllByStatus("Warranty Pending", pageable);
         assertEquals(1, page.getTotalElements());
     }
 
     @Test
     void testFindAllByProductNameOrUserAndStatusAndRepairDateAdmin() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<WarrantyRepair> page = warrantyRepairRepository.findAllByProductNameOrUserAndStatusAndRepairDate("Product A", warrantyRepair.getRepairDate(), "Pending", pageable);
+        Page<WarrantyRepair> page = warrantyRepairRepository.findAllByProductNameOrUserAndStatusAndRepairDate("Product A", warrantyRepair.getRepairDate(), "Warranty Pending", pageable);
         assertEquals(1, page.getTotalElements());
     }
 
