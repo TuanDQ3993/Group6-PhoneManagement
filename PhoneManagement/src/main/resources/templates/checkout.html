@@ -165,10 +165,8 @@
                         <th:block th:if="${cart != null}">
                             <div th:each="item : ${cart.items}" class="order-products">
                                 <div class="order-col">
-                                    <div th:text="'x'+${item.quantity} +'  '+${item.productColor.products.productName}">
-                                        1x Product Name Goes Here
-                                    </div>
-                                    <div th:text="${item.price}">$980.00</div>
+                                    <div th:text="'x'+${item.quantity} +'  '+${item.productColor.products.productName}">1x Product Name Goes Here</div>
+                                    <div th:text="'$'+${item.price}">$980.00</div>
                                 </div>
                             </div>
                         </th:block>
@@ -179,7 +177,7 @@
                         </div>
                         <div class="order-col">
                             <div><strong>TOTAL</strong></div>
-                            <div><strong class="order-total" th:text="${total}">$2940.00</strong></div>
+                            <div><strong class="order-total" th:text="'$'+${total}">$2940.00</strong></div>
                         </div>
                     </div>
                     <div class="payment-method">

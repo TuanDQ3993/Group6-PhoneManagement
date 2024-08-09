@@ -96,7 +96,6 @@ public class CartController {
 
     @GetMapping("checkout")
     public String checkout(Model model, HttpSession session, Principal principal,RedirectAttributes redirectAttributes) {
-
         if (principal != null) {
             String userName = principal.getName();
             Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
@@ -125,9 +124,6 @@ public class CartController {
         } else {
             return "redirect:/home/homepage";
         }
-
-
-
 
         return "checkout";
 
@@ -207,9 +203,14 @@ public class CartController {
                              RedirectAttributes redirectAttributes) {
 
         Cart cart = (Cart) session.getAttribute("cart");
-
-
         if ("COD".equals(payment)) {
+            for(Item i : cart.getItems()){
+                int quantity=cartService.getQuantityProduct(i.getProductColor().getProductcolorId());
+                if(quantity < i.getQuantity()){
+                    redirectAttributes.addFlashAttribute("errorquantity","The quantity of products in stock is not enough");
+                    return "redirect:/cart/viewcart";
+                }
+            }
             String userName = principal.getName();
             Users users = userService.getUserByName(userName);
             cartService.addOrder(users, cart, fullname, address, tel, note, payment,"Pending Confirmation");
@@ -269,8 +270,16 @@ public class CartController {
                              @RequestParam("address") String address,
                              @RequestParam("tel") String tel,
                              @RequestParam("note") String note,
-                             HttpSession session, Principal principal){
+                             HttpSession session, Principal principal,
+                                RedirectAttributes redirectAttributes  ){
         Cart cart = (Cart) session.getAttribute("cart");
+        for(Item i : cart.getItems()){
+            int quantity=cartService.getQuantityProduct(i.getProductColor().getProductcolorId());
+            if(quantity < i.getQuantity()){
+                redirectAttributes.addFlashAttribute("errorquantity","The quantity of products in stock is not enough");
+                return "redirect:/cart/viewcart";
+            }
+        }
         String userName = principal.getName();
         Users users = userService.getUserByName(userName);
         cartService.addOrder(users, cart, fullname, address, tel, note,"Online","Prepay");
