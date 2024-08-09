@@ -313,7 +313,7 @@
                                     </div>
                                 </td>
 
-                                <td class="original-price" th:text="${item.price}+ ' $'"></td>
+                                <td class="original-price" th:text="'$'+${item.price}"></td>
 
                                 <td class="quantity__item">
                                     <div class="quantity">
@@ -322,7 +322,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="original-price" th:text="${item.quantity*item.price} +' $'"></td>
+                                <td class="original-price" th:text="'$'+${item.quantity*item.price}"></td>
 
                             </tr>
 
@@ -342,7 +342,7 @@
 
                     <div class="col-lg-6 col-md-6 col-sm-6">
                         <div class="total">
-                            Total <span class="original-price" th:text="${totalsuccess} +' $'"></span>
+                            Total <span class="original-price" th:text="'$'+${totalsuccess}"></span>
                         </div>
                     </div>
 

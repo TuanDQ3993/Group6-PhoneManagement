@@ -119,8 +119,10 @@ public class OrderServiceImp implements OrderService {
             }
 
             //tìm theo tên
-            if (find != null && !find.isEmpty()) {
-                filteredOrders = filteredOrders.stream().filter(order -> find.trim().toLowerCase().equals(order.getUsername().toLowerCase()))
+            if (find != null && !find.trim().isEmpty()) {
+                String searchTerm = find.trim().toLowerCase();
+                filteredOrders = filteredOrders.stream()
+                        .filter(order -> order.getUsername().toLowerCase().contains(searchTerm))
                         .collect(Collectors.toList());
             }
 
@@ -167,8 +169,10 @@ public class OrderServiceImp implements OrderService {
             }
 
             //tìm theo tên
-            if (find != null && !find.isEmpty()) {
-                filteredOrders = filteredOrders.stream().filter(order -> find.equals(order.getUsername().toLowerCase()))
+            if (find != null && !find.trim().isEmpty()) {
+                String searchTerm = find.trim().toLowerCase();
+                filteredOrders = filteredOrders.stream()
+                        .filter(order -> order.getUsername().toLowerCase().contains(searchTerm))
                         .collect(Collectors.toList());
             }
 
