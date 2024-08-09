@@ -180,6 +180,10 @@ public class ProductServiceImp implements ProductService {
             Products products = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("product not exist"));
             Category category = categoryRepository.findById(request.getCategory()).orElseThrow(() -> new RuntimeException("Category not exist"));
             if(request.getWarrantyPeriod()<=0) throw new IllegalArgumentException("WarrantyPeriod cannot be negative");
+            boolean result=productRepository.findAll().stream().anyMatch(pro -> pro.getProductName().equals(request.getProductName()));
+            if(result && !products.getProductName().equals(request.getProductName())){
+                throw new IllegalArgumentException("Product Name already exist");
+            }
             products.setProductName(request.getProductName());
             products.setCategory(category);
             products.setDescription(request.getDescription());
@@ -378,6 +382,20 @@ public class ProductServiceImp implements ProductService {
             productInfo.setDeleted(false);
         } else productInfo.setDeleted(true);
         productColorRepository.save(productInfo);
+        ProductViewRequest productViewRequest=getProduct(productInfo.getProducts().getProductId());
+        List<Integer> proInfoId=productViewRequest.getQuantity();
+        List<Boolean> deleted=productViewRequest.getIsDeleted();
+        int total=0;
+        if(proInfoId==null || deleted==null){
+            total=0;
+        }
+        for(int i=0; i<proInfoId.size();i++){
+            if(deleted.get(i)){
+                total+=proInfoId.get(i);
+            }
+        }
+        updateQuantityProduct(productInfo.getProducts().getProductId(),total);
+
     }
 
     @Override
