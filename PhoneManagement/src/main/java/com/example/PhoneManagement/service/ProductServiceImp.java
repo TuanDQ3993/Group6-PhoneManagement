@@ -26,9 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,8 +45,10 @@ public class ProductServiceImp implements ProductService {
         int total = 0;
         Products product = new Products();
         boolean result = productRepository.findAll().stream().anyMatch(p -> p.getProductName().equals(productDTO.getProductName()));
-        if (result) return;
-        if (productDTO.getWarrantyPeriod() < 0) return;
+        if (result) throw new IllegalArgumentException("Product Name already existed");
+        ;
+        if (productDTO.getWarrantyPeriod() < 0) throw new IllegalArgumentException("WarrantyPeriod cannot be negative");
+        ;
         product.setProductName(productDTO.getProductName());
         product.setDescription(productDTO.getDescription());
 
@@ -65,6 +65,10 @@ public class ProductServiceImp implements ProductService {
         }
 
         for (ProductColorDTO colorDTO : productDTO.getColors()) {
+            String contentType = colorDTO.getImage().getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                throw new IllegalArgumentException("Could not create upload directory");
+            }
             Path uploadDir = Paths.get("uploads/");
 
             if (!Files.exists(uploadDir)) {
@@ -85,12 +89,12 @@ public class ProductServiceImp implements ProductService {
                         Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                     }
 
-                    fileImage = "/uploads/" + fileName.toLowerCase();
+                    fileImage = fileName.toLowerCase();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if (colorDTO.getQuantity() < 0) return;
+            if (colorDTO.getQuantity() <= 0) throw new IllegalArgumentException("Quantity cannot be negative");
 
             ProductInfo productInfo = new ProductInfo();
             Colors color = new Colors();
@@ -103,6 +107,7 @@ public class ProductServiceImp implements ProductService {
                 e.printStackTrace();
                 return;
             }
+            if (gia.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Price cannot be negative");
             productInfo.setPrice(gia);
             productInfo.setImage(fileImage);
             productInfo.setQuantity(colorDTO.getQuantity());
@@ -173,12 +178,16 @@ public class ProductServiceImp implements ProductService {
         try {
             Products products = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("product not exist"));
             Category category = categoryRepository.findById(request.getCategory()).orElseThrow(() -> new RuntimeException("Category not exist"));
+            if (request.getWarrantyPeriod() <= 0)
+                throw new IllegalArgumentException("WarrantyPeriod cannot be negative");
             products.setProductName(request.getProductName());
             products.setCategory(category);
             products.setDescription(request.getDescription());
             products.setWarrantyPeriod(request.getWarrantyPeriod());
             products.setBrandName(request.getBrandName());
             productRepository.save(products);
+        } catch (IllegalArgumentException ex) {
+            throw ex;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -221,9 +230,10 @@ public class ProductServiceImp implements ProductService {
             Colors color = colorRepository.findById(request.getColorId()).orElseThrow(() -> new RuntimeException("Color not exist"));
             List<Colors> colors = findColorByProductId(productId);
             for (Colors c : colors) {
-                if (c.getColorId() == request.getColorId()) return;
+                if (c.getColorId() == request.getColorId())
+                    throw new IllegalArgumentException("Color already exists for the product");
             }
-            if (request.getQuantity() < 0) return;
+            if (request.getQuantity() < 0) throw new IllegalArgumentException("Quantity cannot be negative");
             productInfo.setProducts(products);
             productInfo.setColors(color);
             productInfo.setImage(request.getImage());
@@ -232,6 +242,8 @@ public class ProductServiceImp implements ProductService {
             productInfo.setLastUpdated(new Date());
 
             productColorRepository.save(productInfo);
+        } catch (IllegalArgumentException ex) {
+            throw ex;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -311,6 +323,14 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
+    public void updateQuantityProduct(int prodId, int quantity) {
+        Products products = productRepository.findById(prodId).orElseThrow(() -> new RuntimeException("product not exist"));
+        products.setQuantity(quantity);
+        productRepository.save(products);
+    }
+
+
+    @Override
     public List<ProductDTO> findAllProduct() {
         return productRepository.findAll()
                 .stream()
@@ -349,7 +369,7 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public ProductInfo getProductInfoById(int productColorId) {
-        return productColorRepository.findById(productColorId).orElse(null);
+        return productColorRepository.findByProductcolorIdAndIsDeletedTrue(productColorId).orElse(null);
     }
 
     @Override
@@ -364,6 +384,19 @@ public class ProductServiceImp implements ProductService {
             productInfo.setDeleted(false);
         } else productInfo.setDeleted(true);
         productColorRepository.save(productInfo);
+        ProductViewRequest productViewRequest = getProduct(productInfo.getProducts().getProductId());
+        List<Integer> proInfoId = productViewRequest.getQuantity();
+        List<Boolean> deleted = productViewRequest.getIsDeleted();
+        int total = 0;
+        if (proInfoId == null || deleted == null) {
+            total = 0;
+        }
+        for (int i = 0; i < proInfoId.size(); i++) {
+            if (deleted.get(i)) {
+                total += proInfoId.get(i);
+            }
+        }
+        updateQuantityProduct(productInfo.getProducts().getProductId(), total);
     }
 
     @Override
@@ -374,5 +407,144 @@ public class ProductServiceImp implements ProductService {
             color.add(pro.getColors());
         }
         return color;
+    }
+
+
+    @Override
+    public List<String> getAllBrand() {
+        return productRepository.getAllBrand();
+    }
+
+    @Override
+    public List<ProductShop> getProductShops() {
+        List<Object[]> results = productRepository.getAllProductShop();
+        List<ProductShop> shop = new ArrayList<>();
+        for (Object[] result : results) {
+            ProductShop productShop = new ProductShop();
+            productShop.setId(((Number) result[0]).intValue());
+            productShop.setProductName((String) result[1]);
+            productShop.setPrice(BigDecimal.valueOf(((Number) result[2]).doubleValue()));
+            productShop.setImage((String) result[3]);
+            productShop.setCategory_id(((Number) result[4]).intValue());
+            productShop.setDescription((String) result[5]);
+            productShop.setColor_id(((Number) result[6]).intValue());
+            productShop.setQuantity(((Number) result[7]).intValue());
+            shop.add(productShop);
+        }
+        return shop;
+    }
+
+    @Override
+    public Page<ProductShop> findPaginated(PageableDTO pageable, Integer categoryId, String brandName, String productName, String minprice, String maxprice) {
+        try {
+            int pageSize = pageable.getPageSize();
+            int currentPage = pageable.getPageNumber();
+            String sort = pageable.getSort();
+
+            List<ProductShop> productShops;
+            System.out.println("categoryId:" + categoryId);
+            System.out.println("brandName:" + brandName);
+            System.out.println("min: " + minprice);
+            System.out.println("max: " + maxprice);
+            System.out.println("sort: " + sort);
+
+            if (categoryId > 0 && !brandName.isEmpty()) {
+                productShops = findProductsByCategoryIdAndBrandAndPrice(categoryId, brandName, minprice, maxprice);
+            } else if (categoryId > 0) {
+                productShops = findProductShopByCategoryId(categoryId, minprice, maxprice);
+            } else if (!brandName.isEmpty()) {
+                productShops = findProductShopByBrand(brandName, minprice, maxprice);
+            } else if (productName != null && !productName.isEmpty()) {
+                productShops = findProductShopByProductName(productName);
+            } else if (!maxprice.isEmpty() && !minprice.isEmpty()) {
+                productShops = findProductShopByPrice(minprice, maxprice);
+            } else {
+                productShops = getProductShops();
+            }
+
+            if (sort != null && !sort.isEmpty()) {
+                switch (sort) {
+                    case "price_asc":
+                        productShops.sort(Comparator.comparing(ProductShop::getPrice));
+                        break;
+                    case "price_desc":
+                        productShops.sort(Comparator.comparing(ProductShop::getPrice).reversed());
+                        break;
+
+                }
+            }
+
+            int totalItems = productShops.size();
+            int startItem = currentPage * pageSize;
+
+            List<ProductShop> paginatedList;
+            if (startItem >= totalItems) {
+                paginatedList = Collections.emptyList();
+            } else {
+                int toIndex = Math.min(startItem + pageSize, totalItems);
+                paginatedList = productShops.subList(startItem, toIndex);
+            }
+
+            return new PageImpl<>(paginatedList, PageRequest.of(currentPage, pageSize), totalItems);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    @Override
+    public List<ProductShop> findProductShopByCategoryId(int categoryId, String minprice, String maxprice) {
+        List<Object[]> results = productRepository.findProductsByCategoryId(categoryId, minprice, maxprice);
+        return mapResultsToProductShops(results);
+    }
+
+
+    @Override
+    public List<ProductShop> findProductShopByBrand(String brandName, String minprice, String maxprice) {
+        List<Object[]> results = productRepository.findProductsByBrandName(brandName, minprice, maxprice);
+        return mapResultsToProductShops(results);
+    }
+
+    @Override
+    public List<ProductShop> findProductShopByCategoryIdAndBrand(int categoryId, String brandName) {
+        List<Object[]> results = productRepository.findProductsByCategoryIdAndBrand(categoryId, brandName);
+        return mapResultsToProductShops(results);
+    }
+
+    @Override
+    public List<ProductShop> findProductShopByProductName(String productName) {
+        List<Object[]> results = productRepository.findProductShopByProductName(productName);
+        return mapResultsToProductShops(results);
+    }
+
+    @Override
+    public List<ProductShop> findProductsByCategoryIdAndBrandAndPrice(int categoryId, String brandName, String minprice, String maxprice) {
+        List<Object[]> results = productRepository.findProductsByCategoryIdAndBrandAndPrice(categoryId, brandName, minprice, maxprice);
+        return mapResultsToProductShops(results);
+
+    }
+
+    @Override
+    public List<ProductShop> findProductShopByPrice(String minprice, String maxprice) {
+        List<Object[]> results = productRepository.findProductsByPrice(minprice, maxprice);
+        return mapResultsToProductShops(results);
+    }
+
+    private List<ProductShop> mapResultsToProductShops(List<Object[]> results) {
+        List<ProductShop> shops = new ArrayList<>();
+        for (Object[] result : results) {
+            ProductShop productShop = new ProductShop();
+            productShop.setId(((Number) result[0]).intValue());
+            productShop.setProductName((String) result[1]);
+            productShop.setPrice(BigDecimal.valueOf(((Number) result[2]).doubleValue()));
+            productShop.setImage((String) result[3]);
+            productShop.setCategory_id(((Number) result[4]).intValue());
+            productShop.setDescription((String) result[5]);
+            productShop.setColor_id(((Number) result[6]).intValue());
+            productShop.setQuantity(((Number) result[7]).intValue());
+            shops.add(productShop);
+        }
+        return shops;
     }
 }

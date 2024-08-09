@@ -407,10 +407,10 @@
 
 <script type="text/javascript">
     function confirmAction(event, link) {
-        if (!confirm("Bạn có chắc chắn muốn thực hiện hành động này?")) {
-            event.preventDefault(); // Ngăn không cho liên kết mặc định nếu người dùng chọn "Cancel"
+        if (!confirm("Are you sure?")) {
+            event.preventDefault();
         } else {
-            window.location.assign(link.getAttribute('href')); // Chuyển hướng đến URL nếu xác nhận
+            window.location.assign(link.getAttribute('href'));
         }
     }
 </script>

@@ -83,7 +83,7 @@ public class LoginController {
             Users user = loginService.findByUserName(request.getUsername());
 
             if (!user.isActive()) {
-                model.addAttribute("error", "Your account is inactive.Login other account!");
+                model.addAttribute("error", "Your account is inactive!");
                 return "login";
             }
 

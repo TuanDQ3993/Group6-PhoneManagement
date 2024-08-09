@@ -34,140 +34,34 @@
     <script th:src="@{https://oss.maxcdn.com/respond/1.4.2/respond.min.js}"></script>
     <![endif]-->
     <style>
-        .orderdetail:hover{
+        .orderdetail:hover {
             color: #0a0a0a;
         }
     </style>
 </head>
 <body>
 <!-- HEADER -->
-<header>
-    <!-- TOP HEADER -->
-    <div id="top-header">
-        <div class="container">
-            <ul class="header-links pull-left">
-                <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
-                <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
-                <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
-            </ul>
-            <ul class="header-links pull-right">
-                <li><a href="auth/login"><i class="fa fa-user-o"></i> My Account</a></li>
-            </ul>
-        </div>
-    </div>
-    <!-- /TOP HEADER -->
-
-    <!-- MAIN HEADER -->
-    <div id="header">
-        <!-- container -->
-        <div class="container">
-            <!-- row -->
-            <div class="row">
-                <!-- LOGO -->
-                <div class="col-md-3">
-                    <div class="header-logo">
-                        <a href="#" class="logo">
-                            <img src="/build1/img/logo.png" alt="">
-                        </a>
-                    </div>
-                </div>
-                <!-- /LOGO -->
-
-                <!-- SEARCH BAR -->
-                <div class="col-md-6">
-                    <div class="header-search">
-                        <form>
-                            <input class="input" placeholder="Search here">
-                            <button class="search-btn">Search</button>
-                        </form>
-                    </div>
-                </div>
-                <!-- /SEARCH BAR -->
-
-                <!-- ACCOUNT -->
-                <div class="col-md-3 clearfix">
-                    <div class="header-ctn">
-                        <!-- Cart -->
-                        <div class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                                <i class="fa fa-shopping-cart"></i>
-                                <span>Your Cart</span>
-                                <div class="qty">3</div>
-                            </a>
-                            <div class="cart-dropdown">
-                                <div class="cart-list">
-                                    <div class="product-widget">
-                                        <div class="product-img">
-                                            <img src="/build1/img/product01.png" alt="">
-                                        </div>
-                                        <div class="product-body">
-                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                                            <h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
-                                        </div>
-                                        <button class="delete"><i class="fa fa-close"></i></button>
-                                    </div>
-
-                                    <div class="product-widget">
-                                        <div class="product-img">
-                                            <img src="/build1/img/product02.png" alt="">
-                                        </div>
-                                        <div class="product-body">
-                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                                            <h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
-                                        </div>
-                                        <button class="delete"><i class="fa fa-close"></i></button>
-                                    </div>
-                                </div>
-                                <div class="cart-summary">
-                                    <small>3 Item(s) selected</small>
-                                    <h5>SUBTOTAL: $2940.00</h5>
-                                </div>
-                                <div class="cart-btns">
-                                    <a href="#">View Cart</a>
-                                    <a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /Cart -->
-
-                        <!-- Menu Toogle -->
-                        <div class="menu-toggle">
-                            <a href="#">
-                                <i class="fa fa-bars"></i>
-                                <span>Menu</span>
-                            </a>
-                        </div>
-                        <!-- /Menu Toogle -->
-                    </div>
-                </div>
-                <!-- /ACCOUNT -->
-            </div>
-            <!-- row -->
-        </div>
-        <!-- container -->
-    </div>
-    <!-- /MAIN HEADER -->
-</header>
+<div th:include="header.html"></div>
 <!-- /HEADER -->
 
-<!-- NAVIGATION -->
-<nav id="navigation">
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
     <!-- container -->
     <div class="container">
-        <!-- responsive-nav -->
-        <div id="responsive-nav">
-            <!-- NAV -->
-            <ul class="main-nav nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">Shop</a></li>
-            </ul>
-            <!-- /NAV -->
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="breadcrumb-header">My Order</h3>
+                <ul class="breadcrumb-tree">
+                    <li><a href="/home/homepage">Home</a></li>
+                    <li class="active">My Order</li>
+                </ul>
+            </div>
         </div>
-        <!-- /responsive-nav -->
     </div>
     <!-- /container -->
-</nav>
-<!-- /NAVIGATION -->
+</div>
+<!-- /BREADCRUMB -->
 
 <!-- SECTION -->
 <div class="section">
@@ -175,92 +69,109 @@
     <div class="container">
         <!-- row -->
         <div class="row">
-            <form th:action="@{/home/order}" method="get" style="display: flex; justify-content: space-evenly; align-items: center; margin-bottom: 20px;">
+            <form th:action="@{/home/order}" method="get"
+                  style="display: flex; justify-content: space-evenly; align-items: center; margin-bottom: 20px;">
                 <input type="text" name="search" placeholder="Search..." th:value="${searchQuery}"
                        style="padding: 10px; width: 25%; border: 1px solid #ccc; border-radius: 4px;">
 
                 <select name="status" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                     <option value="all" th:selected="${status == 'all'}">All Statuses</option>
                     <option value="Completed" th:selected="${status == 'Completed'}">Completed</option>
-                    <option value="Confirm and Shipping" th:selected="${status == 'Confirm and Shipping'}">Confirm and Shipping</option>
+                    <option value="Confirm and Shipping" th:selected="${status == 'Confirm and Shipping'}">Confirm and
+                        Shipping
+                    </option>
                     <option value="Canceled" th:selected="${status == 'Cancelled'}">Cancelled</option>
-                    <option value="Pending Confirm" th:selected="${status == 'Pending Confirm'}">Pending Comfirm</option>
+                    <option value="Pending Confirm" th:selected="${status == 'Pending Confirmation'}">Pending
+                        Confirmation
+                    </option>
                     <option value="Prepay" th:selected="${status == 'Prepay'}">Prepay</option>
                 </select>
 
-                <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                <button type="submit"
+                        style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
                     Search
                 </button>
             </form>
             <div th:each="entry, iterStat : ${groupedOrders}" style="margin-bottom: 20px;">
                 <a class="orderdetail" th:href="@{/home/order/{order}(order=${entry.value[0][0]})}">
-                    <div style="font-family: Arial, sans-serif; width: 80%; margin: auto; border: 1px solid #eee; padding: 20px;">
+                    <div style="font-family: Arial, sans-serif; width: 80%; margin: auto; border: 1px solid #0a0a0a; padding: 20px;">
                         <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-                            <p style="margin: 0;">Date <span th:text="${entry.value[0][7] != null ? entry.value[0][7] : '₫0'}"></span></p>
+                            <p style="margin: 0;">Date <span
+                                    th:text="${entry.value[0][7] != null ? entry.value[0][7] : '₫0'}"></span></p>
                             <p style="margin: 0;font-size: 18px;"><span th:text="${entry.value[0][9]}"></span></p>
                         </div>
                         <!-- Display date only for the first item in each order group -->
                         <div style="margin-top: 20px;">
                             <!-- Iterate over products in the current order -->
-                            <div th:each="order : ${entry.value}" style="display: flex; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                            <div th:each="order : ${entry.value}"
+                                 style="display: flex; border-bottom: 1px solid #eee; padding-bottom: 15px;">
                                 <!-- Check if image URL is present -->
-                                <img th:src="@{/uploads/{image}(image=${order[3]})}" alt="Product Image" style="width: 100px; height: 100px; margin-right: 20px;"
+                                <img th:src="@{/uploads/{image}(image=${order[3]})}" alt="Product Image"
+                                     style="width: 100px; height: 100px; margin-right: 20px;"
                                      th:if="${order[3] != null}">
                                 <div>
                                     <!-- Display product details safely -->
-                                    <p style="margin: 0; font-size: 16px;" th:text="${order[1] != null ? order[1] : 'Product Name'}"></p>
-                                    <p style="margin: 5px 0;" th:text="'Phân loại hàng: ' + (${order[8] != null ? order[8] : 'Unknown'})"></p>
-                                    <p style="margin: 5px 0;" th:text="'x' + (${order[6] != null ? order[6] : '0'})"></p>
+                                    <p style="margin: 0; font-size: 16px;"
+                                       th:text="${order[1] != null ? order[1] : 'Product Name'}"></p>
+                                    <p style="margin: 5px 0;"
+                                       th:text="'Phân loại hàng: ' + (${order[8] != null ? order[8] : 'Unknown'})"></p>
+                                    <p style="margin: 5px 0;"
+                                       th:text="'x' + (${order[6] != null ? order[6] : '0'})"></p>
                                 </div>
                                 <div style="margin-left: auto; text-align: right;">
                                     <!-- Display the price, ensuring default value if null -->
-                                    <p style="margin: 5px 0;" th:text="(${order[4] != null ? order[4] : 0} * ${order[6] != null ? order[6] : 0})+'$'"></p>
+                                    <p style="margin: 5px 0;"
+                                       th:text="('$' +${order[4] != null ? order[4] : 0} * ${order[6] != null ? order[6] : 0})"></p>
                                 </div>
+
                             </div>
                         </div>
 
                         <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-                            <form th:if="${entry.value[0][9]}== 'Pending Confirm'" method="post" th:action="@{/home/order}">
+                            <form th:if="${entry.value[0][9]}== 'Pending Confirmation'" method="post"
+                                  th:action="@{/home/order}">
                                 <input th:value="${entry.value[0][0]}" type="hidden" name="orderId">
-                                <button type="submit" style="padding: 8px 20px;">Reject</button>
+                                <button type="submit" style="padding: 8px 20px;">Cancelled</button>
                             </form>
 
                             <!-- Display the total amount, ensuring default value if null -->
-                            <p style="margin: 0; margin-left: auto;">Total Amount: <span style="color: red; font-size: 24px;" th:text="${entry.value[0][5] != null ? entry.value[0][5] : '₫0'}"></span></p>
+                            <p style="margin: 0; margin-left: auto;">Total Amount: <span
+                                    style="color: red; font-size: 24px;"
+                                    th:text="'$' + ${entry.value[0][5] != null ? entry.value[0][5] : '₫0'}"></span></p>
                         </div>
                     </div>
                 </a>
             </div>
-<!--            <div class="d-flex" style="justify-content: space-between;">-->
-<!--                <form method="get" th:action="@{/home/order}" style="float: right; margin-bottom: 14px;">-->
-<!--                    <div class="form-group">-->
-<!--                        <label for="size" style="font-weight: bold;">Products per page:</label>-->
-<!--                        <select id="size" name="size" class="form-control" style="padding: 5px;" onchange="this.form.submit()">-->
-<!--                            <option value="1" th:selected="${size == 1}">1</option>-->
-<!--                            <option value="2" th:selected="${size == 2}">2</option>-->
-<!--                            <option value="3" th:selected="${size == 3}">3</option>-->
-<!--                        </select>-->
-<!--                    </div>-->
-<!--                    <input type="hidden" name="page" th:value="${page}" />-->
-<!--                    <input type="hidden" name="status" th:value="${status}" />-->
-<!--                    <input type="hidden" name="search" th:value="${searchQuery}" />-->
-<!--                </form>-->
+            <!--            <div class="d-flex" style="justify-content: space-between;">-->
+            <!--                <form method="get" th:action="@{/home/order}" style="float: right; margin-bottom: 14px;">-->
+            <!--                    <div class="form-group">-->
+            <!--                        <label for="size" style="font-weight: bold;">Products per page:</label>-->
+            <!--                        <select id="size" name="size" class="form-control" style="padding: 5px;" onchange="this.form.submit()">-->
+            <!--                            <option value="1" th:selected="${size == 1}">1</option>-->
+            <!--                            <option value="2" th:selected="${size == 2}">2</option>-->
+            <!--                            <option value="3" th:selected="${size == 3}">3</option>-->
+            <!--                        </select>-->
+            <!--                    </div>-->
+            <!--                    <input type="hidden" name="page" th:value="${page}" />-->
+            <!--                    <input type="hidden" name="status" th:value="${status}" />-->
+            <!--                    <input type="hidden" name="search" th:value="${searchQuery}" />-->
+            <!--                </form>-->
 
-<!--                <ul class="pagination">-->
-<!--                    <li th:if="${orders.hasPrevious()}" class="page-item">-->
-<!--                        <a th:href="@{|/home/order?page=${orders.number - 1}&size=${size}&status=${status}&search=${searchQuery}|}" class="page-link">Previous</a>-->
-<!--                    </li>-->
-<!--                    <li th:each="pageNum : ${#numbers.sequence(0, orders.totalPages - 1)}" class="page-item"-->
-<!--                        th:classappend="${pageNum == orders.number} ? 'active' : ''">-->
-<!--                        <a th:href="@{|/home/order?page=${pageNum}&size=${size}&status=${status}&search=${searchQuery}|}" class="page-link" th:text="${pageNum + 1}"></a>-->
-<!--                    </li>-->
-<!--                    <li th:if="${orders.hasNext()}" class="page-item">-->
-<!--                        <a th:href="@{|/home/order?page=${orders.number + 1}&size=${size}&status=${status}&search=${searchQuery}|}" class="page-link">Next</a>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </div>-->
-        <!-- /row -->
-    </div>
+            <!--                <ul class="pagination">-->
+            <!--                    <li th:if="${orders.hasPrevious()}" class="page-item">-->
+            <!--                        <a th:href="@{|/home/order?page=${orders.number - 1}&size=${size}&status=${status}&search=${searchQuery}|}" class="page-link">Previous</a>-->
+            <!--                    </li>-->
+            <!--                    <li th:each="pageNum : ${#numbers.sequence(0, orders.totalPages - 1)}" class="page-item"-->
+            <!--                        th:classappend="${pageNum == orders.number} ? 'active' : ''">-->
+            <!--                        <a th:href="@{|/home/order?page=${pageNum}&size=${size}&status=${status}&search=${searchQuery}|}" class="page-link" th:text="${pageNum + 1}"></a>-->
+            <!--                    </li>-->
+            <!--                    <li th:if="${orders.hasNext()}" class="page-item">-->
+            <!--                        <a th:href="@{|/home/order?page=${orders.number + 1}&size=${size}&status=${status}&search=${searchQuery}|}" class="page-link">Next</a>-->
+            <!--                    </li>-->
+            <!--                </ul>-->
+            <!--            </div>-->
+            <!-- /row -->
+        </div>
     </div>
     <!-- /container -->
 </div>
@@ -276,7 +187,8 @@
                 <div class="col-md-3 col-xs-6">
                     <div class="footer">
                         <h3 class="footer-title">About Us</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
+                            ut.</p>
                         <ul class="footer-links">
                             <li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
                             <li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
@@ -348,7 +260,9 @@
                     </ul>
                     <span class="copyright">
 								<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-								Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+								Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i
+                            class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com"
+                                                                                target="_blank">Colorlib</a>
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 							</span>
                 </div>

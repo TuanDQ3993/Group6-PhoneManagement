@@ -2,6 +2,7 @@ package com.example.PhoneManagement.controller;
 
 import com.example.PhoneManagement.dto.request.UserDTO;
 import com.example.PhoneManagement.entity.Category;
+import com.example.PhoneManagement.entity.ProductInfo;
 import com.example.PhoneManagement.entity.Products;
 import com.example.PhoneManagement.repository.CategoryRepository;
 import com.example.PhoneManagement.service.UserServiceImp;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequestMapping("/home")
 @Controller
@@ -37,7 +39,7 @@ public class HomepageController {
     public String homepage(@RequestParam(value = "categoryId", required = false) Integer categoryId,
                            @RequestParam(value = "categoryIdTS", required = false) Integer categoryIdTS,
                            Model model, Principal principal, HttpSession session) {
-        List<Category> categories = categoryService.findAllCategory();
+        List<Category> categories = categoryService.getAllCategoryActive();
         List<Products> products;
         List<Products> productTS;
 
@@ -53,23 +55,13 @@ public class HomepageController {
             productTS = productService.getTopSellingProduct();
         }
 
-        //get user
-        if (principal != null) {
-            String userName = principal.getName();
-            Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
-            userDTO.ifPresent(user -> model.addAttribute("user", user));
+        for (Products product : products) {
+            product.setProductInfoList(
+                    product.getProductInfoList().stream()
+                            .filter(ProductInfo::isDeleted)
+                            .collect(Collectors.toList())
+            );
         }
-
-        Cart cart = (Cart) session.getAttribute("cart");
-        if (cart != null) {
-            model.addAttribute("cart", cart);
-            model.addAttribute("size", cart.getItems().size());
-            model.addAttribute("total", cart.getTotalPrice());
-        } else {
-            model.addAttribute("size", 0);
-            model.addAttribute("total", 0.0);
-        }
-
 
         model.addAttribute("productTS", productTS);
         model.addAttribute("products", products);

@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ProductColorRepository extends JpaRepository<ProductInfo, Integer> {
     @Query("SELECT p FROM Products p WHERE p.category.categoryId = :categoryId ORDER BY p.createdAt DESC")
@@ -17,4 +19,7 @@ public interface ProductColorRepository extends JpaRepository<ProductInfo, Integ
 
     @Query("SELECT p.quantity FROM productinfo p Where p.productcolorId= :productcolorId")
     int getQuantityProduct(@Param("productcolorId") int productcolorId);
+
+    @Query("SELECT p FROM productinfo p WHERE p.productcolorId = :productcolorId AND p.isDeleted = true")
+    Optional<ProductInfo> findByProductcolorIdAndIsDeletedTrue(@Param("productcolorId") int productcolorId);
 }
