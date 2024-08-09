@@ -12,4 +12,5 @@ public interface CartService {
     int getSaleMinOrder();
 
     int getQuantityProduct(int id);
+
 }
