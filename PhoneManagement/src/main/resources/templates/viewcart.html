@@ -149,9 +149,7 @@
 
                                     </div>
                                 </div>
-                                <div th:if="${errorquantity}">
-                                    <p th:text="${errorquantity}" class="text-danger"></p>
-                                </div>
+
                             </td>
                             <td class="cart__price original-price " th:text="${item.quantity*item.price}"></td>
                             <td><a th:href="@{/cart/remove(productColorId=${item.productColor.productcolorId})}"
@@ -167,6 +165,9 @@
                         <div class="continue__btn">
                             <a href="/home/shop">Continue Shopping</a>
                         </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6" th:if="${errorquantity}">
+                        <h5 th:text="${errorquantity}" class="text-danger"></h5>
                     </div>
 
                 </div>
