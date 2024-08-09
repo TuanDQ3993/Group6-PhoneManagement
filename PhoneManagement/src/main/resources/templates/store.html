@@ -315,9 +315,9 @@
 					<th:block th:if="${productShops.totalPages > 0}">
 						<ul class="pagination mb-0">
 							<li class="page-item"
-								th:classappend="${productShops.hasPrevious()} ? '': 'disabled'">
+								th:classappend="${productShops.hasPrevious()} ? '' : 'disabled'">
 								<a class="page-link"
-								   th:href="@{/home/shop(page=${productShops.number}, size=${size1})}"
+								   th:href="${productShops.hasPrevious()} ? @{/home/shop(categoryId=${selectedCategoryId}, brand=${selectedBrand}, minprice=${minprice}, maxprice=${maxprice},page=${productShops.number}, size=${size1}, sort=${selectedSort})} : '#' "
 								   aria-label="Previous">
 									<span aria-hidden="true">&laquo;</span>
 								</a>
@@ -330,9 +330,9 @@
 								   th:text="${i}"></a>
 							</li>
 							<li class="page-item"
-								th:classappend="${productShops.hasNext()} ? '': 'disabled'">
+								th:classappend="${productShops.hasNext()} ? '' : 'disabled'">
 								<a class="page-link"
-								   th:href="@{/home/shop(page=${productShops.number +2 }, size=${size1})}"
+								   th:href="${productShops.hasNext()} ? @{/home/shop(categoryId=${selectedCategoryId}, brand=${selectedBrand}, minprice=${minprice}, maxprice=${maxprice},page=${productShops.number + 2}, size=${size1}, sort=${selectedSort})} : '#' "
 								   aria-label="Next">
 									<span aria-hidden="true">&raquo;</span>
 								</a>
