@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.List;
@@ -116,6 +117,11 @@ public class CartController {
                     redirectAttributes.addFlashAttribute("errorquantity","The quantity of products in stock is not enough");
                     return "redirect:/cart/viewcart";
                 }
+                if(!cartService.getProductInfoById(i.getProductColor().getProductcolorId()).isDeleted()){
+                    redirectAttributes.addFlashAttribute("errorquantity","This product is no longer available.");
+                    return "redirect:/cart/viewcart";
+                }
+
             }
 
             model.addAttribute("cart", cart);
@@ -170,12 +176,18 @@ public class CartController {
             cart = new Cart();
             session.setAttribute("cart", cart);
         }
+        if(!cartService.getProductInfoById(id).isDeleted()){
+            redirectAttributes.addFlashAttribute("errorquantity","This product is no longer available.");
+            System.out.println(cart.getItemById(id).getProductColor().isDeleted());
+            return "redirect:/cart/viewcart";
+
+        }
         if (num == -1 && cart.getItemById(id).getQuantity() <= 1) {
             cart.removeItem(id);
         } else {
             if(num==1){
                 int quantity=cartService.getQuantityProduct(id);
-                if(cart.getItemById(id).getQuantity()>quantity){
+                if(cart.getItemById(id).getQuantity()>=quantity){
                     redirectAttributes.addFlashAttribute("errorquantity","The quantity of products in stock is not enough");
                     return "redirect:/cart/viewcart";
                 }
@@ -203,14 +215,18 @@ public class CartController {
                              RedirectAttributes redirectAttributes) {
 
         Cart cart = (Cart) session.getAttribute("cart");
-        if ("COD".equals(payment)) {
-            for(Item i : cart.getItems()){
-                int quantity=cartService.getQuantityProduct(i.getProductColor().getProductcolorId());
-                if(quantity < i.getQuantity()){
-                    redirectAttributes.addFlashAttribute("errorquantity","The quantity of products in stock is not enough");
-                    return "redirect:/cart/viewcart";
-                }
+        for(Item i : cart.getItems()){
+            int quantity=cartService.getQuantityProduct(i.getProductColor().getProductcolorId());
+            if(quantity < i.getQuantity()){
+                redirectAttributes.addFlashAttribute("errorquantity","The quantity of products in stock is not enough");
+                return "redirect:/cart/viewcart";
             }
+            if(!cartService.getProductInfoById(i.getProductColor().getProductcolorId()).isDeleted()){
+                redirectAttributes.addFlashAttribute("errorquantity","This product is no longer available.");
+                return "redirect:/cart/viewcart";
+            }
+        }
+        if ("COD".equals(payment)) {
             String userName = principal.getName();
             Users users = userService.getUserByName(userName);
             cartService.addOrder(users, cart, fullname, address, tel, note, payment,"Pending Confirmation");
@@ -251,8 +267,8 @@ public class CartController {
                 "https://img.vietqr.io/image/%s-%s-%s?amount=%d&addInfo=%s&accountName=%s",
                 bankId, accountNo, template,
                 amount,
-                java.net.URLEncoder.encode(description, StandardCharsets.UTF_8),
-                java.net.URLEncoder.encode(accountName, StandardCharsets.UTF_8)
+                URLEncoder.encode(description, StandardCharsets.UTF_8),
+                URLEncoder.encode(accountName, StandardCharsets.UTF_8)
         );
         model.addAttribute("cart", cart);
         model.addAttribute("size", cart.getItems().size());
@@ -277,6 +293,10 @@ public class CartController {
             int quantity=cartService.getQuantityProduct(i.getProductColor().getProductcolorId());
             if(quantity < i.getQuantity()){
                 redirectAttributes.addFlashAttribute("errorquantity","The quantity of products in stock is not enough");
+                return "redirect:/cart/viewcart";
+            }
+            if(!cartService.getProductInfoById(i.getProductColor().getProductcolorId()).isDeleted()){
+                redirectAttributes.addFlashAttribute("errorquantity","This product is no longer available.");
                 return "redirect:/cart/viewcart";
             }
         }

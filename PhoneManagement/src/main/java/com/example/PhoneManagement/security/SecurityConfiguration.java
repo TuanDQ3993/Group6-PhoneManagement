@@ -17,6 +17,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 @EnableWebSecurity
@@ -64,7 +65,7 @@ public class SecurityConfiguration {
     public AuthenticationEntryPoint customAuthenticationEntryPoint() {
         return (request, response, authException) -> {
             String errorMessage = "Your session has expired or you are not authorized!";
-            response.sendRedirect(request.getContextPath() + "/auth/login?error=" + URLEncoder.encode(errorMessage, "UTF-8"));
+            response.sendRedirect(request.getContextPath() + "/auth/login?error=" + URLEncoder.encode(errorMessage, StandardCharsets.UTF_8));
         };
     }
 

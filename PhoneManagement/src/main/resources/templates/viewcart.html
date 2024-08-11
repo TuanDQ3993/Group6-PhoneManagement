@@ -139,19 +139,23 @@
                             <td class="quantity__item">
                                 <div class="quantity">
                                     <div>
-                                        <button style="border: none; border-radius: 12px;background-color: white"><a th:href="@{/cart/process(num=-1,id=${item.productColor.productcolorId})}" style="color: black"><</a></button>
+                                        <button style="border: none; border-radius: 12px;background-color: white"><a
+                                                th:href="@{/cart/process(num=-1,id=${item.productColor.productcolorId})}"
+                                                style="color: black"><</a></button>
                                         &emsp;<span class="qty" th:text="${item.quantity}"></span>&emsp;
-                                        <button style="border: none; border-radius: 12px;background-color: white"><a th:href="@{/cart/process(num=1,id=${item.productColor.productcolorId})}" style="color: black">></a></button>
+                                        <button style="border: none; border-radius: 12px;background-color: white"><a
+                                                th:href="@{/cart/process(num=1,id=${item.productColor.productcolorId})}"
+                                                style="color: black">></a></button>
 
                                     </div>
                                 </div>
-                                <div th:if="${errorquantity}">
-                                    <p th:text="${errorquantity}" class="text-danger"></p>
-                                </div>
+
                             </td>
-                            <td class="cart__price original-price " th:text="'$'+${item.quantity*item.price}"></td>
-                            <td><a th:href="@{/cart/remove(productColorId=${item.productColor.productcolorId})}" class="cart__close"><i class="fa fa-close"></i></a></td>
+                            <td class="cart__price original-price " th:text="${item.quantity*item.price}"></td>
+                            <td><a th:href="@{/cart/remove(productColorId=${item.productColor.productcolorId})}"
+                                   class="cart__close"><i class="fa fa-close"></i></a></td>
                         </tr>
+
 
                         </tbody>
                     </table>
@@ -162,6 +166,9 @@
                             <a href="/home/shop">Continue Shopping</a>
                         </div>
                     </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6" th:if="${errorquantity}">
+                        <h5 th:text="${errorquantity}" class="text-danger"></h5>
+                    </div>
 
                 </div>
             </div>
@@ -171,8 +178,8 @@
 
                     <h6>Cart total</h6>
                     <ul>
-                        <li>Subtotal <span th:text="'$'+${total}" class="original-price"></span></li>
-                        <li>Total <span th:text="'$'+${total}" class="original-price"></span></li>
+                        <li>Subtotal <span th:text="${total}" class="original-price"></span></li>
+                        <li>Total <span th:text="${total}" class="original-price"></span></li>
                     </ul>
                     <a href="checkout" class="primary-btn">Proceed to checkout</a>
                 </div>
