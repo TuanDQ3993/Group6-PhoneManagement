@@ -61,7 +61,7 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             nativeQuery = true)
     int getSaleMinOrder();
 
-    @Query(value = "SELECT o1.orderId, p2.productName, c1.colorName, p1.image, p1.price, o1.totalAmount, o2.quantity, o1.orderDate, c2.categoryName, o1.status " +
+    @Query(value = "SELECT o1.orderId, p2.productName, c1.colorName, p1.image, p1.price, o1.totalAmount, o2.quantity, o1.orderDate, c2.categoryName, o1.status, p2.warrantyPeriod " +
             "FROM Orders o1 " +
             "JOIN orderdetail o2 ON o1.orderId = o2.order.orderId " +
             "JOIN productinfo p1 ON o2.productInfo.productcolorId = p1.productcolorId " +
