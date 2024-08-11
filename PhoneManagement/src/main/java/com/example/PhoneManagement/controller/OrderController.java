@@ -1,7 +1,5 @@
 package com.example.PhoneManagement.controller;
 
-import com.example.PhoneManagement.dto.request.OrderInfoDTO;
-import com.example.PhoneManagement.dto.request.PageableDTO;
 import com.example.PhoneManagement.dto.request.UserDTO;
 import com.example.PhoneManagement.dto.request.WarrantyDTO;
 import com.example.PhoneManagement.entity.OrderDetail;
@@ -20,8 +18,6 @@ import lombok.experimental.FieldDefaults;
 import java.time.ZoneId;
 import java.util.*;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +28,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 @RequiredArgsConstructor
@@ -70,47 +65,55 @@ public class OrderController {
         Map<Integer, List<Object[]>> groupedOrders = orders.stream()
                 .collect(Collectors.groupingBy(order -> (Integer) order[0], LinkedHashMap::new, Collectors.toList()));
 
-
         List<Object[]> ordersPage = orderService.getOrdersByUserIdWithFilters(userDTO.get(), status, searchQuery);
 
         Map<String, String> warrantyStatuses = new HashMap<>();
-        Map<String, String> warrantyNote = new HashMap<>();
+        Map<String, String> warrantyNoteFromTechnical = new HashMap<>();
+        Map<String, String> warrantyNoteFromCustomer = new HashMap<>();
         Map<String, Date> warrantyDate = new HashMap<>();
         Map<String, Date> dateRepair = new HashMap<>();
         for (Object[] order : ordersPage) {
             Integer orderId = (Integer) order[0];
-            Date orderDate = (Date) order[7];      // orderDate
-            Integer warrantyPeriod = (Integer) order[10]; // warrantyPeriod
-            String productName = (String) order[1];
-
-
-            LocalDate createdAtDate = orderDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            LocalDate warrantyExpiryDate = createdAtDate.plusMonths(warrantyPeriod);
-            boolean isWarrantyExpired = LocalDate.now().isAfter(warrantyExpiryDate);
-
-            List<WarrantyRepair> warrantyRepairs = warrantyServiceImp.getByOrder(orderId);
-            String warrantyStatus = null;
-            String noteFromTechnical = null;
-            Date dateWarranty = null;
-            Date dateWarrantyRepair = null;
-
-            for (WarrantyRepair repair : warrantyRepairs) {
-                if (repair.getProductName().equals(productName)) {
-                    warrantyStatus = repair.getStatus();
-                    noteFromTechnical = repair.getNoteTechnical();
-                    dateWarranty = repair.getDate_completed();
-                    dateWarrantyRepair = repair.getRepairDate();
+            String productName = (String)  order[1];
+            Date orderDate = null;
+            Integer warrantyPeriod = null;
+            if (order.length > 7) {
+                orderDate = (Date) order[7]; // orderDate
+            }
+            if (order.length > 10) {
+                warrantyPeriod = (Integer) order[10]; // warrantyPeriod
+            }
+            if (orderDate != null && warrantyPeriod != null) {
+                LocalDate createdAtDate = orderDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate warrantyExpiryDate = createdAtDate.plusMonths(warrantyPeriod);
+                boolean isWarrantyExpired = LocalDate.now().isAfter(warrantyExpiryDate);
+                List<WarrantyRepair> warrantyRepairs = warrantyServiceImp.getByOrder(orderId);
+                String warrantyStatus = null;
+                String noteFromTechnical = null;
+                Date dateWarranty = null;
+                Date dateWarrantyRepair = null;
+                String noteFromCustomer = null;
+                for (WarrantyRepair repair : warrantyRepairs) {
+                    if (repair.getProductName().equals(productName)) {
+                        warrantyStatus = repair.getStatus();
+                        noteFromTechnical = repair.getNoteTechnical();
+                        noteFromCustomer = repair.getIssueDescription();
+                        dateWarranty = repair.getDate_completed();
+                        dateWarrantyRepair = repair.getRepairDate();
+                    }
                 }
+                warrantyStatuses.put(orderId + "_" + productName, warrantyStatus);
+                warrantyNoteFromTechnical.put(orderId + "_" + productName, noteFromTechnical);
+                warrantyNoteFromCustomer.put(orderId + "_" + productName, noteFromCustomer);
+                warrantyDate.put(orderId + "_" + productName, dateWarranty);
+                dateRepair.put(orderId + "_" + productName, dateWarrantyRepair);
+
+                model.addAttribute("warrantyExpiryDate", warrantyExpiryDate);
+                model.addAttribute("isWarrantyExpired", isWarrantyExpired);
             }
 
-            warrantyStatuses.put(orderId + "_" + productName, warrantyStatus);
-            warrantyNote.put(orderId + "_" + productName, noteFromTechnical);
-            warrantyDate.put(orderId + "_" + productName, dateWarranty);
             model.addAttribute("orderId", orderId);
             model.addAttribute("productName", productName);
-            model.addAttribute("warrantyExpiryDate", warrantyExpiryDate);
-            model.addAttribute("isWarrantyExpired", isWarrantyExpired);
-
         }
 
         model.addAttribute("warrantyDTO", new WarrantyDTO());
@@ -122,11 +125,14 @@ public class OrderController {
         model.addAttribute("groupedOrders", groupedOrders);
         model.addAttribute("orders", orders);
         model.addAttribute("warrantyStatuses", warrantyStatuses);
-        model.addAttribute("noteFromTechnical", warrantyNote);
+        model.addAttribute("noteFromTechnical", warrantyNoteFromTechnical);
+        model.addAttribute("noteFromCustomer", warrantyNoteFromCustomer);
         model.addAttribute("dateWarranty", warrantyDate);
         model.addAttribute("dateRepair", dateRepair);
+
         return "orderlist";
     }
+
 
     @GetMapping("/order/{orderId}")
     public String getOrderDetail(@PathVariable("orderId") int orderId, Model model) {
@@ -164,6 +170,7 @@ public class OrderController {
         Orders order = ordersOptional.get();
         List<OrderDetail> orderDetails = order.getOrderDetails();
 
+        // Tìm kiếm sản phẩm liên quan trong đơn hàng
         OrderDetail relevantOrderDetail = orderDetails.stream()
                 .filter(od -> od.getProductInfo().getProducts().getProductName().equals(productName))
                 .findFirst()
@@ -174,19 +181,14 @@ public class OrderController {
             return "orderlist";
         }
 
-
-        List<WarrantyRepair> existingRepairs = warrantyServiceImp.getByOrder(orderId);
-        for (WarrantyRepair repair : existingRepairs) {
-            if (repair.getStatus().equals("Warranty Completed")) {
-                repair.setStatus("Warranty Pending");
-                warrantyServiceImp.save(repair);
-            }
-        }
-
         int technicalId = warrantyServiceImp.getTechnicalMinOrder();
         Users technical = userService.getUserById(technicalId);
         warrantyServiceImp.createWarrantyRepair(warrantyDTO, order, users, technical, productName);
 
+
+        redirectAttributes.addFlashAttribute("success", "Warranty repair created successfully.");
         return "redirect:/home/order";
     }
+
+
 }
