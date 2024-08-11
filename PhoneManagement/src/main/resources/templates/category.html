@@ -81,7 +81,7 @@
                                 <div class="col-md-12">
                                     <button style="font-size: 17px; padding: 5px 20px; border: none; background: #cdc9c9" id="openAddModalBtn">Add </button>
                                     <form th:action="@{/admin/category/importCate}" method="post" enctype="multipart/form-data">
-                                        <input type="file" name="file" required>
+                                        <input type="file" name="file" accept=".xlsx"  required>
                                         <button type="submit">Import</button>
                                     </form>
                                     <div class="x_panel">
