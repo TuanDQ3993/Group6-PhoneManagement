@@ -129,10 +129,11 @@
             <div id="errorModal" class="modal">
                 <div class="modal-content">
                     <span class="close" id="closeErrorModalBtn">&times;</span>
-                    <h5>Error</h5>
-                    <div id="errorMessage" class="alert alert-danger" role="alert"></div>
+                    <h5 id="errorModalTitle">Error</h5> <!-- This will dynamically change to "Success" if needed -->
+                    <div id="errorMessage" class="alert alert-danger" role="alert"></div> <!-- alert-danger will change to alert-success if needed -->
                 </div>
             </div>
+
             <div class="row mb-3" style="    margin-left: 2px;">
                 <div class="col-md-12">
                     <div class="d-flex justify-content-between align-items-center">
@@ -292,22 +293,40 @@
                                     errorModal.style.display = "none";
                                 }
 
-                                function showErrorModal(message) {
-                                    document.getElementById("errorMessage").innerText = message;
-                                    errorModal.style.display = "block";
-                                }
 
                                 var errors = [
-                                    /*[[${phoneExistsError}]]*/,
-                                    /*[[${emailExistsError}]]*/,
-
+                                    /*[[${phoneExistsError != null ? phoneExistsError : ''}]]*/,
+                                    /*[[${emailExistsError != null ? emailExistsError : ''}]]*/,
+                                    /*[[${success != null ? success : ''}]]*/,
+                                    /*[[${successExcel != null ? successExcel : ''}]]*/,
+                                    /*[[${error != null ? error : ''}]]*/,
                                 ];
 
                                 errors.forEach(function (error) {
-                                    if (error !== 'null' && error.trim() !== '') {
+                                    if (error !== '' && error.trim() !== '') {
                                         showErrorModal(error);
                                     }
                                 });
+
+                                function showErrorModal(message) {
+                                    document.getElementById("errorMessage").innerText = message;
+                                    var errorModal = document.getElementById("errorModal");
+
+                                    // Check if it's a success message or an error message and adjust the modal accordingly
+                                    if (message.toLowerCase().includes("success")) {
+                                        document.getElementById("errorModalTitle").innerText = "Success";
+                                        document.getElementById("errorMessage").classList.remove("alert-danger");
+                                        document.getElementById("errorMessage").classList.add("alert-success");
+                                    } else {
+                                        document.getElementById("errorModalTitle").innerText = "Error";
+                                        document.getElementById("errorMessage").classList.remove("alert-success");
+                                        document.getElementById("errorMessage").classList.add("alert-danger");
+                                    }
+
+                                    errorModal.style.display = "block";
+                                }
+
+
 
                                 /*]]>*/
                             </script>
