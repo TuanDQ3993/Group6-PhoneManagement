@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,11 +62,7 @@ public class WarrantyServiceImp implements WarrantyService {
         return warrantyRepairRepository.findAllByStatus(status, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()), technicalId);
     }
 
-    // In ra theo yeu cau (technical)
-    @Override
-    public Page<WarrantyRepair> findAllByProductNameAndStatusAndDateByTecnical(PageDTO pageDTO, String status, int technicalId, Date date, String query) {
-        return warrantyRepairRepository.findAllByProductNameOrUserAndStatusAndRepairDateOrderByTechnical(query, date, status, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()), technicalId);
-    }
+
 
     // Xoa don
     @Override
@@ -168,28 +165,6 @@ public class WarrantyServiceImp implements WarrantyService {
                 repair.setStatus(status);
 
 
-                Orders order = repair.getOrder();
-                if (order != null) {
-                    int orderId = repair.getOrder().getOrderId();
-                    switch (status) {
-                        case "Completed":
-                            orderServiceImp.changeStatusOrder(orderId, "Warranty Completed");
-                            break;
-                        case "Rejected":
-                            orderServiceImp.changeStatusOrder(orderId, "Warranty Rejected");
-                            break;
-                        case "Pending":
-                            orderServiceImp.changeStatusOrder(orderId, "Warranty Pending");
-                            break;
-                        case "In Process":
-                            orderServiceImp.changeStatusOrder(orderId, "Warranty In Process");
-                            break;
-                        default:
-                            orderServiceImp.changeStatusOrder(orderId, "Error");
-                            break;
-                    }
-                }
-
                 warrantyRepairRepository.save(repair);
 //            } else {
 //                throw new IllegalArgumentException("The status is already set to " + status);
@@ -212,11 +187,6 @@ public class WarrantyServiceImp implements WarrantyService {
                 repair.setStatus("In Process");
 
                 // Cập nhật trạng thái của Orders tương ứng
-                Orders order = repair.getOrder(); // Lấy order từ repair
-                if (order != null) {
-                    int orderId = order.getOrderId();
-                    orderServiceImp.changeStatusOrder(orderId, "Warranty In Process");
-                }
                 warrantyRepairRepository.save(repair);
             } else {
                 throw new IllegalArgumentException("Only pending warranties can be accepted.");
@@ -236,12 +206,6 @@ public class WarrantyServiceImp implements WarrantyService {
             if (repair.getStatus().equals("Warranty Pending")) {
                 repair.setStatus("Reject");
 
-                // Cập nhật trạng thái của Orders tương ứng
-                Orders order = repair.getOrder(); // Lấy order từ repair
-                if (order != null) {
-                    int orderId = order.getOrderId();
-                    orderServiceImp.changeStatusOrder(orderId, "Warranty Reject");
-                }
                 warrantyRepairRepository.save(repair);
             } else {
                 throw new IllegalArgumentException("Only pending warranties can be accepted.");
@@ -267,8 +231,8 @@ public class WarrantyServiceImp implements WarrantyService {
     public WarrantyRepair createWarrantyRepair(WarrantyDTO warrantyDTO, Orders order, Users user, Users technical, String productName) {
         WarrantyRepair newWarrantyRepair = new WarrantyRepair();
         newWarrantyRepair.setIssueDescription(warrantyDTO.getIssueDescription());
-        newWarrantyRepair.setQuantity(warrantyDTO.getQuantity());
         newWarrantyRepair.setRepairDate(new Date());
+        newWarrantyRepair.setDate_completed(new Date());
         newWarrantyRepair.setStatus("Warranty Pending");
         newWarrantyRepair.setDeleted(false);
         newWarrantyRepair.setUser(user);
@@ -287,7 +251,69 @@ public class WarrantyServiceImp implements WarrantyService {
     }
 
     @Override
-    public List<WarrantyRepair> getByOrder(int oderId, String statusName) {
-        return  warrantyRepairRepository.findByOrderAndProduct(oderId, statusName);
+    public List<WarrantyRepair> getByOrder(int oderId) {
+        return  warrantyRepairRepository.findByOrderAndProduct(oderId);
     }
+
+
+    @Override
+    // Cập nhật status đơn
+    public void changeStatusAndSaveNote(int id, String status,String note) {
+        Optional<WarrantyRepair> optionalRepair = warrantyRepairRepository.findById(id);
+        if (optionalRepair.isPresent()) {
+            WarrantyRepair repair = optionalRepair.get();
+            if (!repair.getStatus().equals(status)) {
+                repair.setStatus(status);
+                repair.setNoteTechnical(note);
+                repair.setDate_completed(new Date());
+
+
+                warrantyRepairRepository.save(repair);
+//            } else {
+//                throw new IllegalArgumentException("The status is already set to " + status);
+//            }
+//        } else {
+//            throw new NoSuchElementException("WarrantyRepair with id " + id + " not found");
+//        }
+            }
+        }
+    }
+    @Override
+    public Page<WarrantyRepair> findAllByProductNameAndStatusAndDateByTechnical(String productName, String status, Date repairDate, int technicalId, PageDTO pageDTO) {
+        return warrantyRepairRepository.findAllByProductNameAndStatusAndDateByTechnical(productName, status, repairDate, technicalId, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+    }
+
+    @Override
+    public Page<WarrantyRepair> findAllByProductNameAndRepairDateByTechnical(String productName, Date repairDate, int technicalId, PageDTO pageDTO) {
+        return warrantyRepairRepository.findAllByProductNameAndRepairDateByTechnical(productName, repairDate, technicalId, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+    }
+
+    @Override
+    public Page<WarrantyRepair> findAllByStatusAndRepairDateByTechnical(String status, Date repairDate, int technicalId, PageDTO pageDTO) {
+        return warrantyRepairRepository.findAllByStatusAndRepairDateByTechnical(status, repairDate, technicalId, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+    }
+
+    @Override
+    public Page<WarrantyRepair> findAllByProductNameAndStatusByTechnical(String productName, String status, int technicalId, PageDTO pageDTO) {
+        return warrantyRepairRepository.findAllByProductNameAndStatusByTechnical(productName, status, technicalId, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+    }
+    @Override
+    public Page<WarrantyRepair> findAllByProductNameAndStatusAndDateByAdmin(String productName, String status, Date repairDate, PageDTO pageDTO) {
+        return warrantyRepairRepository.findAllByProductNameOrUserAndStatusAndRepairDate(productName, repairDate,status, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+    }
+    @Override
+    public Page<WarrantyRepair> findAllByProductNameAndRepairDateByAdmin(String productName, Date repairDate, PageDTO pageDTO) {
+        return warrantyRepairRepository.findAllByProductNameAndRepairDateByAdmin(productName, repairDate, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+    }
+
+    @Override
+    public Page<WarrantyRepair> findAllByStatusAndRepairDateByAdmin(String status, Date repairDate, PageDTO pageDTO) {
+        return warrantyRepairRepository.findAllByStatusAndRepairDateByAdmin(status, repairDate, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+    }
+
+    @Override
+    public Page<WarrantyRepair> findAllByProductNameAndStatusByAdmin(String productName, String status, PageDTO pageDTO) {
+        return warrantyRepairRepository.findAllByProductNameAndStatusByAdmin(productName, status, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+    }
+
 }

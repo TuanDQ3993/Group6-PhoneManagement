@@ -64,10 +64,6 @@
             cursor: pointer;
         }
 
-        .error {
-            color: red;
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -182,33 +178,26 @@
     <div class="container">
         <div class="row">
             <form th:action="@{/home/order}" method="get"
-                  style="display: flex; justify-content: space-evenly; align-items: center; margin-bottom: 20px;">
+                  style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px;">
                 <input type="text" name="search" placeholder="Search..." th:value="${searchQuery}"
                        style="padding: 10px; width: 25%; border: 1px solid #ccc; border-radius: 4px;">
-
-                <select name="status" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <select name="status" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 25%;">
                     <option value="all" th:selected="${status == 'all'}">All Statuses</option>
                     <option value="Completed" th:selected="${status == 'Completed'}">Completed</option>
-                    <option value="Confirm and Shipping" th:selected="${status == 'Confirm and Shipping'}">Confirm and
-                        Shipping
-                    </option>
+                    <option value="Confirm and Shipping" th:selected="${status == 'Confirm and Shipping'}">Confirm and Shipping</option>
                     <option value="Canceled" th:selected="${status == 'Cancelled'}">Cancelled</option>
-                    <option value="Pending Confirm" th:selected="${status == 'Pending Confirm'}">Pending Confirm
-                    </option>
+                    <option value="Pending Confirm" th:selected="${status == 'Pending Confirm'}">Pending Confirm</option>
                     <option value="Prepay" th:selected="${status == 'Prepay'}">Prepay</option>
                 </select>
-
                 <button type="submit"
                         style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
                     Search
                 </button>
+                <button type="button" class="btn btn-primary btn-xs"
+                        style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;"
+                        id="openModalBtn2"><i class="fa fa-refresh"></i> Warranty
+                </button>
             </form>
-
-            <button type="button" class="btn btn-primary btn-xs"
-                    style="height: 40px; margin-left: 116px;margin-bottom: 15px;margin-top: 20px;"
-                    id="openModalBtn2">
-                <i class="fa fa-refresh"></i> List product can warranty
-            </button>
             <div th:each="entry, iterStat : ${groupedOrders}" style="margin-bottom: 20px;">
                 <a class="orderdetail" th:href="@{/home/order/{order}(order=${entry.value[0][0]})}">
                     <div style="font-family: Arial, sans-serif; width: 80%; margin: auto; border: 1px solid #eee; padding: 20px;">
@@ -217,7 +206,6 @@
                                     th:text="${entry.value[0][7] != null ? entry.value[0][7] : '₫0'}"></span></p>
                             <p style="margin: 0;font-size: 18px;"><span th:text="${entry.value[0][9]}"></span></p>
                         </div>
-
                         <div style="margin-top: 20px;">
                             <div th:each="order : ${entry.value}"
                                  style="display: flex; border-bottom: 1px solid #eee; padding-bottom: 15px;">
@@ -225,19 +213,19 @@
                                      style="width: 100px; height: 100px; margin-right: 20px;"
                                      th:if="${order[3] != null}">
                                 <div>
-                                    <input type="hidden" name="orderIdStatus" th:value="${order[0]}">
                                     <p style="margin: 0; font-size: 16px;"
                                        th:text="${order[1] != null ? order[1] : 'Product Name'}"></p>
                                     <p style="margin: 5px 0;"
                                        th:text="'Category: ' + (${order[8] != null ? order[8] : 'Unknown'})"></p>
                                     <p style="margin: 5px 0;"
                                        th:text="'x' + (${order[6] != null ? order[6] : '0'})"></p>
-                                    <p style="color: red" th:if="${!isWarrantyExpiredMap[order[0] + '_' + order[1]]}"
-                                       th:text="'Warranty period to: ' + ${warrantyExpiryDates[order[0] + '_' + order[1]]}"></p>
-                                    <p style="color: blue" th:if="${isWarrantyExpiredMap[order[0] + '_' + order[1]]}"
-                                       th:text="'Warranty period was ended at: ' + ${warrantyExpiryDates[order[0] + '_' + order[1]]}"></p>
-                                    <p style="color: green"
-                                       th:text="${warrantyStatuses[order[0] + '_' + order[1]]}"></p>
+                                    <p style="color: red"
+                                       th:if="${isWarrantyExpired == false}"
+                                       th:text="'Warranty period to: '+ ${warrantyExpiryDate}"></p>
+                                    <p style="color: blue"
+                                       th:if="${isWarrantyExpired == true}"
+                                       th:text="'Warranty period was ended at: '+ ${warrantyExpiryDate}"></p>
+
                                 </div>
                                 <div style="margin-left: auto; text-align: right;">
                                     <p style="margin: 5px 0;"
@@ -264,38 +252,33 @@
     </div>
 </div>
 
+
 <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close" id="closeModalBtn">&times;</span>
         <h5>Enter Information</h5>
         <form id="warrantyForm" th:action="@{/home/createWarrantyRepair}" th:object="${warrantyDTO}" method="post"
               style="border: 1px solid #ccc; padding: 20px; border-radius: 10px;">
-            <input type="hidden" id="selectedProductId" name="selectedProductId" />
+            <input type="hidden" id="selectedProductId" name="selectedProductId"/>
+            <input type="hidden" id="orderId" name="orderId"/>
+            <input type="hidden" id="productName" name="productName"/>
             <label for="image" style="display: block; margin-top: 10px;">Image:</label>
             <input type="file" id="image" th:field="*{image}"
                    style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
+                   accept=".png, .jpg, .jpeg"
                    required/>
+            <img id="preview" src="#" alt="Your Image" style="display:none; margin-top: 10px; max-width: 100%; border-radius: 5px;" />
+
             <label for="description" style="display: block; margin-top: 10px;">Issues Description:</label>
             <textarea type="text" id="description" th:field="*{issueDescription}"
                       style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px; resize: vertical;"
                       required></textarea>
-
-            <!-- Thẻ input ẩn để truyền orderId -->
-            <input type="hidden" name="orderId" th:value="${orderId}">
-            <input type="hidden" name="productName" th:value="${productName}">
-            <label for="quantity" style="display: block; margin-top: 10px;">Quantity:</label>
-            <input type="number" id="quantity" th:field="*{quantity}"
-                   th:attr="max=${maxQuantity}" data-max-quantity="${maxQuantity}"
-                   style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
-                   required/>
-            <div id="quantityError" class="error">Invalid quantity</div>
 
             <button type="submit"
                     style="display: block; margin-top: 20px; background-color: #008CBA; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
                 Save
             </button>
         </form>
-
     </div>
 </div>
 
@@ -307,18 +290,44 @@
         <div id="productList">
             <form id="productSelectionForm">
                 <div th:each="entry : ${groupedOrders}">
-                    <div th:if="${entry.value[0][9] == 'Completed'} and ${isWarrantyExpiredMap[order[0] + '_' + order[1]] == false} or ${entry.value[0][9] == 'Warranty Reject'} or ${entry.value[0][9] == 'Warranty Completed'} "
-                         th:each="order : ${entry.value}" style="display: flex; align-items: center; margin-bottom: 10px;">
-                        <input type="radio" name="productId" th:value="${order[0]}" />
-                        <img th:src="@{/uploads/{image}(image=${order[3]})}" alt="Product Image" style="width: 50px; height: 50px; margin-left: 10px; margin-right: 10px;" th:if="${order[3] != null}">
-                        <div>
-                            <label th:text="${order[1]}" style="font-weight: bold;"></label>
-                            <p th:text="'Price: $' + ${order[4]}"></p>
-                            <p th:text="'Warranty period to: ' + ${warrantyExpiryDates[order[0] + '_' + order[1]]}"></p>
+                    <div th:each="order : ${entry.value}">
+                        <div th:with="orderId=${order[0]}, productName=${order[1]}, combinedId=${orderId + '_' + productName}"
+                             th:if="${entry.value[0][9] == 'Completed' and !isWarrantyExpired
+                              }"
+                             style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <input th:if="${{warrantyStatuses[order[0] + '_' + order[1]]}} == 'Warranty Completed' or ${{warrantyStatuses[order[0] + '_' + order[1]]}} == null"
+                                   type="radio" name="productId" th:value="${combinedId}"
+                                   th:data-quantity="${order[6]}"/>
+
+                            <!-- Placeholder if the radio button is not present -->
+                            <span th:unless="${{warrantyStatuses[order[0] + '_' + order[1]]}} == 'Warranty Completed' or ${{warrantyStatuses[order[0] + '_' + order[1]]}} == null"
+                                  style="width: 16px; display: inline-block;"></span>
+
+                            <img th:src="@{/uploads/{image}(image=${order[3]})}" alt="Product Image"
+                                 style="width: 50px; height: 50px; margin-left: 10px; margin-right: 10px;"
+                                 th:if="${order[3] != null}">
+                            <div>
+                                <label th:text="${productName}" style="font-weight: bold;"></label>
+                                <p th:text="'Price: $' + ${order[4]}"></p>
+                                <p th:if="${warrantyQuantity != null}"
+                                   th:text="'Remaining Warranty Quantity: ' + ${warrantyQuantity}"></p>
+                                <p th:text="'Warranty period to: ' + ${warrantyExpiryDate}"></p>
+                                <p style="color: purple"
+                                   th:if="${isWarrantyExpired == false} and ${warrantyStatuses[order[0] + '_' + order[1]]} != null"
+                                   th:text="'Status: '+ ${warrantyStatuses[order[0] + '_' + order[1]]} + ' at: ' + ${#dates.format(dateWarranty[order[0] + '_' + order[1]], 'yyyy-MM-dd, HH:mm')}">
+                                </p>
+
+                                <p style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f9f9f9; color: red; text-decoration:initial;"
+                                   th:if="${noteFromTechnical[order[0] + '_' + order[1]]} != null"
+                                   th:text="'Note from technical: ' + ${noteFromTechnical[order[0] + '_' + order[1]]}">
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <button type="submit" style="margin-top: 20px;">Submit</button>
+                <button type="submit"
+                        style="display: block; margin-top: 20px; background-color: #008CBA; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;"
+                >Submit</button>
             </form>
         </div>
     </div>
@@ -483,30 +492,55 @@
     });
 
     // Xử lý sự kiện submit của form chọn sản phẩm
-    document.getElementById("productSelectionForm").onsubmit = function(event) {
+    document.getElementById("productSelectionForm").onsubmit = function (event) {
         event.preventDefault(); // Ngăn chặn hành động submit mặc định
         var selectedProductElement = document.querySelector('input[name="productId"]:checked');
         if (selectedProductElement) {
             var selectedProductId = selectedProductElement.value;
+            var selectedProductKey = selectedProductId.split('_');
+            var orderId = selectedProductKey[0];
+            var productName = selectedProductKey[1];
+
             document.getElementById("selectedProductId").value = selectedProductId;
+            document.getElementById("orderId").value = orderId;
+            document.getElementById("productName").value = productName;
+
             productWarrantyModal.style.display = "none";
             modal.style.display = "block";
         }
     }
 
-    document.getElementById("warrantyForm").onsubmit = function(event) {
+    // Kiểm tra giá trị số lượng nhập vào
+    document.getElementById("warrantyForm").onsubmit = function (event) {
         var quantityInput = document.getElementById("quantity");
         var quantityValue = parseInt(quantityInput.value);
-        var maxQuantity = parseInt(quantityInput.getAttribute('data-max-quantity'));
-        var errorElement = document.getElementById("quantityError");
+        var maxQuantity = parseInt(quantityInput.getAttribute('max'));
 
         if (quantityValue <= 0 || quantityValue > maxQuantity) {
             event.preventDefault(); // Ngăn chặn hành động submit
-            errorElement.style.display = "block";
-        } else {
-            errorElement.style.display = "none";
+            alert("Quantity must be greater than 0");
         }
     }
+    document.getElementById('image').addEventListener('change', function() {
+        var file = this.files[0];
+        if (file) {
+            var fileType = file.type;
+            var validImageTypes = ["image/jpeg", "image/png"];
+            if (!validImageTypes.includes(fileType)) {
+                alert("Please upload an image file (jpg or png).");
+                this.value = ''; // Xóa tệp đã chọn
+                document.getElementById('preview').style.display = 'none'; // Ẩn ảnh xem trước nếu không hợp lệ
+            } else {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var previewImage = document.getElementById('preview');
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    });
 
 </script>
 

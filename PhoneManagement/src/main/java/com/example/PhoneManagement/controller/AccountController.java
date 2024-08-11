@@ -134,7 +134,6 @@ public class AccountController {
             // Không có tìm kiếm hay lọc, hiển thị tất cả
             userPage = accountServiceImp.findPaginated(pageDTO);
         }
-
         model.addAttribute("userPage", userPage);
         model.addAttribute("query", query);
         model.addAttribute("role", role);
@@ -148,6 +147,7 @@ public class AccountController {
                 model.addAttribute("pageNumbers", pageNumbers);
             }
         }
+        model.containsAttribute("errorMessages");
         model.addAttribute("size", pageSize);
         model.addAttribute("userForm", new Users());
         model.addAttribute("rolesFilter", roleServiceImp.getAllRoles());
@@ -155,16 +155,6 @@ public class AccountController {
 
     @PostMapping("/saveAccount")
     public String saveAccount(@ModelAttribute("userForm") Users user, Model model, Authentication authentication) {
-
-
-        if (!accountServiceImp.isValidEmail((user.getUsername()))) {
-            model.addAttribute("invalidEmailError", "Email invalid. Try again.");
-        }
-
-        if (!accountServiceImp.isValidPhoneNumber(user.getPhoneNumber())) {
-            model.addAttribute("invalidPhoneError", "Phone number invalid. Try again.");
-        }
-
 
         if (accountServiceImp.isPhoneExist(user.getPhoneNumber())) {
             model.addAttribute("phoneExistsError", "Phone number was exist. Try again.");
@@ -174,8 +164,7 @@ public class AccountController {
             model.addAttribute("emailExistsError", "Email was exist. Try again.");
         }
 
-        if (model.containsAttribute("invalidEmailError") || model.containsAttribute("invalidPhoneError") ||
-                model.containsAttribute("phoneExistsError") || model.containsAttribute("emailExistsError")) {
+        if (model.containsAttribute("phoneExistsError") || model.containsAttribute("emailExistsError")) {
             Users currentUser = (Users) authentication.getPrincipal();
             addUserPageAttributes(model, 0, 5, "", null, currentUser.getUserId());
             return "accountlist";
@@ -188,15 +177,23 @@ public class AccountController {
         return "redirect:/admin/users";
     }
 
-    @PostMapping("/import-excel")
-    public String importExcel(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/importUsers")
+    public String importExcel(@RequestParam("file") MultipartFile file, Model model) {
+        if (file.isEmpty()) {
+            model.addAttribute("errorMessage", "No file selected. Please upload an Excel file.");
+            return "redirect:/admin/users";
+        }
+
         try {
-            List<Users> usersList = accountExcelImportController.importUsersFromExcel(file.getInputStream());
-            accountServiceImp.saveAll(usersList);
+            List<Users> usersList = accountExcelImportController.importUsersFromExcel(file.getInputStream(), model);
+            if (!usersList.isEmpty()) {
+                accountServiceImp.saveAll(usersList);
+            }
         } catch (IOException e) {
             e.printStackTrace();
-
+            model.addAttribute("errorMessage", "Error processing the file. Please try again.");
         }
+
         return "redirect:/admin/users";
     }
 

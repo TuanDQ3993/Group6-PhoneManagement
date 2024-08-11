@@ -14,7 +14,6 @@ import lombok.experimental.FieldDefaults;
 public class WarrantyDTO {
     private WarrantyRepair existingWarrantyRepair;
     private String issueDescription;
-    private int quantity;
     private int orderId;
     private String image;
 }
