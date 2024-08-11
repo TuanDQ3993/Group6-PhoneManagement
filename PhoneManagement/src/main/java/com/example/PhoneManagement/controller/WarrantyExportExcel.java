@@ -35,11 +35,12 @@ public class WarrantyExportExcel {
 
         createCell(row, 0, "Customer Name", style);
         createCell(row, 1, "Product Name", style);
-        createCell(row, 2, "Image", style);
-        createCell(row, 3, "Issues", style);
-        createCell(row, 4, "Status", style);
-        createCell(row, 5, "Repair Date", style);
-        createCell(row, 6, "Technical Name", style);
+        createCell(row, 2, "Issues", style);
+        createCell(row, 3, "Status", style);
+        createCell(row, 4, "Repair Date", style);
+        createCell(row, 5, "Date Complete", style);
+        createCell(row, 6, "Note to customer", style);
+        createCell(row, 7, "Technical Name", style);
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -71,61 +72,15 @@ public class WarrantyExportExcel {
             // Assuming getUser().getUserName() retrieves the customer name
             createCell(row, columnCount++, warrantyRepair.getUser().getFullName(), style);
             createCell(row, columnCount++, warrantyRepair.getProductName(), style);
-            addImageToCell(row, columnCount++, warrantyRepair.getImage());
             createCell(row, columnCount++, warrantyRepair.getIssueDescription(), style);
             createCell(row, columnCount++, warrantyRepair.getStatus(), style);
             createCell(row, columnCount++, warrantyRepair.getRepairDate(), style);
+            createCell(row, columnCount++, warrantyRepair.getDate_completed(), style);
+            createCell(row, columnCount++, warrantyRepair.getNoteTechnical(), style);
             createCell(row, columnCount++, warrantyRepair.getTechnical().getFullName(), style);
         }
     }
 
-    private void addImageToCell(Row row, int columnCount, String imageName) throws IOException {
-        int fixedWidthInPixels = 200; // Chiều rộng cố định của ảnh
-        int fixedHeightInPoints = 200; // Chiều cao cố định của ảnh
-
-        sheet.setColumnWidth(columnCount, (int) (fixedWidthInPixels / 8.43 * 256)); // Đặt chiều rộng cột
-        row.setHeightInPoints(fixedHeightInPoints * 0.75f); // Đặt chiều cao hàng
-
-        int pictureIdx;
-
-        // Đường dẫn đến tệp ảnh
-        String imagePath = "C:/Users/Admin/Downloads/Group6-PhoneManagement-main/PhoneManagement/uploads/" + imageName;
-
-        // Tải ảnh từ hệ thống tệp
-        byte[] bytes;
-        try (FileInputStream inputStream = new FileInputStream(imagePath)) {
-            bytes = IOUtils.toByteArray(inputStream);
-            pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        Drawing<?> drawing = sheet.createDrawingPatriarch();
-        CreationHelper helper = workbook.getCreationHelper();
-
-        // Tính toán vị trí neo
-        ClientAnchor anchor = helper.createClientAnchor();
-        anchor.setCol1(columnCount);
-        anchor.setRow1(row.getRowNum());
-        anchor.setCol2(columnCount + 1);
-        anchor.setRow2(row.getRowNum() + 1);
-
-        // Tạo ảnh và điều chỉnh kích thước để vừa với kích thước cố định của ô
-        Picture picture = drawing.createPicture(anchor, pictureIdx);
-        picture.resize();
-
-        // Điều chỉnh lại tỷ lệ để ảnh có kích thước cố định
-        double imageWidthInPixels = picture.getImageDimension().getWidth();
-        double imageHeightInPixels = picture.getImageDimension().getHeight();
-
-        double widthRatio = fixedWidthInPixels / imageWidthInPixels;
-        double heightRatio = (fixedHeightInPoints * 0.75) / imageHeightInPixels; // 0.75 là hệ số chuyển đổi từ điểm sang pixel
-
-        double resizeRatio = Math.min(widthRatio, heightRatio);
-
-        picture.resize(resizeRatio);
-    }
 
     public void export(HttpServletResponse response) throws IOException {
         writeHeaderLine();

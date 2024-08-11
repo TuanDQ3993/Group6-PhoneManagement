@@ -55,13 +55,13 @@ public class CartServiceImp implements CartService {
         orderRepository.save(order);
 
         for (Item item : cart.getItems()) {
-        var orderDetail= OrderDetail.builder()
-                .order(order)
-                .productInfo(item.getProductColor())
-                .quantity(item.getQuantity())
-                .price(BigDecimal.valueOf(item.getPrice()))
-                .build();
-        orderDetailRepository.save(orderDetail);
+            var orderDetail= OrderDetail.builder()
+                    .order(order)
+                    .productInfo(item.getProductColor())
+                    .quantity(item.getQuantity())
+                    .price(BigDecimal.valueOf(item.getPrice()))
+                    .build();
+            orderDetailRepository.save(orderDetail);
 
             ProductInfo productInfo = productColorRepository.findById(item.getProductColor().getProductcolorId()).get();
             productInfo.setQuantity(productInfo.getQuantity() - item.getQuantity());

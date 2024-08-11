@@ -29,6 +29,9 @@ public class WarrantyRepair {
     @Column(name = "status", length = 50)
     String status;
 
+    @Column(name = "note_technical", length = 100)
+    String noteTechnical;
+
     @Column(name = "issue_description", length = 100)
     String issueDescription;
 
@@ -36,8 +39,10 @@ public class WarrantyRepair {
     boolean isDeleted;
 
     @Column(name = "repair_date")
-    @Temporal(TemporalType.TIMESTAMP)
     Date repairDate;
+
+    @Column(name = "date_completed")
+    Date date_completed;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
@@ -50,5 +55,6 @@ public class WarrantyRepair {
     @ManyToOne
     @JoinColumn(name="order_id")
     Orders order;
+
 }
 

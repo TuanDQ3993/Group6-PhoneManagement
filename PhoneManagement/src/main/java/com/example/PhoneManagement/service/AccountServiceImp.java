@@ -127,4 +127,7 @@ public class AccountServiceImp implements AccountService {
         accountRepository.saveAll(users);
     }
 
+    public long countAllUser(){
+        return  accountRepository.countAllBy();
+    }
 }

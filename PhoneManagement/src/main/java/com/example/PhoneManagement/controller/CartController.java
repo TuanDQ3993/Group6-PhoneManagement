@@ -145,17 +145,6 @@ public class CartController {
             model.addAttribute("error", "You need login before want view cart.");
             return "login";
         }
-//        Cart cart = (Cart) session.getAttribute("cart");
-//        if (cart != null) {
-//            model.addAttribute("cart", cart);
-//            model.addAttribute("size", cart.getItems().size());
-//            model.addAttribute("total", cart.getTotalPrice());
-//        }else {
-//            model.addAttribute("size", 0);
-//            model.addAttribute("total", 0.0);
-//        }
-
-
         return "viewcart";
     }
 
@@ -283,10 +272,10 @@ public class CartController {
 
     @PostMapping("onlinesuccess")
     public String onlineSuccess(@RequestParam("fullname") String fullname,
-                             @RequestParam("address") String address,
-                             @RequestParam("tel") String tel,
-                             @RequestParam("note") String note,
-                             HttpSession session, Principal principal,
+                                @RequestParam("address") String address,
+                                @RequestParam("tel") String tel,
+                                @RequestParam("note") String note,
+                                HttpSession session, Principal principal,
                                 RedirectAttributes redirectAttributes  ){
         Cart cart = (Cart) session.getAttribute("cart");
         for(Item i : cart.getItems()){
@@ -309,13 +298,6 @@ public class CartController {
 
     @GetMapping("ordersuccess")
     public String orderSuccess(HttpSession session, Principal principal, Model model) {
-
-//        if (principal != null) {
-//            String userName = principal.getName();
-//            Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
-//            userDTO.ifPresent(user -> model.addAttribute("user", user));
-//        }
-
         Cart cart = (Cart) session.getAttribute("cart");
         List<Item> listi = cart.getItems();
 
