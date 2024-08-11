@@ -34,16 +34,15 @@ public class AccountExcelImportController {
     private PasswordEncoder passwordEncoder;
 
 
-    public List<Users> importUsersFromExcel(InputStream inputStream, Model model) throws IOException {
+    public List<Users> importUsersFromExcel(InputStream inputStream, List<String> errorMessages) throws IOException {
         Map<String, Integer> roleMap = new HashMap<>();
-        Map<Integer, Roles> cachedRoles = new HashMap<>(); // Cache các role đã truy xuất
+        Map<Integer, Roles> cachedRoles = new HashMap<>();
         List<Roles> rolesList = roleServiceImp.getAllRoles();
         for (Roles role : rolesList) {
             roleMap.put(role.getRoleName().toUpperCase(), role.getRoleId());
         }
 
         List<Users> usersList = new ArrayList<>();
-        List<String> errorMessages = new ArrayList<>();
         Workbook workbook = new XSSFWorkbook(inputStream);
         Sheet sheet = workbook.getSheetAt(0);
 
@@ -108,9 +107,9 @@ public class AccountExcelImportController {
         }
 
         workbook.close();
-        model.addAttribute("errorMessages", errorMessages);
         return usersList;
     }
+
 
 
 
