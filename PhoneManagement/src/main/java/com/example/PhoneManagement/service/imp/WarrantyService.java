@@ -30,8 +30,6 @@ public interface WarrantyService {
 
     Page<WarrantyRepair> findByStatus(PageDTO pageable, String status, int technicalId);
 
-    Page<WarrantyRepair> findAllByProductNameAndStatusAndDateByTecnical(PageDTO pageable, String status, int technicalId, Date date, String query);
-
     void deleteWarrantyRepair(int id);
 
     long sumWarrantyRepairs(int technicalId);
@@ -66,5 +64,23 @@ public interface WarrantyService {
 
     int getTechnicalMinOrder();
 
-    List<WarrantyRepair> getByOrder(int oderId, String statusName);
+    List<WarrantyRepair> getByOrder(int oderId);
+
+    Page<WarrantyRepair> findAllByProductNameAndStatusAndDateByTechnical(String productName, String status, Date repairDate, int technicalId, PageDTO pageable);
+
+    Page<WarrantyRepair> findAllByProductNameAndRepairDateByTechnical(String productName, Date repairDate, int technicalId, PageDTO pageable);
+
+    Page<WarrantyRepair> findAllByStatusAndRepairDateByTechnical(String status, Date repairDate, int technicalId, PageDTO pageable);
+
+    Page<WarrantyRepair> findAllByProductNameAndStatusByTechnical(String productName, String status, int technicalId, PageDTO pageable);
+
+    Page<WarrantyRepair> findAllByProductNameAndStatusAndDateByAdmin(String productName, String status, Date repairDate, PageDTO pageable);
+
+    Page<WarrantyRepair> findAllByProductNameAndRepairDateByAdmin(String productName, Date repairDate, PageDTO pageable);
+
+    Page<WarrantyRepair> findAllByStatusAndRepairDateByAdmin(String status, Date repairDate, PageDTO pageable);
+
+    Page<WarrantyRepair> findAllByProductNameAndStatusByAdmin(String productName, String status, PageDTO pageable);
+
+    void changeStatusAndSaveNote(int id, String status, String note);
 }

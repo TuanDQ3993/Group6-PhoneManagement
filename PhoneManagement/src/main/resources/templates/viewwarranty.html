@@ -108,7 +108,10 @@
                                     <th>Issue</th>
                                     <th>Repair Date</th>
                                     <th>Status</th>
-                                    <th>Action</th>
+                                    <th th:if="${warrantyRepair.status} == 'Warranty Completed' or ${warrantyRepair.status} == 'Warranty Rejected'">
+                                        Note to customer
+                                    </th>
+                                    <th th:if="${warrantyRepair.status} == 'Warranty In Process'">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -122,30 +125,51 @@
                                     <td th:text="${warrantyRepair.issueDescription}"></td>
                                     <td th:text="${#dates.format(warrantyRepair.repairDate, 'yyyy-MM-dd')}"></td>
                                     <td th:text="${warrantyRepair.status}"></td>
+                                    <td th:if="${warrantyRepair.status} == 'Warranty Completed' or ${warrantyRepair.status} == 'Warranty Rejected'"
+                                     >
+                                        <textarea    th:text="${warrantyRepair.noteTechnical}" readonly></textarea>
+                                    </td>
                                     <td>
                                         <form th:if="${warrantyRepair.status != 'Warranty Pending'} and ${warrantyRepair.status != 'Warranty Completed'} and ${warrantyRepair.status != 'Warranty Rejected'} "
                                               th:action="@{/technical/changeStatus/{id}(id=${warrantyRepair.warrantyId})}"
                                               onsubmit="return checkStatusChange(event, this)"
                                               method="post" style="margin-top: -0.5rem !important;">
-                                            <select id="statusSelect" name="status" class="form-control" data-current-status="${warrantyRepair.status}">
-                                                <option value="Warranty In Process" th:selected="${warrantyRepair.status == 'Warranty In Process'}">In Process</option>
-                                                <option value="Warranty Completed" th:selected="${warrantyRepair.status == 'Warranty Completed'}">Completed</option>
-                                                <option value="Warranty Rejected" th:selected="${warrantyRepair.status == 'Warranty Rejected'}">Rejected</option>
+                                            <select id="statusSelect" name="status" class="form-control"
+                                                    data-current-status="${warrantyRepair.status}">
+                                                <option value="Warranty In Process"
+                                                        th:selected="${warrantyRepair.status == 'Warranty In Process'}">
+                                                    In Process
+                                                </option>
+                                                <option value="Warranty Completed"
+                                                        th:selected="${warrantyRepair.status == 'Warranty Completed'}">
+                                                    Completed
+                                                </option>
+                                                <option value="Warranty Rejected"
+                                                        th:selected="${warrantyRepair.status == 'Warranty Rejected'}">
+                                                    Rejected
+                                                </option>
                                             </select>
-                                            <button type="submit" class="btn btn-primary mt-2">Save Status</button>
+                                            <textarea name="noteTechnical" class="form-control mt-2"
+                                                      th:text="${warrantyRepair.noteTechnical}"
+                                                      placeholder="Enter note..."></textarea>
+                                            <button type="submit" class="btn btn-primary mt-2">Save</button>
                                         </form>
 
                                         <form th:if="${warrantyRepair.status == 'Warranty Pending'}"
                                               th:action="@{/technical/acceptWarranty/{id}(id=${warrantyRepair.warrantyId})}"
                                               th:onsubmit="return confirm('Are you sure to accept this ?')"
                                               method="post" style="margin-top: -0.5rem !important;">
-                                            <button type="submit" class="btn btn-primary mt-2" style="font-size: 11px;">Accept</button>
+                                            <button type="submit" class="btn btn-primary mt-2" style="font-size: 11px;">
+                                                Accept
+                                            </button>
                                         </form>
                                         <form th:if="${warrantyRepair.status == 'Warranty Pending'}"
                                               th:action="@{/technical/rejectWarranty/{id}(id=${warrantyRepair.warrantyId})}"
                                               th:onsubmit="return confirm('Are you sure to reject this ?')"
                                               method="post" style="margin-top: -0.5rem !important;">
-                                            <button type="submit" class="btn btn-danger mt-2" style="font-size: 11px;width: 60px">Reject</button>
+                                            <button type="submit" class="btn btn-danger mt-2"
+                                                    style="font-size: 11px;width: 60px">Reject
+                                            </button>
                                         </form>
                                     </td>
                                 </tr>
