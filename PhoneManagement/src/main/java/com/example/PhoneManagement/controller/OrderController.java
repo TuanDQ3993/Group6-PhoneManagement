@@ -72,9 +72,11 @@ public class OrderController {
         Map<String, String> warrantyNoteFromCustomer = new HashMap<>();
         Map<String, Date> warrantyDate = new HashMap<>();
         Map<String, Date> dateRepair = new HashMap<>();
+        Map<String, String> colorMap = new HashMap<>();
         for (Object[] order : ordersPage) {
             Integer orderId = (Integer) order[0];
             String productName = (String)  order[1];
+            String productColor = (String) order[2];
             Date orderDate = null;
             Integer warrantyPeriod = null;
             if (order.length > 7) {
@@ -83,6 +85,7 @@ public class OrderController {
             if (order.length > 10) {
                 warrantyPeriod = (Integer) order[10]; // warrantyPeriod
             }
+            colorMap.put(orderId + "_" + productName, productColor);
             if (orderDate != null && warrantyPeriod != null) {
                 LocalDate createdAtDate = orderDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDate warrantyExpiryDate = createdAtDate.plusMonths(warrantyPeriod);
@@ -102,6 +105,7 @@ public class OrderController {
                         dateWarrantyRepair = repair.getRepairDate();
                     }
                 }
+
                 warrantyStatuses.put(orderId + "_" + productName, warrantyStatus);
                 warrantyNoteFromTechnical.put(orderId + "_" + productName, noteFromTechnical);
                 warrantyNoteFromCustomer.put(orderId + "_" + productName, noteFromCustomer);
@@ -113,9 +117,9 @@ public class OrderController {
             }
 
             model.addAttribute("orderId", orderId);
-            model.addAttribute("productName", productName);
+            model.addAttribute("productNameWithColor", productName);
         }
-
+        model.addAttribute("colorMap", colorMap);
         model.addAttribute("warrantyDTO", new WarrantyDTO());
         model.addAttribute("user", userDTO.get());
         model.addAttribute("page", page);
