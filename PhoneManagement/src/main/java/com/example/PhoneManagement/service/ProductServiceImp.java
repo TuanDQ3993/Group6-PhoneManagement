@@ -180,11 +180,16 @@ public class ProductServiceImp implements ProductService {
             Category category = categoryRepository.findById(request.getCategory()).orElseThrow(() -> new RuntimeException("Category not exist"));
             if (request.getWarrantyPeriod() <= 0)
                 throw new IllegalArgumentException("WarrantyPeriod cannot be negative");
+            boolean result = productRepository.findAll().stream().anyMatch(pro -> pro.getProductName().equals(request.getProductName()));
+            if (result && !products.getProductName().equals(request.getProductName())) {
+                throw new IllegalArgumentException("Product Name already exist");
+            }
             products.setProductName(request.getProductName());
             products.setCategory(category);
             products.setDescription(request.getDescription());
             products.setWarrantyPeriod(request.getWarrantyPeriod());
             products.setBrandName(request.getBrandName());
+            products.setCreatedAt(new Date());
             productRepository.save(products);
         } catch (IllegalArgumentException ex) {
             throw ex;
@@ -397,6 +402,7 @@ public class ProductServiceImp implements ProductService {
             }
         }
         updateQuantityProduct(productInfo.getProducts().getProductId(), total);
+
     }
 
     @Override
@@ -531,10 +537,6 @@ public class ProductServiceImp implements ProductService {
         return mapResultsToProductShops(results);
     }
 
-    public long countAllProduct(){
-        return  productColorRepository.countAllBy();
-    }
-
     private List<ProductShop> mapResultsToProductShops(List<Object[]> results) {
         List<ProductShop> shops = new ArrayList<>();
         for (Object[] result : results) {
@@ -550,5 +552,9 @@ public class ProductServiceImp implements ProductService {
             shops.add(productShop);
         }
         return shops;
+    }
+
+    public long countAllProduct() {
+        return productColorRepository.countAllBy();
     }
 }

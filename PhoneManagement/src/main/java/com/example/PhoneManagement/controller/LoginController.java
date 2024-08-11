@@ -96,7 +96,7 @@ public class LoginController {
             Cart cart = new Cart();
             session.setAttribute("cart", cart);
             if (user.getRole().getRoleName().equals("ADMIN")) {
-                return "redirect:/admin/products";
+                return "redirect:/admin/dashboard";
             } else if (user.getRole().getRoleName().equals("SALER")) {
                 return "redirect:/saler/dashboard";
             } else if (user.getRole().getRoleName().equals("TECHNICAL STAFF")) {
