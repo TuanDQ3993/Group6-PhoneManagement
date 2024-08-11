@@ -3,8 +3,11 @@ package com.example.PhoneManagement.controller;
 import com.example.PhoneManagement.dto.request.PageDTO;
 import com.example.PhoneManagement.entity.Roles;
 import com.example.PhoneManagement.entity.Users;
+import com.example.PhoneManagement.service.ProductServiceImp;
 import com.example.PhoneManagement.service.RoleServiceImp;
 import com.example.PhoneManagement.service.AccountServiceImp;
+import com.example.PhoneManagement.service.WarrantyServiceImp;
+import com.example.PhoneManagement.service.imp.OrderService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,8 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,7 +42,28 @@ public class AccountController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private  AccountExcelImportController accountExcelImportController;
+    private AccountExcelImportController accountExcelImportController;
+    @Autowired
+    private WarrantyServiceImp warrantyRepairService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private ProductServiceImp productServiceImp;
+
+    @GetMapping("dashboard")
+    public String dashboard(Model model) {
+
+
+        model.addAttribute("totalAccount", accountServiceImp.countAllUser());
+        model.addAttribute("order", orderService.countOrdersInCurrentMonth());
+        model.addAttribute("totalamount", orderService.getTotalAmountForCurrentMonth());
+        model.addAttribute("totalProduct", productServiceImp.countAllProduct());
+        model.addAttribute("sumByStatusByAdmin", warrantyRepairService.countAllByStatusByAdmin());
+        model.addAttribute("sumAllByAdmin", warrantyRepairService.countAllByAdmin());
+        return "dashboard_admin";
+    }
+
+
     //Show all user with paging
     @GetMapping("/users")
     public String listOrSearchUsers(Model model,
@@ -50,7 +77,6 @@ public class AccountController {
         addUserPageAttributes(model, page, pageSize, query, role, userId);
         return "accountlist";
     }
-
 
 
     // View details each user
@@ -82,13 +108,13 @@ public class AccountController {
     }
 
 
-
     // Change role of account
     @PostMapping("/changeRole/{id}")
     public String changeUserRole(@PathVariable int id, @RequestParam int roleId) {
         roleServiceImp.changeUserRole(id, roleId);
         return ("redirect:/admin/users");
     }
+
     private void addUserPageAttributes(Model model, int page, int pageSize, String query, Integer role, int userId) {
         PageDTO pageDTO = new PageDTO();
         pageDTO.setPageNumber(page);
@@ -108,7 +134,6 @@ public class AccountController {
             // Không có tìm kiếm hay lọc, hiển thị tất cả
             userPage = accountServiceImp.findPaginated(pageDTO);
         }
-
         model.addAttribute("userPage", userPage);
         model.addAttribute("query", query);
         model.addAttribute("role", role);
@@ -122,6 +147,7 @@ public class AccountController {
                 model.addAttribute("pageNumbers", pageNumbers);
             }
         }
+        model.containsAttribute("errorMessages");
         model.addAttribute("size", pageSize);
         model.addAttribute("userForm", new Users());
         model.addAttribute("rolesFilter", roleServiceImp.getAllRoles());
@@ -129,16 +155,6 @@ public class AccountController {
 
     @PostMapping("/saveAccount")
     public String saveAccount(@ModelAttribute("userForm") Users user, Model model, Authentication authentication) {
-
-
-        if (!accountServiceImp.isValidEmail((user.getUsername()))) {
-            model.addAttribute("invalidEmailError", "Email invalid. Try again.");
-        }
-
-        if (!accountServiceImp.isValidPhoneNumber(user.getPhoneNumber())) {
-            model.addAttribute("invalidPhoneError", "Phone number invalid. Try again.");
-        }
-
 
         if (accountServiceImp.isPhoneExist(user.getPhoneNumber())) {
             model.addAttribute("phoneExistsError", "Phone number was exist. Try again.");
@@ -148,8 +164,7 @@ public class AccountController {
             model.addAttribute("emailExistsError", "Email was exist. Try again.");
         }
 
-        if (model.containsAttribute("invalidEmailError") || model.containsAttribute("invalidPhoneError") ||
-                model.containsAttribute("phoneExistsError") || model.containsAttribute("emailExistsError")) {
+        if (model.containsAttribute("phoneExistsError") || model.containsAttribute("emailExistsError")) {
             Users currentUser = (Users) authentication.getPrincipal();
             addUserPageAttributes(model, 0, 5, "", null, currentUser.getUserId());
             return "accountlist";
@@ -161,15 +176,24 @@ public class AccountController {
         accountServiceImp.createUser(user);
         return "redirect:/admin/users";
     }
-    @PostMapping("/import-excel")
-    public String importExcel(@RequestParam("file") MultipartFile file) {
+
+    @PostMapping("/importUsers")
+    public String importExcel(@RequestParam("file") MultipartFile file, Model model) {
+        if (file.isEmpty()) {
+            model.addAttribute("errorMessage", "No file selected. Please upload an Excel file.");
+            return "redirect:/admin/users";
+        }
+
         try {
-            List<Users> usersList = accountExcelImportController.importUsersFromExcel(file.getInputStream());
-            accountServiceImp.saveAll(usersList);
+            List<Users> usersList = accountExcelImportController.importUsersFromExcel(file.getInputStream(), model);
+            if (!usersList.isEmpty()) {
+                accountServiceImp.saveAll(usersList);
+            }
         } catch (IOException e) {
             e.printStackTrace();
-
+            model.addAttribute("errorMessage", "Error processing the file. Please try again.");
         }
+
         return "redirect:/admin/users";
     }
 

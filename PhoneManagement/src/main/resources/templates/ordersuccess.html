@@ -165,28 +165,28 @@
                         <tbody>
 
 
-                            <tr th:each="item :${listi}">
-                                <td class="product__cart__item">
-                                    <div class="product__cart__item__pic">
-                                        <img th:src="@{/uploads/{image}(image=${item.productColor.image})}" alt="">
-                                    </div>
-                                    <div class="product__cart__item__text">
-                                        <h6 th:text="${item.productColor.products.productName}+' - '+${item.productColor.colors.colorName} "></h6>
-                                    </div>
-                                </td>
+                        <tr th:each="item :${listi}">
+                            <td class="product__cart__item">
+                                <div class="product__cart__item__pic">
+                                    <img th:src="@{/uploads/{image}(image=${item.productColor.image})}" alt="">
+                                </div>
+                                <div class="product__cart__item__text">
+                                    <h6 th:text="${item.productColor.products.productName}+' - '+${item.productColor.colors.colorName} "></h6>
+                                </div>
+                            </td>
 
-                                <td class="original-price" th:text="'$'+${item.price}"></td>
+                            <td class="original-price" th:text="'$'+${item.price}"></td>
 
-                                <td class="quantity__item">
-                                    <div class="quantity">
-                                        <div>
-                                            &emsp;<span class="qty" th:text="${item.quantity}"></span>&emsp;
-                                        </div>
+                            <td class="quantity__item">
+                                <div class="quantity">
+                                    <div>
+                                        &emsp;<span class="qty" th:text="${item.quantity}"></span>&emsp;
                                     </div>
-                                </td>
-                                <td class="original-price" th:text="'$'+${item.quantity*item.price}"></td>
+                                </div>
+                            </td>
+                            <td class="original-price" th:text="'$'+${item.quantity*item.price}"></td>
 
-                            </tr>
+                        </tr>
 
 
 

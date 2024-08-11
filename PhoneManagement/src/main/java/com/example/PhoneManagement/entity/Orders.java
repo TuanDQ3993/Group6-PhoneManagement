@@ -58,4 +58,5 @@ public class Orders {
 
     @OneToMany(mappedBy = "order")
     List<WarrantyRepair> warrantyRepairs;
+
 }

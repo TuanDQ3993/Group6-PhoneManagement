@@ -81,6 +81,7 @@
             </div>
 
 
+
             <div id="myModal" class="modal">
                 <div class="modal-content">
                     <span class="close" id="closeModalBtn">&times;</span>
@@ -88,9 +89,11 @@
                     <form th:action="@{/admin/saveAccount}" th:object="${userForm}" method="post"
                           style="border: 1px solid #ccc; padding: 20px; border-radius: 10px;">
                         <label for="username" style="display: block; margin-top: 10px;">Email:</label>
-                        <input type="text" id="username" th:field="*{userName}"
+                        <input type="email" id="username" th:field="*{userName}"
                                style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
-                               required/>
+                               required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                               title="Please enter a valid email address"/>
+
 
                         <label for="fullname" style="display: block; margin-top: 10px;">Full Name:</label>
                         <input type="text" id="fullname" th:field="*{fullName}"
@@ -105,7 +108,7 @@
                         <label for="phoneNumber" style="display: block; margin-top: 10px;">Phone Number:</label>
                         <input type="text" id="phoneNumber" th:field="*{phoneNumber}"
                                style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
-                               required/>
+                               required pattern="0\d{9}" title="Phone number must be 10 digits and start with 0"/>
 
                         <label for="role" style="display: block; margin-top: 10px;">Role:</label>
                         <select id="role" th:field="*{role}"
@@ -134,10 +137,10 @@
                 <div class="col-md-12">
                     <div class="d-flex justify-content-between align-items-center">
                         <!-- Import Excel Form -->
-                        <form th:action="@{/admin/import-excel}" method="post" enctype="multipart/form-data" class="form-inline">
+                        <form th:action="@{/admin/importUsers}" method="post" enctype="multipart/form-data" class="form-inline">
                             <div class="form-group d-flex align-items-center">
                                 <input type="file" name="file" accept=".xlsx"  class="form-control form-control-sm mr-2">
-                                <button type="submit" class="btn btn-primary btn-sm" style="margin-bottom: -1px;">Upload</button>
+                                <button type="submit" class="btn btn-primary btn-sm" style="margin-bottom: -1px;" >Upload</button>
                             </div>
                         </form>
 
@@ -145,12 +148,12 @@
                         <form th:action="@{/admin/users}" method="get" class="form-inline">
                             <div class="form-group d-flex align-items-center">
                                 <select name="role" class="form-control form-control-sm mr-2">
-                                    <option value="">Select Role</option>
+                                    <option value="">All</option>
                                     <option th:each="roleItem : ${rolesFilter}" th:value="${roleItem.roleId}"
                                             th:text="${roleItem.roleName}" th:selected="${roleItem.roleId == role}"></option>
                                 </select>
                                 <input type="text" class="form-control form-control-sm mr-2" th:name="query"
-                                       placeholder="Search for email: ..." th:value="${query}">
+                                       placeholder="Search for: ..." th:value="${query}">
                                 <button class="btn btn-secondary btn-sm" type="submit">Go</button>
                             </div>
                         </form>
@@ -187,7 +190,7 @@
                                     <td th:text="${user.fullName}"></td>
                                     <td th:text="${user.address}"></td>
                                     <td th:text="${user.phoneNumber}"></td>
-                                    <td th:text="${user.active ? 'Hoạt động' : 'Ngừng Hoạt động'}"></td>
+                                    <td th:text="${user.active ? 'Active' : 'Inactive'}"></td>
                                     <td th:text="${user.role.roleName}"></td>
                                     <td th:text="${#dates.format(user.createdAt, 'dd-MM-yyyy')}"></td>
                                     <td>
@@ -297,8 +300,7 @@
                                 var errors = [
                                     /*[[${phoneExistsError}]]*/,
                                     /*[[${emailExistsError}]]*/,
-                                    /*[[${invalidEmailError}]]*/,
-                                    /*[[${invalidPhoneError}]]*/
+
                                 ];
 
                                 errors.forEach(function (error) {

@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -39,14 +41,16 @@ public class WarrantyController {
 
     @GetMapping("/dashboard_technical")
     public String dashBoard(Model model, Authentication authentication) {
-
         Users user = (Users) authentication.getPrincipal();
         int technicalId = user.getUserId();
         Map<String, Long> warrantyCountByDate = warrantyRepairService.getWarrantyCountByDate(technicalId);
+        LocalDate localDate = LocalDate.now();
+
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         model.addAttribute("warrantyCountByDate", warrantyCountByDate);
-        model.addAttribute("sumWarrantyRepairsByDate", warrantyRepairService.sumWarrantyRepairsByRepairDate(technicalId, new Date()));
+        model.addAttribute("sumWarrantyRepairsByDate", warrantyRepairService.sumWarrantyRepairsByRepairDate(technicalId, date));
         model.addAttribute("sumWarrantyRepairsAll", warrantyRepairService.sumWarrantyRepairs(technicalId));
-        model.addAttribute("countWarrantyRepairsByRepairDateAndStatus", warrantyRepairService.countWarrantyRepairsByRepairDateAndStatus(technicalId, new Date()));
+        model.addAttribute("countWarrantyRepairsByRepairDateAndStatus", warrantyRepairService.countWarrantyRepairsByRepairDateAndStatus(technicalId, date));
         model.addAttribute("countAllWarrantyRepairsAndStatus", warrantyRepairService.countAllWarrantyRepairsAndStatus(technicalId));
         return "dashboard_technical";
     }
@@ -82,37 +86,42 @@ public class WarrantyController {
             Page<WarrantyRepair> warrantyPage = null;
             String role = user.getRole().getRoleName();
 
-            // Nếu cả ba điều kiện đều là null hoặc rỗng, lấy tất cả danh sách
-            if ((date == null || dateStr.isEmpty()) && (query == null || query.isEmpty()) && (status == null || status.isEmpty())) {
-                if (role.equals("ADMIN")) {
-                    warrantyPage = warrantyRepairService.findAll(pageDTO);
+            if (role.equals("ADMIN")) {
+                if (date != null && query != null && !query.isEmpty() && status != null && !status.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findAllByProductNameAndStatusAndDateByAdmin(pageDTO, status, date, query);
+                } else if (date != null && query != null && !query.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findAllByProductNameAndRepairDateByAdmin( query, date,pageDTO);
+                } else if (date != null && status != null && !status.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findAllByStatusAndRepairDateByAdmin(status, date,pageDTO);
+                } else if (query != null && !query.isEmpty() && status != null && !status.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findAllByProductNameAndStatusByAdmin( query, status,pageDTO);
+                } else if (date != null) {
+                    warrantyPage = warrantyRepairService.findByRepairDateByAdmin(pageDTO, date);
+                } else if (query != null && !query.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findAllByProductNameByAdmin(pageDTO, query);
+                } else if (status != null && !status.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findByStatusByAdmin(pageDTO, status);
                 } else {
-                    warrantyPage = warrantyRepairService.findPaginated(pageDTO, user.getUserId());
-                    technicalName = user.getFullName();
+                    warrantyPage = warrantyRepairService.findAll(pageDTO);
                 }
             } else {
-                if (role.equals("ADMIN")) {
-                    // Lựa chọn các dịch vụ theo từng điều kiện cụ thể
-                    if (date != null) {
-                        warrantyPage = warrantyRepairService.findByRepairDateByAdmin(pageDTO, date);
-                    } else if (query != null && !query.isEmpty()) {
-                        warrantyPage = warrantyRepairService.findAllByProductNameByAdmin(pageDTO, query);
-                    } else if (status != null && !status.isEmpty()) {
-                        warrantyPage = warrantyRepairService.findByStatusByAdmin(pageDTO, status);
-                    } else {
-                        warrantyPage = warrantyRepairService.findAllByProductNameAndStatusAndDateByAdmin(pageDTO, status, date, query);
-                    }
+                technicalName = user.getFullName();
+                if (date != null && query != null && !query.isEmpty() && status != null && !status.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findAllByProductNameAndStatusAndDateByTechnical(query, status,  date,user.getUserId(), pageDTO);
+                } else if (date != null && query != null && !query.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findAllByProductNameAndRepairDateByTechnical(query, date, user.getUserId(), pageDTO);
+                } else if (date != null && status != null && !status.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findAllByStatusAndRepairDateByTechnical(status, date, user.getUserId(), pageDTO);
+                } else if (query != null && !query.isEmpty() && status != null && !status.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findAllByProductNameAndStatusByTechnical(query, status, user.getUserId(),pageDTO);
+                } else if (date != null) {
+                    warrantyPage = warrantyRepairService.findByRepairDate(pageDTO, date, user.getUserId());
+                } else if (query != null && !query.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findByProductNameAndUserName(pageDTO, query, user.getUserId());
+                } else if (status != null && !status.isEmpty()) {
+                    warrantyPage = warrantyRepairService.findByStatus(pageDTO, status, user.getUserId());
                 } else {
-                    // Lựa chọn các dịch vụ theo từng điều kiện cụ thể cho người dùng không phải admin
-                    if (date != null) {
-                        warrantyPage = warrantyRepairService.findByRepairDate(pageDTO, date, user.getUserId());
-                    } else if (query != null && !query.isEmpty()) {
-                        warrantyPage = warrantyRepairService.findByProductNameAndUserName(pageDTO, query, user.getUserId());
-                    } else if (status != null && !status.isEmpty()) {
-                        warrantyPage = warrantyRepairService.findByStatus(pageDTO, status, user.getUserId());
-                    } else {
-                        warrantyPage = warrantyRepairService.findAllByProductNameAndStatusAndDateByTecnical(pageDTO, status, user.getUserId(), date, query);
-                    }
+                    warrantyPage = warrantyRepairService.findPaginated(pageDTO, user.getUserId());
                 }
             }
 
@@ -139,6 +148,7 @@ public class WarrantyController {
     }
 
 
+
     @GetMapping("/export/excel")
     public String exportToExcel(HttpServletResponse response, Authentication authentication,
                                 @RequestParam("repairDate") String dateStr, RedirectAttributes redirectAttributes
@@ -163,7 +173,7 @@ public class WarrantyController {
         }
         List<WarrantyRepair> warrantyRepairList = null;
         if (users.getRole().getRoleName().equals("ADMIN")) {
-            warrantyRepairList = warrantyRepairService.getWarrantyByIdAndRepairDate(technicalId, date);
+            warrantyRepairList = warrantyRepairService.getWarrantyByIdAndRepairDateByAdmin(date);
         } else {
             warrantyRepairList = warrantyRepairService.getWarrantyByIdAndRepairDate(technicalId, date);
         }
@@ -184,10 +194,11 @@ public class WarrantyController {
 
 
     @PostMapping("/changeStatus/{id}")
-    public String changeStatus(
+    public String changeStatusAndSaveNote(
             @PathVariable int id,
-            @RequestParam(value = "status") String status) {
-        warrantyRepairService.changeStatus(id, status);
+            @RequestParam(value = "status") String status,
+            @RequestParam(value = "noteTechnical") String note) {
+        warrantyRepairService.changeStatusAndSaveNote(id, status, note);
         return "redirect:/technical/warranties";
     }
 
@@ -196,6 +207,14 @@ public class WarrantyController {
     public String acceptWarranty(
             @PathVariable int id) {
         warrantyRepairService.acceptWarranty(id);
+        warrantyRepairService.changeStatus(id, "Warranty In Process");
+        return "redirect:/technical/warranties";
+    }
+
+    @PostMapping("/rejectWarranty/{id}")
+    public String rejectWarranty(
+            @PathVariable int id) {
+        warrantyRepairService.rejectWarranty(id);
         return "redirect:/technical/warranties";
     }
 
@@ -206,17 +225,13 @@ public class WarrantyController {
         String roleName = users.getRole().getRoleName();
 
         if (roleName.equals("ADMIN")) {
-            // Lấy thông tin bảo hành theo ID được yêu cầu
             warrantyRepair = warrantyRepairService.getById(id);
         } else {
-            // Lấy thông tin bảo hành chỉ khi nó thuộc về người dùng kỹ thuật hiện tại
             warrantyRepair = warrantyRepairService.getById(id);
             if (warrantyRepair != null && warrantyRepair.getTechnical() != null) {
                 int userId = warrantyRepair.getTechnical().getUserId();
                 if (userId != users.getUserId()) {
-                    // Nếu bảo hành không thuộc về người dùng kỹ thuật hiện tại, không trả về kết quả
-                    model.addAttribute("error", "Bạn không có quyền truy cập thông tin này.");
-                    return "error";
+                    return "redirect:/technical/warranties";
                 }
             }
         }
@@ -224,7 +239,6 @@ public class WarrantyController {
         model.addAttribute("warrantyRepair", warrantyRepair);
         return "viewwarranty";
     }
-
 
 
     @PostMapping("/delete/{id}")

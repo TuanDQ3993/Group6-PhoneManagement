@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 @Repository
@@ -21,6 +22,7 @@ public interface AccountRepository extends JpaRepository<Users, Integer> {
 
     @Query("SELECT u FROM useraccount u WHERE u.role.roleId = :role order by u.createdAt desc ")
     Page<Users> findByRole(int role, Pageable pageable);
+
     // Ban user
     @Modifying
     @Transactional
@@ -41,8 +43,12 @@ public interface AccountRepository extends JpaRepository<Users, Integer> {
     @Modifying
     @Transactional
     @Query("UPDATE useraccount u SET u.role.roleId = :role WHERE u.userId = :userId")
-    void changeRole(@Param("userId") int userId, @Param("role") int role );
+    void changeRole(@Param("userId") int userId, @Param("role") int role);
 
     boolean existsByPhoneNumber(String phoneNumber);
+
     boolean existsByUserName(String email);
+
+    @Query("select count(a) from useraccount a where a.active = true")
+    long countAllBy();
 }

@@ -22,4 +22,7 @@ public interface ProductColorRepository extends JpaRepository<ProductInfo, Integ
 
     @Query("SELECT p FROM productinfo p WHERE p.productcolorId = :productcolorId AND p.isDeleted = true")
     Optional<ProductInfo> findByProductcolorIdAndIsDeletedTrue(@Param("productcolorId") int productcolorId);
+
+    @Query("select count (n) from productinfo n where n.isDeleted = true")
+    long countAllBy();
 }
