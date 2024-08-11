@@ -17,16 +17,14 @@ import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -154,14 +152,14 @@ public class AccountController {
     }
 
     @PostMapping("/saveAccount")
-    public String saveAccount(@ModelAttribute("userForm") Users user, Model model, Authentication authentication) {
+    public String saveAccount(@ModelAttribute("userForm") Users user, Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
 
         if (accountServiceImp.isPhoneExist(user.getPhoneNumber())) {
-            model.addAttribute("phoneExistsError", "Phone number was exist. Try again.");
+            model.addAttribute("phoneExistsError", "Phone number already exists. Try again.");
         }
 
         if (accountServiceImp.isEmailExist(user.getUsername())) {
-            model.addAttribute("emailExistsError", "Email was exist. Try again.");
+            model.addAttribute("emailExistsError", "Email already exists. Try again.");
         }
 
         if (model.containsAttribute("phoneExistsError") || model.containsAttribute("emailExistsError")) {
@@ -172,29 +170,36 @@ public class AccountController {
 
         user.setCreatedAt(new Date());
         user.setActive(true);
-        user.setPassword(passwordEncoder.encode("123456")); // Giả sử bạn có passwordEncoder để mã hóa mật khẩu
+        user.setPassword(passwordEncoder.encode("123456"));
         accountServiceImp.createUser(user);
+
+        // Add success message to RedirectAttributes
+        redirectAttributes.addFlashAttribute("success", "Account created successfully!");
+
         return "redirect:/admin/users";
     }
 
     @PostMapping("/importUsers")
-    public String importExcel(@RequestParam("file") MultipartFile file, Model model) {
+    public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         if (file.isEmpty()) {
-            model.addAttribute("errorMessage", "No file selected. Please upload an Excel file.");
+            redirectAttributes.addFlashAttribute("errorMessage", "No file selected. Please upload an Excel file.");
             return "redirect:/admin/users";
         }
 
+        List<String> errorMessages = new ArrayList<>();
         try {
-            List<Users> usersList = accountExcelImportController.importUsersFromExcel(file.getInputStream(), model);
+            List<Users> usersList = accountExcelImportController.importUsersFromExcel(file.getInputStream(), errorMessages);
             if (!usersList.isEmpty()) {
                 accountServiceImp.saveAll(usersList);
+                redirectAttributes.addFlashAttribute("success", "Users imported successfully!");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Import Fail");
             }
         } catch (IOException e) {
             e.printStackTrace();
-            model.addAttribute("errorMessage", "Error processing the file. Please try again.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Error processing the file. Please try again.");
         }
 
         return "redirect:/admin/users";
     }
-
 }
