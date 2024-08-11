@@ -185,6 +185,7 @@ public class OrderController {
             return "orderlist";
         }
 
+
         int technicalId = warrantyServiceImp.getTechnicalMinOrder();
         Users technical = userService.getUserById(technicalId);
         warrantyServiceImp.createWarrantyRepair(warrantyDTO, order, users, technical, productName);
