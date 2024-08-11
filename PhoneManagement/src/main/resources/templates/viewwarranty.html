@@ -136,10 +136,7 @@
                                               method="post" style="margin-top: -0.5rem !important;">
                                             <select id="statusSelect" name="status" class="form-control"
                                                     data-current-status="${warrantyRepair.status}">
-                                                <option value="Warranty In Process"
-                                                        th:selected="${warrantyRepair.status == 'Warranty In Process'}">
-                                                    In Process
-                                                </option>
+
                                                 <option value="Warranty Completed"
                                                         th:selected="${warrantyRepair.status == 'Warranty Completed'}">
                                                     Completed
@@ -152,7 +149,8 @@
                                             <textarea name="noteTechnical" class="form-control mt-2"
                                                       th:text="${warrantyRepair.noteTechnical}"
                                                       placeholder="Enter note..."></textarea>
-                                            <button type="submit" class="btn btn-primary mt-2">Save</button>
+                                            <button type="submit" class="btn btn-primary mt-2"
+                                                    onclick="return confirmSecondTime();">Save</button>
                                         </form>
 
                                         <form th:if="${warrantyRepair.status == 'Warranty Pending'}"
@@ -251,6 +249,16 @@
         }
         return true; // Allow form submission
     }
+    function confirmSecondTime() {
+        // Hiển thị xác nhận lần đầu
+        let firstConfirm = confirm('Are you sure to save this?');
+        if (!firstConfirm) {
+            return false; // Nếu người dùng hủy, không tiếp tục
+        }
+
+
+    }
+
 </script>
 
 </body>
