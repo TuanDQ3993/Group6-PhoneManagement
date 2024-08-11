@@ -47,7 +47,7 @@ public class ProductController {
     public String getAllProduct(Model model,
                                 @RequestParam(name = "page", defaultValue = "0") int page,
                                 @RequestParam(name = "size", defaultValue = "5") int size,
-                                @RequestParam(name = "sortField", defaultValue = "productId") String sortField,
+                                @RequestParam(name = "sortField", defaultValue = "createdAt") String sortField,
                                 @RequestParam(name = "sortDir", defaultValue = "desc") String sortDir,
                                 @RequestParam(name = "categoryId", required = false) Integer categoryId,
                                 @RequestParam(name = "search", required = false) String name) {
@@ -79,14 +79,12 @@ public class ProductController {
     public String updateProduct(@RequestParam("productId") int proId,
                                 @RequestParam("productName") String productName,
                                 @RequestParam("cateId") int cateId,
-                                @RequestParam("quantity") int quantity,
                                 @RequestParam("description") String description,
                                 @RequestParam("warrantyPeriod") int warrantyPeriod,
                                 @RequestParam("brandName") String brand,RedirectAttributes redirectAttributes) {
         ProductUpdateRequest request=new ProductUpdateRequest();
         request.setProductName(productName);
         request.setCategory(cateId);
-        request.setQuantity(quantity);
         request.setDescription(description);
         request.setWarrantyPeriod(warrantyPeriod);
         request.setBrandName(brand);
@@ -107,7 +105,7 @@ public class ProductController {
     public String addProduct(@ModelAttribute("productDTO") ProductDTO productDTO,RedirectAttributes redirectAttributes) {
         try {
             productService.saveProduct(productDTO);
-            redirectAttributes.addFlashAttribute("successMessage", "Product color updated successfully!");
+            redirectAttributes.addFlashAttribute("successMessage", "Product add successfully!");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (RuntimeException e) {
