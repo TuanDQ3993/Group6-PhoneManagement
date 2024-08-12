@@ -128,7 +128,7 @@
                                                     <td style="width: 30%;">
                                                         <span><img id="currentImage" style="width: 20%;"
                                                                    th:src="@{/uploads/{image}(image=${product.image.get(i)})}"/></span>
-                                                        <input type="file" class="form-control edit-input fileInput"
+                                                        <input id="imagePro" type="file" class="form-control edit-input fileInput"
                                                                name="image" style="display:none;" accept=".png, .jpg, .jpeg"/>
                                                         <img id="preview" src="#" alt="Image Preview"
                                                              style="display:none; width: 200px;"/>
@@ -429,6 +429,26 @@
 
         if (errorMessage) {
             showModal(errorMessage);
+        }
+    });
+    document.getElementById('imagePro').addEventListener('change', function(event) {
+        var file = event.target.files[0];
+        if (file) {
+            var fileType = file.type;
+            var validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+            if (validImageTypes.includes(fileType)) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var previewImage = document.getElementById('preview');
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                alert("Please upload a valid image file (jpg or png).");
+                event.target.value = ''; // Clear the file input if the file is not valid
+                document.getElementById('preview').style.display = 'none'; // Hide the preview image
+            }
         }
     });
 </script>
