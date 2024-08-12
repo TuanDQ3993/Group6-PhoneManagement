@@ -26,6 +26,7 @@ public class CategoryExcelImportController {
 
     public List<Category> importCategoryFromExcel(InputStream inputStream) throws IOException {
         List<Category> categoryList = new ArrayList<>();
+        Set<String> existingCategoryNamesInExcel = new HashSet<>();
         Workbook workbook = new XSSFWorkbook(inputStream);
         Sheet sheet = workbook.getSheetAt(0);
 
@@ -36,10 +37,15 @@ public class CategoryExcelImportController {
             String categoryName = row.getCell(0) != null ? row.getCell(0).getStringCellValue() : null;
             if (categoryName == null || categoryName.isEmpty()) continue;
 
+            if (existingCategoryNamesInExcel.contains(categoryName)) {
+                System.out.println("Duplicate category name in Excel: " + categoryName + ", skipping...");
+                continue;
+            }
+
             boolean existingCategory = categoryService.findByName(categoryName);
 
             if (existingCategory) {
-                System.out.println("Category with name " + categoryName + " already exists, skipping...");
+                System.out.println("Category with name " + categoryName + " already exists in database, skipping...");
             } else {
                 Category category = new Category();
                 category.setCategoryName(categoryName);
@@ -49,6 +55,7 @@ public class CategoryExcelImportController {
                 }
 
                 categoryList.add(category);
+                existingCategoryNamesInExcel.add(categoryName);
             }
         }
         workbook.close();

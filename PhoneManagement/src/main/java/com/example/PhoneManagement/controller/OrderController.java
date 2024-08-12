@@ -42,7 +42,6 @@ public class OrderController {
     @GetMapping("/order")
     public String loadOrders(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "5") Integer size,
             @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "search", required = false) String searchQuery,
             Model model, Principal principal) {
@@ -123,7 +122,6 @@ public class OrderController {
         model.addAttribute("warrantyDTO", new WarrantyDTO());
         model.addAttribute("user", userDTO.get());
         model.addAttribute("page", page);
-        model.addAttribute("size", size);
         model.addAttribute("searchQuery", searchQuery);
         model.addAttribute("status", status);
         model.addAttribute("groupedOrders", groupedOrders);
