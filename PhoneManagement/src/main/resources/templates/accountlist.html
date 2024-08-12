@@ -200,7 +200,7 @@
                                             <i class="fa fa-folder"></i> View
                                         </a>
 
-                                        <form th:if="${user.active and user.userId != userId}"
+                                        <form th:if="${user.active and user.userId != userId and user.role.roleName != 'ADMIN'}"
                                               th:action="@{/admin/banUser/{userid}(userid=${user.userId})}"
                                               method="post" style="display:inline;"
                                               th:onsubmit="return confirm('Are you sure to ban this account??')">
@@ -210,7 +210,7 @@
                                             </button>
                                         </form>
 
-                                        <form th:if="${not user.active and user.userId != userId}"
+                                        <form th:if="${not user.active and user.userId != userId and user.role.roleName != 'ADMIN'}"
                                               th:action="@{/admin/unBanUser/{userid}(userid=${user.userId})}"
                                               method="post" style="display:inline;"
                                               th:onsubmit="return confirm('Are you sure to unban this account?')">
@@ -237,16 +237,17 @@
                                                     <option th:value="15" th:selected="${size == 15}">15</option>
                                                 </select>
                                                 <input type="hidden" name="page" value="0"/>
-                                                <input type="hidden" th:name="query" th:value="${query}"/>
-                                                <input type="hidden" th:name="role" th:value="${role}"/>
+                                                <input type="hidden" name="query" th:value="${query}"/>
+                                                <input type="hidden" name="role" th:value="${role}"/>
+                                                <input type="hidden" name="pageSize" th:value="${size}"/>
                                             </form>
+
                                         </div>
                                     </div>
                                     <div class="col-auto">
                                         <nav aria-label="Page navigation">
                                             <ul class="pagination justify-content-end mb-0">
-                                                <li class="page-item"
-                                                    th:classappend="${userPage.number == 0} ? 'disabled'">
+                                                <li th:classappend="${userPage.number == 0} ? 'disabled'">
                                                     <a class="page-link"
                                                        th:href="@{/admin/users(size=${userPage.size}, page=${userPage.number - 1}, pageSize=${size}, query=${query}, role=${role})}">Previous</a>
                                                 </li>
@@ -256,11 +257,11 @@
                                                        th:href="@{/admin/users(size=${userPage.size}, page=${pageNumber - 1}, pageSize=${size}, query=${query}, role=${role})}"
                                                        th:text="${pageNumber}"></a>
                                                 </li>
-                                                <li class="page-item"
-                                                    th:classappend="${userPage.number + 1 == userPage.totalPages} ? 'disabled'">
+                                                <li th:classappend="${userPage.number + 1 == userPage.totalPages} ? 'disabled'">
                                                     <a class="page-link"
                                                        th:href="@{/admin/users(size=${userPage.size}, page=${userPage.number + 1}, pageSize=${size}, query=${query}, role=${role})}">Next</a>
                                                 </li>
+
                                             </ul>
                                         </nav>
                                     </div>
