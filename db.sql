@@ -109,9 +109,8 @@ CREATE TABLE warrantyrepair (
     technical_id INT, -- Người sửa
     issue_description VARCHAR(255),
     is_deleted BIT,
-    repair_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    date_completed DATETIME DEFAULT CURRENT_TIMESTAMP,
-    note_technical VARCHAR(255),
+    repair_date DATE,
+    type VARCHAR(50),
     order_id INT, -- Thêm cột để liên kết với bảng orders
     FOREIGN KEY (technical_id) REFERENCES useraccount(user_id),
     FOREIGN KEY (order_id) REFERENCES orders(order_id) 
@@ -178,42 +177,34 @@ VALUES
 ('Sony WH-1000XM4', 'Sony WH-1000XM4 là tai nghe chống ồn chủ động với chất lượng âm thanh cao và khả năng kết nối không dây.', 70, 3, 12, '2024-01-15', 'Sony');
 
 INSERT INTO color(color_name)
-VALUES('Xanh'),('Vàng'),('Đen'),('Hồng'),('Trắng'),('Bạc');
+VALUES('Blue'),('Yellow'),('Black'),('Prink'),('White'),('Silver');
 
 INSERT INTO productinfo (product_id, image, color_id, quantity, last_updated, price, isdeleted)
 VALUES
 (1, 'iphone-15-pro-max-blue-1-1.jpg', 1, 55, '2023-07-29', 1999,1),
 (2,'samsung-galaxy-s23-ultra-1-1.jpg',3,55,'2023-07-23', 1199,1),
 (3,'sony-xperia-1-iv-1-600x600.jpg',3,55,'2024-02-23', 1099,1),
-(4,'iphone-15-pro-max-blue-1-1.jpg', 2, 55, '2023-03-29', 1499,1),
-(5,'samsung-galaxy-z-fold-3-silver-1-600x600.jpg',4,55,'2023-03-29', 1799,1),
-(6,'2023_3_7_638138235534641283_iphone-14-vang-1.jpg',2,44,'2023-03-21', 1299,1),
-(14,'dell-xps-13-9310-i7-jgnh61-2-org.jpg',3,54, '2023-05-12', 1499,1),
-(15,'macbook-air-15-inch-m2-2023-70w-1.jpg',5, 89, '2023-07-21', 1299,1),
-(17, 'tai-nghe-bluetooth-airpods-pro-2nd-gen-usb-c-charge-apple-1.jpg',5,91,'2023-08-12', 249,1),
-(18, 'pdp_wh-1000xm4.jpg', 3, 43, '2024-01-29', 349,1),
-(7, 'iphone-13-pro-max.jpg', 1, 55, '2024-01-29', 2000, 1),
-(7, '4_36_3_2_1_9.jpg', 5, 55, '2024-01-29', 2000, 1),
-(7, '2_61_8_2_1_12.jpg', 3, 55, '2024-01-29', 1999, 1),
-(8, 'v_ng_18.jpg', 2, 55, '2024-01-29', 2199, 1),
-(8, 'b_c_1_9.jpg', 2, 55, '2024-01-29', 2000, 1),
-(9, 'samsung-galaxy-z-fold-6-xanh_5_.jpg', 1, 55, '2024-01-29', 3999, 1),
-(9, 'image_1171.jpg', 4, 55, '2024-01-29', 3999, 1),
-(10, 'galaxy-a15-vang.jpg', 2, 55, '2024-01-29', 1599, 1),
-(10, 'galaxy-a15-den.jpg', 2, 55, '2024-01-29', 1599, 1),
-(16, 'macbook-pro-2021-004_3.jpg', 5, 55, '2024-01-29', 3999, 1),
-(16, 'macbook-pro-2021-001_3.jpg', 6, 55, '2024-01-29', 3999, 1),
-(11, 'samsung-s23-fe_1.jpg', 1, 55, '2024-01-29', 899, 1),
-(11, 'samsung-galaxy-s23-fe_16__2.jpg', 3, 55, '2024-01-29', 899, 1),
-(12, 'samsung-galaxy-s24-ultra_10__2.jpg', 1, 55, '2024-01-29', 899, 1),
-(12, 'ss-s24-ultra-xam-222_2.jpg', 6, 55, '2024-01-29', 899, 1),
-(13, 'dien-thoai-sony-xperia-10-vi_1_.jpg', 3, 55, '2024-01-29', 599, 1),
-(13, 'dien-thoai-sony-xperia-10-vi.jpg', 1, 55, '2024-01-29', 599, 1);
-INSERT INTO warrantyrepair (product_name, image, status, user_id, technical_id, issue_description, is_deleted, repair_date, type, order_id)
-VALUES 
-('iPhone 15 Pro Max 256GB', 'iphone-15-pro-max-blue-1-1.jpg', 'Pending', 9, 6, 'Screen not responding', 0, '2024-01-10', 'Warranty', 1),
-('Galaxy S23 Ultra 512GB', 'samsung-galaxy-s23-ultra-1-1.jpg', 'In Progress', 10, 7, 'Battery draining quickly', 0, '2024-02-05', 'Repair', 2),
-('Sony Xperia 1 IV 256GB', 'sony-xperia-1-iv-1-600x600.jpg', 'Completed', 11, 8, 'Camera malfunctioning', 0, '2024-02-20', 'Warranty', 3),
-('iPhone 15 Pro 128GB', 'iphone-15-pro-max-blue-1-1.jpg', 'Pending', 9, 6, 'Touchscreen issue', 0, '2024-03-15', 'Repair', 4),
-('Galaxy Z Fold 4 1TB', 'samsung-galaxy-z-fold-3-silver-1-600x600.jpg', 'In Progress', 10, 7, 'Hinge problem', 0, '2024-03-25', 'Warranty', 5),
-('iPhone 14 Pro Max 512GB', '2023_3_7_638138235534641283_iphone-14-vang-1.jpg', 'Completed', 11, 8, 'Battery not charging', 0, '2024-04-01', 'Repair', 6);
+(4,'iphone-15-pro-max-blue-1-1.jpg', 1, 90, '2023-03-29', 1499,1),
+(5,'samsung-galaxy-z-fold-3-silver-1-600x600.jpg',4,20,'2023-03-29', 1799,1),
+(6,'2023_3_7_638138235534641283_iphone-14-vang-1.jpg',2,80,'2023-03-21', 1299,1),
+(14,'dell-xps-13-9310-i7-jgnh61-2-org.jpg',3,30, '2023-05-12', 1499,1),
+(15,'macbook-air-15-inch-m2-2023-70w-1.jpg',5, 45, '2023-07-21', 1299,1),
+(17, 'tai-nghe-bluetooth-airpods-pro-2nd-gen-usb-c-charge-apple-1.jpg',5,120,'2023-08-12', 249,1),
+(18, 'pdp_wh-1000xm4.jpg', 3, 70, '2024-01-29', 349,1),
+(7, 'iphone-13-pro-max.jpg', 1, 20, '2024-01-29', 2199, 1),
+(7, '4_36_3_2_1_9.jpg', 5, 20, '2024-01-29', 2000, 1),
+(7, '2_61_8_2_1_12.jpg', 3, 15, '2024-01-29', 1999, 1),
+(8, 'v_ng_18.jpg', 2, 40, '2024-01-29', 2199, 1),
+(8, 'b_c_1_9.jpg', 5, 40, '2024-01-29', 2000, 1),
+(9, 'samsung-galaxy-z-fold-6-xanh_5_.jpg', 1, 10, '2024-01-29', 3999, 1),
+(9, 'image_1171.jpg', 4, 10, '2024-01-29', 4199, 1),
+(10, 'galaxy-a15-vang.jpg', 2, 10, '2024-01-29', 1599, 1),
+(10, 'galaxy-a15-den.jpg', 3, 10, '2024-01-29', 1699, 1),
+(16, 'macbook-pro-2021-004_3.jpg', 5, 20, '2024-01-29', 3999, 1),
+(16, 'macbook-pro-2021-001_3.jpg', 6, 25, '2024-01-29', 4199, 1),
+(11, 'samsung-s23-fe_1.jpg', 1, 10, '2024-01-29', 899, 1),
+(11, 'samsung-galaxy-s23-fe_16__2.jpg', 3, 10, '2024-01-29', 919, 1),
+(12, 'samsung-galaxy-s24-ultra_10__2.jpg', 1, 10, '2024-01-29', 899, 1),
+(12, 'ss-s24-ultra-xam-222_2.jpg', 6, 10, '2024-01-29', 919, 1),
+(13, 'dien-thoai-sony-xperia-10-vi_1_.jpg', 3, 20, '2024-01-29', 599, 1),
+(13, 'dien-thoai-sony-xperia-10-vi.jpg', 1, 20, '2024-01-29', 619, 1);
