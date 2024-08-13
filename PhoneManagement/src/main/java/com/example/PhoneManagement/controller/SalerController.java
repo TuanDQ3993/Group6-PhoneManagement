@@ -119,7 +119,7 @@ public class SalerController {
         } else if (value == 1) {
             orderService.changeStatusOrder(oid, "Completed");
         } else {
-            orderService.changeStatusOrder(oid, "Cancelled");
+            orderService.changeStatusOrder(oid, "Canceled");
             orderService.backProduct(oid);
         }
 
