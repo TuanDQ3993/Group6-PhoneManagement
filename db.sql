@@ -177,7 +177,7 @@ VALUES
 ('Sony WH-1000XM4', 'Sony WH-1000XM4 là tai nghe chống ồn chủ động với chất lượng âm thanh cao và khả năng kết nối không dây.', 70, 3, 12, '2024-01-15', 'Sony');
 
 INSERT INTO color(color_name)
-VALUES('Blue'),('Yellow'),('Black'),('Prink'),('White'),('Silver');
+VALUES('Blue'),('Yellow'),('Black'),('Pink'),('White'),('Silver');
 
 INSERT INTO productinfo (product_id, image, color_id, quantity, last_updated, price, isdeleted)
 VALUES
