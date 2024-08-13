@@ -185,7 +185,7 @@
                                         <td>
                                             <p th:text="${order.status}"
                                                th:class="${order.status == 'Completed' ? 'text-complete' :
-                                                           order.status == 'Cancelled' ? 'text-cancelled' :
+                                                           order.status == 'Canceled' ? 'text-cancelled' :
                                                             order.status == 'Confirm and Shipping' ? 'text-confirm':
                                                             order.status == 'Prepay' ? 'text-prepay':'' } "></p>
                                         </td>
