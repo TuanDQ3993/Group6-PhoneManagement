@@ -63,7 +63,6 @@ public class WarrantyServiceImp implements WarrantyService {
     }
 
 
-
     // Xoa don
     @Override
     @Transactional
@@ -205,7 +204,24 @@ public class WarrantyServiceImp implements WarrantyService {
             WarrantyRepair repair = optionalRepair.get();
             if (repair.getStatus().equals("Warranty Pending")) {
                 repair.setStatus("Warranty Cancel");
+                repair.setNoteTechnical("Contact admin to resolve the issue: (Email) quangtuan3903@gmail.com");
+                warrantyRepairRepository.save(repair);
+            } else {
+                throw new IllegalArgumentException("Only pending warranties can be accepted.");
+            }
+        } else {
+            throw new NoSuchElementException("WarrantyRepair with id " + id + " not found");
+        }
+    }
 
+    public void changeCancel(int id) {
+        Optional<WarrantyRepair> optionalRepair = warrantyRepairRepository.findById(id);
+
+        if (optionalRepair.isPresent()) {
+            WarrantyRepair repair = optionalRepair.get();
+            if (repair.getStatus().equals("Warranty Cancel")) {
+                repair.setStatus("Warranty Failed");
+                repair.setNoteTechnical("Please careful when you enter information");
                 warrantyRepairRepository.save(repair);
             } else {
                 throw new IllegalArgumentException("Only pending warranties can be accepted.");
@@ -252,13 +268,13 @@ public class WarrantyServiceImp implements WarrantyService {
 
     @Override
     public List<WarrantyRepair> getByOrder(int oderId) {
-        return  warrantyRepairRepository.findByOrderAndProduct(oderId);
+        return warrantyRepairRepository.findByOrderAndProduct(oderId);
     }
 
 
     @Override
     // Cập nhật status đơn
-    public void changeStatusAndSaveNote(int id, String status,String note) {
+    public void changeStatusAndSaveNote(int id, String status, String note) {
         Optional<WarrantyRepair> optionalRepair = warrantyRepairRepository.findById(id);
         if (optionalRepair.isPresent()) {
             WarrantyRepair repair = optionalRepair.get();
@@ -278,6 +294,7 @@ public class WarrantyServiceImp implements WarrantyService {
             }
         }
     }
+
     @Override
     public Page<WarrantyRepair> findAllByProductNameAndStatusAndDateByTechnical(String productName, String status, Date repairDate, int technicalId, PageDTO pageDTO) {
         return warrantyRepairRepository.findAllByProductNameAndStatusAndDateByTechnical(productName, status, repairDate, technicalId, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
@@ -297,10 +314,12 @@ public class WarrantyServiceImp implements WarrantyService {
     public Page<WarrantyRepair> findAllByProductNameAndStatusByTechnical(String productName, String status, int technicalId, PageDTO pageDTO) {
         return warrantyRepairRepository.findAllByProductNameAndStatusByTechnical(productName, status, technicalId, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
     }
+
     @Override
     public Page<WarrantyRepair> findAllByProductNameAndStatusAndDateByAdmin(String productName, String status, Date repairDate, PageDTO pageDTO) {
-        return warrantyRepairRepository.findAllByProductNameOrUserAndStatusAndRepairDate(productName, repairDate,status, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
+        return warrantyRepairRepository.findAllByProductNameOrUserAndStatusAndRepairDate(productName, repairDate, status, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
     }
+
     @Override
     public Page<WarrantyRepair> findAllByProductNameAndRepairDateByAdmin(String productName, Date repairDate, PageDTO pageDTO) {
         return warrantyRepairRepository.findAllByProductNameAndRepairDateByAdmin(productName, repairDate, PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize()));
