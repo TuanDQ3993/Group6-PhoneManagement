@@ -525,7 +525,7 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public List<ProductShop> findProductShopByProductName(String productName) {
-        List<Object[]> results = productRepository.findProductShopByProductName(productName);
+        List<Object[]> results = productRepository.findProductShopByProductName(productName.trim());
         return mapResultsToProductShops(results);
     }
 

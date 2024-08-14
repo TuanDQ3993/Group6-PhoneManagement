@@ -15,4 +15,5 @@ public class OrderDetailDTO {
     String image;
     int quantity;
     double price;
+    String colorName;
 }
