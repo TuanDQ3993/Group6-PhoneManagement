@@ -154,7 +154,7 @@ public class AccountController {
     @PostMapping("/saveAccount")
     public String saveAccount(@ModelAttribute("userForm") Users user, Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
 
-        if (accountServiceImp.isPhoneExist(user.getPhoneNumber())) {
+        if (accountServiceImp.isPhoneExist(user.getPhoneNumber()) && !user.getRole().getRoleName().equalsIgnoreCase("USER")) {
             model.addAttribute("phoneExistsError", "Phone number already exists. Try again.");
         }
 
