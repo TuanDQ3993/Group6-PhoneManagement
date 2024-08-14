@@ -1,3 +1,4 @@
+
 package com.example.PhoneManagement.dto.request;
 
 import com.example.PhoneManagement.entity.Colors;
@@ -19,5 +20,6 @@ import java.util.Date;
 public class ProductColorDTO {
     Integer colorId;
     Integer quantity;
+    String price;
     MultipartFile image;
 }

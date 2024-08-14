@@ -2,17 +2,11 @@ package com.example.PhoneManagement.service;
 
 import com.example.PhoneManagement.dto.request.*;
 import com.example.PhoneManagement.dto.response.ProductTopSeller;
-import com.example.PhoneManagement.entity.Orders;
-import com.example.PhoneManagement.repository.OrderDetailRepository;
-import com.example.PhoneManagement.repository.OrderRepository;
-import com.example.PhoneManagement.repository.ProductRepository;
-import com.example.PhoneManagement.repository.UserRepository;
+import com.example.PhoneManagement.entity.*;
+import com.example.PhoneManagement.repository.*;
 import com.example.PhoneManagement.service.imp.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,7 +24,13 @@ public class OrderServiceImp implements OrderService {
     private OrderDetailRepository orderDetailRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    ProductColorRepository productColorRepository;
 
 
     @Override
@@ -79,16 +79,8 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public OrderDetailInfoDTO getOrderInfo(int orderId) {
-        List<Object[]> results = orderRepository.findOrderInfo(orderId);
-        Object[] result = results.get(0);
-        OrderDetailInfoDTO dto = new OrderDetailInfoDTO();
-        dto.setTotalAmount(((Number) result[0]).doubleValue());
-        dto.setOrderDate((Date) result[1]);
-        dto.setAddress((String) result[2]);
-        dto.setCustomerName((String) result[3]);
-        dto.setPhoneNumber((String) result[4]);
-        return dto;
+    public Orders getOrderInfo(int orderId) {
+        return orderRepository.findById(orderId).get();
     }
 
     public LocalDate convertToLocalDate(Date date) {
@@ -124,8 +116,10 @@ public class OrderServiceImp implements OrderService {
             }
 
             //tìm theo tên
-            if (find != null && !find.isEmpty()) {
-                filteredOrders = filteredOrders.stream().filter(order -> find.trim().toLowerCase().equals(order.getUsername().toLowerCase()))
+            if (find != null && !find.trim().isEmpty()) {
+                String searchTerm = find.trim().toLowerCase();
+                filteredOrders = filteredOrders.stream()
+                        .filter(order -> order.getUsername().toLowerCase().contains(searchTerm))
                         .collect(Collectors.toList());
             }
 
@@ -172,8 +166,10 @@ public class OrderServiceImp implements OrderService {
             }
 
             //tìm theo tên
-            if (find != null && !find.isEmpty()) {
-                filteredOrders = filteredOrders.stream().filter(order -> find.equals(order.getUsername().toLowerCase()))
+            if (find != null && !find.trim().isEmpty()) {
+                String searchTerm = find.trim().toLowerCase();
+                filteredOrders = filteredOrders.stream()
+                        .filter(order -> order.getUsername().toLowerCase().contains(searchTerm))
                         .collect(Collectors.toList());
             }
 
@@ -248,6 +244,52 @@ public class OrderServiceImp implements OrderService {
         order.setStatus(status);
         orderRepository.save(order);
     }
+
+    @Override
+    public void changeSale(int orderId, int saleId) {
+        Orders order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order Not Found"));
+        order.setSalerId(saleId);
+        orderRepository.save(order);
+    }
+
+    @Override
+    public List<Object[]> getOrdersByUserIdWithFilters(UserDTO userDTO, String status , String search) {
+        int userId = userRepository.findIdByUserName(userDTO.getUserName());
+        return orderRepository.findOrdersWithFiltersCategory(userId, status,search);
+    }
+
+
+    @Override
+    public int countTotalOrders(UserDTO user) {
+        int userId = userRepository.findIdByUserName(user.getUserName());
+        return orderRepository.countOrdersByUserId(userId);
+    }
+
+    @Override
+    public List<Object[]> findOrderDetail(int orderId){
+        return orderRepository.findOrderDetail(orderId);
+    }
+
+    @Override
+    public void backProduct(int id) {
+        Orders order= orderRepository.findById(id).get();
+        for (OrderDetail orderDetail : order.getOrderDetails()) {
+            ProductInfo productInfo = orderDetail.getProductInfo();
+            productInfo.setQuantity(productInfo.getQuantity() + orderDetail.getQuantity());
+            productColorRepository.save(productInfo);
+
+            Products product=productInfo.getProducts();
+            product.setQuantity(product.getQuantity() + orderDetail.getQuantity());
+            productRepository.save(product);
+
+        }
+    }
+
+    @Override
+    public List<Users> getAllSale() {
+        return userRepository.getAllSale();
+    }
+
 
 
 }

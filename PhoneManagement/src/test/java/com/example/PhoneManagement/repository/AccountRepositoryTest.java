@@ -2,12 +2,16 @@ package com.example.PhoneManagement.repository;
 
 import com.example.PhoneManagement.entity.Roles;
 import com.example.PhoneManagement.entity.Users;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
@@ -36,6 +40,7 @@ class AccountRepositoryTest {
     @BeforeEach
     void setUp() {
         accountRepository.deleteAll();
+        roleRepository.deleteAll();
         Roles role = new Roles();
         role.setRoleName("USER");
         role = roleRepository.save(role);
@@ -51,6 +56,7 @@ class AccountRepositoryTest {
         testUser.setActive(true);
         testUser.setCreatedAt(Date.from(LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant()));
         testUser = accountRepository.save(testUser);
+        accountRepository.flush();
 
         //Person2
         testUser2 = new Users();
@@ -63,8 +69,39 @@ class AccountRepositoryTest {
         testUser2.setActive(true);
         testUser2.setCreatedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
         testUser2 = accountRepository.save(testUser2);
+        accountRepository.flush();
     }
 
+
+    @Test
+    public void testFindByRoleAndFullName() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Users> result = accountRepository.findByRoleAndFullName("Nguyen Hao Quang", testUser.getRole().getRoleId(), pageable);
+
+        assertNotNull(result);
+        assertEquals(result.getContent().get(0).getUserName(), testUser.getUserName());
+    }
+
+    @Test
+    public void testFindByFullName() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Users> result = accountRepository.findByFullName("haoquang111@example.com", pageable);
+
+        assertFalse(result.isEmpty(), "Result should not be empty");
+        assertEquals(testUser2.getUserName(), result.getContent().get(0).getUserName());
+    }
+
+    @Test
+    public void testFindByRole() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Users> result = accountRepository.findByRole(testUser.getRole().getRoleId(), pageable);
+
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.getTotalElements());
+        List<String> userNames = result.getContent().stream().map(Users::getUserName).toList();
+        assertTrue(userNames.contains(testUser.getUserName()));
+        assertTrue(userNames.contains(testUser2.getUserName()));
+    }
 
     @Test
     void unBanUser() {
@@ -83,14 +120,12 @@ class AccountRepositoryTest {
     }
 
     @Test
-    void findAllOrderByCreatedAt() {
+    public void testFindAllOrderByCreatedAt() {
+        List<Users> result = accountRepository.findAllOrderByCreatedAt();
 
-        List<Users> users = accountRepository.findAllOrderByCreatedAt();
-        assertFalse(users.isEmpty());
-        assertEquals(2, users.size());
-        assertEquals(testUser.getFullName(), users.get(0).getFullName());
-        assertEquals(testUser2.getFullName(), users.get(1).getFullName());
-
+        assertFalse(result.isEmpty());
+        assertEquals(testUser2.getUserName(), result.get(0).getUserName());
+        assertEquals(testUser.getUserName(), result.get(1).getUserName());
     }
 
     @Test
@@ -104,5 +139,17 @@ class AccountRepositoryTest {
         Optional<Users> user = accountRepository.findById(testUser.getUserId());
         assertTrue(user.isPresent());
         assertEquals(newRole.getRoleId(), user.get().getRole().getRoleId());
+    }
+
+    @Test
+    public void testExistsByPhoneNumber() {
+        boolean exists = accountRepository.existsByPhoneNumber(testUser.getPhoneNumber());
+        assertTrue(exists);
+    }
+
+    @Test
+    public void testExistsByUserName() {
+        boolean exists = accountRepository.existsByUserName(testUser.getUserName());
+        assertTrue(exists);
     }
 }

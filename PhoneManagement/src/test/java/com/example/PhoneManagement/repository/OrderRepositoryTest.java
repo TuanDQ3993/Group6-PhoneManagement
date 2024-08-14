@@ -5,7 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,6 +35,8 @@ class OrderRepositoryTest {
 
     @Autowired
     private ColorRepository colorsRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @BeforeEach
     void setUp() throws ParseException {
@@ -42,8 +46,9 @@ class OrderRepositoryTest {
         productsRepository.deleteAll();
         userRepository.deleteAll();
         colorsRepository.deleteAll();
+        categoryRepository.deleteAll();
 
-        // Create user
+        // Tạo người dùng
         Users user = new Users();
         user.setUserName("haoquang@example.com");
         user.setPassword("123");
@@ -52,31 +57,40 @@ class OrderRepositoryTest {
         user.setPhoneNumber("1234567890");
         userRepository.save(user);
 
-        // Create color
+        // Tạo màu sắc
         Colors color = new Colors();
         color.setColorName("Red");
         colorsRepository.save(color);
 
-        // Create product
+        //Tao category
+        Category category = new Category();
+        category.setDeleted(true);
+        category.setCategoryName("Smartphones");
+        categoryRepository.save(category);
+
+        // Tạo sản phẩm
         Products product = new Products();
         product.setProductName("Product A");
         product.setDescription("Description of Product A");
         product.setQuantity(10);
-        product.setPrice(new BigDecimal("100.00"));
+//        product.setPrice(new BigDecimal("100.00"));
         product.setWarrantyPeriod(12);
         product.setCreatedAt(new Date());
+        product.setCategory(category);
+        product.setBrandName("Apple");
         productsRepository.save(product);
 
-        // Create product color
-        ProductColor productColor = new ProductColor();
-        productColor.setProducts(product);
-        productColor.setColors(color);
-        productColor.setImage("image.png");
-        productColor.setQuantity(5);
-        productColor.setLastUpdated(new Date());
-        productColorRepository.save(productColor);
+        // Tạo màu sắc của sản phẩm
+        ProductInfo productInfo = new ProductInfo();
+        productInfo.setProducts(product);
+        productInfo.setColors(color);
+        productInfo.setImage("image.png");
+        productInfo.setQuantity(5);
+        productInfo.setLastUpdated(new Date());
+        productInfo.setDeleted(true);
+        productColorRepository.save(productInfo);
 
-        // Create order
+        // Tạo đơn hàng
         Orders order = new Orders();
         order.setSalerId(1);
         order.setOrderDate(new SimpleDateFormat("yyyy-MM-dd").parse("2024-07-01"));
@@ -85,10 +99,10 @@ class OrderRepositoryTest {
         order.setUser(user);
         orderRepository.save(order);
 
-        // Create order detail
+        // Tạo chi tiết đơn hàng
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.setOrder(order);
-        orderDetail.setProductColor(productColor);
+        orderDetail.setProductInfo(productInfo);
         orderDetail.setQuantity(2);
         orderDetail.setPrice(new BigDecimal("50.00"));
         orderDetailRepository.save(orderDetail);
@@ -110,19 +124,6 @@ class OrderRepositoryTest {
         assertEquals(0, ((Number) orderedOrder[6]).intValue()); // countP
     }
 
-    @Test
-    void findOrderInfo() {
-        List<Object[]> orderInfo = orderRepository.findOrderInfo(1);
-        assertNotNull(orderInfo);
-        assertFalse(orderInfo.isEmpty());
-
-        Object[] info = orderInfo.get(0);
-        assertEquals(new BigDecimal("200.00"), info[0]);
-        assertNotNull(info[1]); // Kiểm tra ngày không null
-        assertEquals("Vinh Test", info[2]);
-        assertEquals("Quang Test", info[3]);
-        assertEquals("1234567890", info[4]);
-    }
 
     @Test
     void countByOrderDateBetween() throws ParseException {
@@ -136,7 +137,7 @@ class OrderRepositoryTest {
     void countByOrderDateBetweenAndStatus() throws ParseException {
         Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse("2024-06-01");
         Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2024-07-31");
-        long count = orderRepository.countByOrderDateBetweenAndStatus(startDate, endDate, "Pending");
+        long count = orderRepository.countByOrderDateBetweenAndStatus(startDate, endDate, "Completed");
         assertEquals(1, count);
     }
 
@@ -150,6 +151,57 @@ class OrderRepositoryTest {
     @Test
     void countDistinctUserId() {
         long count = orderRepository.countDistinctUserId(7);
+        assertEquals(1, count);
+    }
+
+//    @Test
+//    //H2 khong ho tro ham DATE() như MySQL nên khong lam được. Muon lam duoc phai thay query
+//    void getSaleMinOrder() {
+//        int salerId = orderRepository.getSaleMinOrder();
+//        assertTrue(salerId > 0); // Assuming that there's at least one salerId, adjust as needed.
+//    }
+
+//    @Test
+//    void findOrdersWithFiltersCategory() {
+//        Page<Object[]> result = orderRepository.findOrdersWithFiltersCategory(
+//                1, "Completed", null, PageRequest.of(0, 10));
+//
+//        assertNotNull(result);
+//        assertFalse(result.isEmpty());
+//
+//        Object[] order = result.getContent().get(0);
+//        assertEquals(1, order[0]); // orderId
+//        assertEquals("Product A", order[1]); // productName
+//        assertEquals("Red", order[2]); // colorName
+//        assertEquals("image.png", order[3]); // image
+//        assertEquals(new BigDecimal("200.00"), order[5]); // totalAmount
+//        assertEquals(2, order[6]); // quantity
+//        assertNotNull(order[7]); // orderDate
+//        assertEquals("Smartphones", order[8]); // categoryName
+//        assertEquals("Completed", order[9]); // status
+//    }
+
+    @Test
+    void findOrderDetail() {
+        List<Object[]> orderDetails = orderRepository.findOrderDetail(1);
+
+        assertNotNull(orderDetails);
+        assertFalse(orderDetails.isEmpty());
+
+        Object[] details = orderDetails.get(0);
+        assertEquals(1, details[0]); // orderId
+        assertEquals("Product A", details[1]); // productName
+        assertEquals("Red", details[2]); // colorName
+        assertEquals("image.png", details[3]); // image
+        assertEquals(new BigDecimal("200.00"), details[5]); // totalAmount
+        assertEquals(2, details[6]); // quantity
+        assertNotNull(details[7]); // orderDate
+        assertEquals("Smartphones", details[8]); // categoryName
+    }
+
+    @Test
+    void countOrdersByUserId() {
+        int count = orderRepository.countOrdersByUserId(1);
         assertEquals(1, count);
     }
 }

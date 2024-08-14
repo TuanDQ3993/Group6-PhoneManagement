@@ -21,6 +21,13 @@
     <!-- Custom Theme Style -->
     <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
     <style>
+
+        .button {
+            padding: 10px 15px;
+            margin: 5px;
+            text-align: center;
+        }
+
         .text-complete {
             color: green;
         }
@@ -33,103 +40,38 @@
             color: yellowgreen;
         }
 
+        .text-prepay {
+            color: #00ccff;
+        }
+
+
+        .form-select:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+        }
+
+
+        .form-select option {
+            padding: 0.375rem 0.75rem;
+            background-color: #ffffff;
+            color: #495057;
+        }
+
+
+        .form-select-sm {
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+
+
     </style>
 </head>
 
 <body class="nav-md">
 <div class="container body">
-    <div class="main_container">
-        <div class="col-md-3 left_col">
-            <div class="left_col scroll-view">
-                <div class="navbar nav_title" style="border: 0;">
-                    <a th:href="@{/vendors/bootstrap-daterangepicker/example/amd/index.html}" class="site_title"><i
-                            class="fa fa-paw"></i> <span>Phone Manager</span></a>
-                </div>
-
-                <div class="clearfix"></div>
-
-                <!-- menu profile quick info -->
-                <div class="profile clearfix">
-                    <div class="profile_pic">
-                        <img th:src="@{/images/img.jpg}" alt="..." class="img-circle profile_img">
-                    </div>
-                    <div class="profile_info">
-                        <span>Welcome,</span>
-                        <h2 th:text="${user.fullName}"></h2>
-                    </div>
-                </div>
-                <!-- /menu profile quick info -->
-
-                <br/>
-
-                <!-- sidebar menu -->
-                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-                    <div class="menu_section">
-                        <h3>General</h3>
-                        <ul class="nav side-menu">
-                            <li><a href="/saler/dashboard"><i class="fa fa-home"></i> DashBoard</a>
-                            </li>
-                            <li><a href="/saler/orders"><i class="fa fa-edit"></i> OrderList </a>
-                            </li>
-
-
-                        </ul>
-                    </div>
-
-
-                </div>
-                <!-- /sidebar menu -->
-
-                <!-- /menu footer buttons -->
-                <div class="sidebar-footer hidden-small">
-                    <a data-toggle="tooltip" data-placement="top" title="Settings">
-                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-                    </a>
-                    <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-                    </a>
-                    <a data-toggle="tooltip" data-placement="top" title="Lock">
-                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-                    </a>
-                    <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
-                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                    </a>
-                </div>
-                <!-- /menu footer buttons -->
-            </div>
-        </div>
-
-        <!-- top navigation -->
-        <div class="top_nav">
-            <div class="nav_menu">
-                <div class="nav toggle">
-                    <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-                </div>
-                <nav class="nav navbar-nav">
-                    <ul class=" navbar-right">
-                        <li class="nav-item dropdown open" style="padding-left: 15px;">
-                            <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true"
-                               id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                                <img th:src="@{${user.avatar}}" alt="">
-                                <span th:text="${user.fullName}"></span>
-                            </a>
-                            <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="/user/profile"> Profile</a>
-                                <a class="dropdown-item" href="/user/change_password">
-
-                                    <span>Change Password</span>
-                                </a>
-
-                                <a class="dropdown-item" href="/auth/logout"><i class="fa fa-sign-out pull-right"></i>
-                                    Log Out</a>
-                            </div>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-        <!-- /top navigation -->
-
+    <div th:insert="~{fragments/sidebar.html}"></div>
         <!-- page content -->
         <div class="right_col" role="main">
             <div class="">
@@ -169,6 +111,7 @@
                             <label for="status">Status:</label>
                             <select name="status" id="status" class="form-control">
                                 <option value="">All</option>
+                                <option value="Prepay" th:selected="${status eq 'Prepay'}">Prepay</option>
                                 <option value="Pending Confirmation" th:selected="${status eq 'Pending Confirmation'}">
                                     Pending Confirmation
                                 </option>
@@ -178,13 +121,16 @@
                                 <option value="Completed" th:selected="${status eq 'Completed'}">Completed</option>
                                 <option value="Cancelled" th:selected="${status eq 'Cancelled'}">Cancelled</option>
 
+
                             </select>
                         </div>
                         <input type="hidden" name="searchQuery" th:value="${searchQuery}">
                         <input type="hidden" name="size" th:value="${size}">
                         <div class="col-md-3 align-self-end">
                             <button type="submit" class="btn btn-primary mt-2">Filter</button>
-                            <a class="button blue" th:href="@{/saler/export(startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}">Export to Excel</a>
+                            <a class="button blue"
+                               th:href="@{/saler/export(startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}">Export
+                                to Excel</a>
                         </div>
 
                     </div>
@@ -207,6 +153,7 @@
                                         <th>Purchaser</th>
                                         <th>Status</th>
                                         <th>Action</th>
+                                        <th th:if="${user.roleName =='ADMIN'}">Saler</th>
 
                                     </tr>
                                     </thead>
@@ -224,7 +171,7 @@
                                         </td>
                                         <td>
                                             <img style="width: 38%;"
-                                                 th:src="${order.image}">
+                                                 th:src="@{/uploads/{image}(image=${order.image})}">
                                         </td>
                                         <td class="project_progress">
                                             <p th:text="${order.totalAmount}"></p>
@@ -238,25 +185,58 @@
                                         <td>
                                             <p th:text="${order.status}"
                                                th:class="${order.status == 'Completed' ? 'text-complete' :
-                                                           order.status == 'Cancelled' ? 'text-cancelled' :
-                                                            order.status == 'Confirm and Shipping' ? 'text-confirm':''} "></p>
+                                                           order.status == 'Canceled' ? 'text-cancelled' :
+                                                            order.status == 'Confirm and Shipping' ? 'text-confirm':
+                                                            order.status == 'Prepay' ? 'text-prepay':'' } "></p>
                                         </td>
                                         <td>
-                                            <th:block th:if="${order.status == 'Pending Confirmation'}">
-                                                <a class="button blue"
-                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=2)}">Confirm</a>
-                                                <a class="button red"
-                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
-                                            </th:block>
+                                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                                <th:block th:if="${order.status == 'Pending Confirmation'}">
+                                                    <a class="button green"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=2)}"
+                                                       onclick="return confirmAction(event, this)">Confirm</a>
+                                                    <a class="button red"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=0)}"
+                                                       onclick="return confirmAction(event, this)">Cancel</a>
+                                                </th:block>
+                                                <th:block th:if="${order.status == 'Confirm and Shipping'}">
+                                                    <a class="button green"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=1)}"
+                                                       onclick="return confirmAction(event, this)">Completed</a>
+                                                    <a class="button red"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=0)}"
+                                                       onclick="return confirmAction(event, this)">Cancel</a>
+                                                </th:block>
+                                                <th:block th:if="${order.status == 'Prepay'}">
+                                                    <a class="button green"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=1)}"
+                                                       onclick="return confirmAction(event, this)">Completed</a>
+                                                    <a class="button red"
+                                                       href="#"
+                                                       th:href="@{/saler/changestatus(oid=${order.orderID},status=${order.status},value=0)}"
+                                                       onclick="return confirmAction(event, this)">Cancel</a>
+                                                </th:block>
+                                            </div>
+                                        </td>
 
-                                            <th:block th:if="${order.status == 'Confirm and Shipping'}">
-                                                <a class="button green"
-                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=1)}">Completed</a>
-                                                <a class="button red"
-                                                   th:href="@{/saler/changestatus(oid=${order.orderID},status= ${order.status},value=0)}">Cancel</a>
-                                            </th:block>
-
-
+                                        <td th:if="${user.roleName =='ADMIN'}">
+                                            <form action="/saler/changesale" method="POST" class="mb-0">
+                                                <select name="sale" id="sale"
+                                                        class="form-select form-select-sm d-inline w-auto"
+                                                        onchange="this.form.submit()">
+                                                    <option th:each="sale : ${listsale}"
+                                                            th:value="${sale.userId}"
+                                                            th:text="${sale.fullName}"
+                                                            th:selected="${sale.userId == order.salerId}">
+                                                    </option>
+                                                </select>
+                                                <input type="hidden" name="orderid" th:value="${order.orderID}">
+                                            </form>
                                         </td>
                                     </tr>
 
@@ -279,31 +259,33 @@
                                             <input type="hidden" name="status" th:value="${status}">
                                             <input type="hidden" name="searchQuery" th:value="${searchQuery}">
                                         </form>
-                                        <ul class="pagination mb-0">
-                                            <li class="page-item"
-                                                th:classappend="${orderlist.hasPrevious()} ? '': 'disabled'">
-                                                <a class="page-link"
-                                                   th:href="@{/saler/orders(page=${orderlist.number}, size=${size},startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}"
-                                                   aria-label="Previous">
-                                                    <span aria-hidden="true">&laquo;</span>
-                                                </a>
-                                            </li>
-                                            <li class="page-item"
-                                                th:each="i : ${#numbers.sequence(1, orderlist.totalPages)}"
-                                                th:classappend="${orderlist.number +1 == i} ? 'active'">
-                                                <a class="page-link"
-                                                   th:href="@{/saler/orders(page=${i}, size=${size},startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}"
-                                                   th:text="${i}"></a>
-                                            </li>
-                                            <li class="page-item"
-                                                th:classappend="${orderlist.hasNext()} ? '': 'disabled'">
-                                                <a class="page-link"
-                                                   th:href="@{/saler/orders(page=${orderlist.number +2 }, size=${size},startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}"
-                                                   aria-label="Next">
-                                                    <span aria-hidden="true">&raquo;</span>
-                                                </a>
-                                            </li>
-                                        </ul>
+                                        <th:block th:if="${orderlist.totalPages > 0}">
+                                            <ul class="pagination mb-0">
+                                                <li class="page-item"
+                                                    th:classappend="${orderlist.hasPrevious()} ? '': 'disabled'">
+                                                    <a class="page-link"
+                                                       th:href="@{/saler/orders(page=${orderlist.number}, size=${size},startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}"
+                                                       aria-label="Previous">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item"
+                                                    th:each="i : ${#numbers.sequence(1, orderlist.totalPages)}"
+                                                    th:classappend="${orderlist.number +1 == i} ? 'active'">
+                                                    <a class="page-link"
+                                                       th:href="@{/saler/orders(page=${i}, size=${size},startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}"
+                                                       th:text="${i}"></a>
+                                                </li>
+                                                <li class="page-item"
+                                                    th:classappend="${orderlist.hasNext()} ? '': 'disabled'">
+                                                    <a class="page-link"
+                                                       th:href="@{/saler/orders(page=${orderlist.number +2 }, size=${size},startDate=${startDate},endDate=${endDate},status=${status},searchQuery=${searchQuery})}"
+                                                       aria-label="Next">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </th:block>
 
 
                                     </div>
@@ -331,6 +313,17 @@
 
 <!-- Custom Theme Scripts -->
 <script th:src="@{/build/js/custom.min.js}"></script>
+
+<script type="text/javascript">
+    function confirmAction(event, link) {
+        if (!confirm("Are you sure?")) {
+            event.preventDefault();
+        } else {
+            window.location.assign(link.getAttribute('href'));
+        }
+    }
+</script>
+
 
 </body>
 </html>

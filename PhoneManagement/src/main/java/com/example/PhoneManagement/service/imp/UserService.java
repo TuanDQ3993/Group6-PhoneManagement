@@ -1,11 +1,9 @@
 package com.example.PhoneManagement.service.imp;
 
-import com.example.PhoneManagement.dto.request.ChangePasswordRequest;
-import com.example.PhoneManagement.dto.request.UserCreate;
-import com.example.PhoneManagement.dto.request.UserDTO;
-import com.example.PhoneManagement.dto.request.UserUpdateRequest;
+import com.example.PhoneManagement.dto.request.*;
 import com.example.PhoneManagement.entity.Users;
 import org.springframework.security.core.Authentication;
+import org.springframework.ui.Model;
 
 import java.security.Principal;
 import java.util.List;
@@ -31,5 +29,15 @@ public interface UserService {
     Optional<Users> findByEmail(String email);
 
     void updatePassword(Users user, String password);
+
+    Users getUserByName(String email);
+
+    boolean existEmail(String email);
+
+    void createAccount(RegisterRequest registerRequest);
+
+    void activeAccount(String email, Model model);
+
+    void activesuccess(String token,Model model);
 
 }

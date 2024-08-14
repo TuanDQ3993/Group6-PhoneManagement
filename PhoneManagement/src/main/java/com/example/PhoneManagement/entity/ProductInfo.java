@@ -1,6 +1,6 @@
+
 package com.example.PhoneManagement.entity;
 
-import com.example.PhoneManagement.entity.Key.KeyProductColor;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,16 +8,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 
-@Entity(name = "productcolor")
+@Entity(name = "productinfo")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductColor {
+public class ProductInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_color_id")
@@ -38,10 +39,17 @@ public class ProductColor {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
+    @Column(name="price", precision = 10, scale = 2)
+    BigDecimal price ;
+
+    @Column(name="isdeleted")
+    boolean isDeleted;
+
     @Column(name = "last_updated")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated;
 
-    @OneToMany(mappedBy = "productColor")
+    @OneToMany(mappedBy = "productInfo")
     private List<OrderDetail> orderDetailList;
+
 }
