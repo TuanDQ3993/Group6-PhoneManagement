@@ -90,11 +90,11 @@ public class WarrantyController {
                 if (date != null && query != null && !query.isEmpty() && status != null && !status.isEmpty()) {
                     warrantyPage = warrantyRepairService.findAllByProductNameAndStatusAndDateByAdmin(pageDTO, status, date, query);
                 } else if (date != null && query != null && !query.isEmpty()) {
-                    warrantyPage = warrantyRepairService.findAllByProductNameAndRepairDateByAdmin( query, date,pageDTO);
+                    warrantyPage = warrantyRepairService.findAllByProductNameAndRepairDateByAdmin(query, date, pageDTO);
                 } else if (date != null && status != null && !status.isEmpty()) {
-                    warrantyPage = warrantyRepairService.findAllByStatusAndRepairDateByAdmin(status, date,pageDTO);
+                    warrantyPage = warrantyRepairService.findAllByStatusAndRepairDateByAdmin(status, date, pageDTO);
                 } else if (query != null && !query.isEmpty() && status != null && !status.isEmpty()) {
-                    warrantyPage = warrantyRepairService.findAllByProductNameAndStatusByAdmin( query, status,pageDTO);
+                    warrantyPage = warrantyRepairService.findAllByProductNameAndStatusByAdmin(query, status, pageDTO);
                 } else if (date != null) {
                     warrantyPage = warrantyRepairService.findByRepairDateByAdmin(pageDTO, date);
                 } else if (query != null && !query.isEmpty()) {
@@ -107,13 +107,13 @@ public class WarrantyController {
             } else {
                 technicalName = user.getFullName();
                 if (date != null && query != null && !query.isEmpty() && status != null && !status.isEmpty()) {
-                    warrantyPage = warrantyRepairService.findAllByProductNameAndStatusAndDateByTechnical(query, status,  date,user.getUserId(), pageDTO);
+                    warrantyPage = warrantyRepairService.findAllByProductNameAndStatusAndDateByTechnical(query, status, date, user.getUserId(), pageDTO);
                 } else if (date != null && query != null && !query.isEmpty()) {
                     warrantyPage = warrantyRepairService.findAllByProductNameAndRepairDateByTechnical(query, date, user.getUserId(), pageDTO);
                 } else if (date != null && status != null && !status.isEmpty()) {
                     warrantyPage = warrantyRepairService.findAllByStatusAndRepairDateByTechnical(status, date, user.getUserId(), pageDTO);
                 } else if (query != null && !query.isEmpty() && status != null && !status.isEmpty()) {
-                    warrantyPage = warrantyRepairService.findAllByProductNameAndStatusByTechnical(query, status, user.getUserId(),pageDTO);
+                    warrantyPage = warrantyRepairService.findAllByProductNameAndStatusByTechnical(query, status, user.getUserId(), pageDTO);
                 } else if (date != null) {
                     warrantyPage = warrantyRepairService.findByRepairDate(pageDTO, date, user.getUserId());
                 } else if (query != null && !query.isEmpty()) {
@@ -146,7 +146,6 @@ public class WarrantyController {
         }
         return "listwarranty";
     }
-
 
 
     @GetMapping("/export/excel")
@@ -202,6 +201,11 @@ public class WarrantyController {
         return "redirect:/technical/warranties";
     }
 
+    @PostMapping("/changeCancel/{id}")
+    public String changeCancel(@PathVariable int id) {
+        warrantyRepairService.changeCancel(id);
+        return "redirect:/technical/warranties";
+    }
 
     @PostMapping("/acceptWarranty/{id}")
     public String acceptWarranty(
