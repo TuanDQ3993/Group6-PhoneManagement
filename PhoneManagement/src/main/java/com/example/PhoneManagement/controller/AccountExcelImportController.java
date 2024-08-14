@@ -73,6 +73,8 @@ public class AccountExcelImportController {
                 userName = row.getCell(0).getStringCellValue();
                 if (accountServiceImp.isEmailExist(userName)) {
                     throw new IOException("Row " + (i + 1) + ": Email " + userName + " already exists.");
+                }else if(!accountServiceImp.isValidEmail(userName)){
+                    throw new IOException("Row " + (i + 1) + ": Email " + userName + " not valid.");
                 }
                 user.setUserName(userName);
             } else {
@@ -82,8 +84,11 @@ public class AccountExcelImportController {
 
             if (row.getCell(3) != null) {
                 phoneNumber = row.getCell(3).getStringCellValue();
-                if (accountServiceImp.isPhoneExist(phoneNumber) && !row.getCell(4).getStringCellValue().equalsIgnoreCase("USER")) {
+                if (accountServiceImp.isPhoneExist(phoneNumber) && !row.getCell(4).getStringCellValue().equalsIgnoreCase("USER") ) {
                     throw new IOException("Row " + (i + 1) + ": Phone number " + phoneNumber + " already exists.");
+
+                } else if (!accountServiceImp.isValidPhoneNumber(phoneNumber)) {
+                    throw new IOException("Row " + (i + 1) + ": Phone number " + phoneNumber + "not valid.");
 
                 }
                 user.setPhoneNumber(phoneNumber);
