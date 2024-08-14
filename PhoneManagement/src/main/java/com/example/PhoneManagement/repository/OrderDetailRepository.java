@@ -13,10 +13,11 @@ import java.util.List;
 
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Integer> {
-    @Query(value = "SELECT od.order_id, p.product_id, p.product_name, pc.image, od.quantity, od.price " +
+    @Query(value = "SELECT od.order_id, p.product_id, p.product_name, pc.image, od.quantity, od.price, c.color_name " +
             "FROM orderdetail od " +
             "JOIN productinfo pc ON pc.product_color_id = od.product_color_id " +
             "JOIN products p ON p.product_id = pc.product_id " +
+            "JOIN color c on c.color_id = pc.color_id "+
             "WHERE od.order_id = :orderId", nativeQuery = true)
     List<Object[]> findAllOrderDetails(@Param("orderId") Integer orderId);
 
