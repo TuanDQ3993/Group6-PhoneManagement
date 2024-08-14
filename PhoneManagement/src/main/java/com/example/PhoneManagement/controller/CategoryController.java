@@ -95,13 +95,17 @@ public class CategoryController {
         try {
             List<Category> categoryList = categoryExcelImportController.importCategoryFromExcel(file.getInputStream());
             categoryService.saveAll(categoryList);
+            redirectAttributes.addFlashAttribute("successMessage", "Categories imported successfully.");
+        } catch (IllegalArgumentException e) {
+            // Catching the IllegalArgumentException to display the error message on the screen
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/admin/category";
         } catch (IOException e) {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("errorMessage", "Error processing file.");
             return "redirect:/admin/category";
         }
 
-        redirectAttributes.addFlashAttribute("successMessage", "Categories imported successfully.");
         return "redirect:/admin/category";
     }
 

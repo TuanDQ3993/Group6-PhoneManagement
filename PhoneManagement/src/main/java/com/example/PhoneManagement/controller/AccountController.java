@@ -197,7 +197,7 @@ public class AccountController {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("errorMessage", "Error processing the file. Please try again.");
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
 
         return "redirect:/admin/users";

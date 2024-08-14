@@ -101,9 +101,13 @@
                 <select name="status" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 25%;">
                     <option value="all" th:selected="${status == 'all'}">All Statuses</option>
                     <option value="Completed" th:selected="${status == 'Completed'}">Completed</option>
-                    <option value="Confirm and Shipping" th:selected="${status == 'Confirm and Shipping'}">Confirm and Shipping</option>
+                    <option value="Confirm and Shipping" th:selected="${status == 'Confirm and Shipping'}">Confirm and
+                        Shipping
+                    </option>
                     <option value="Canceled" th:selected="${status == 'Cancelled'}">Cancelled</option>
-                    <option value="Pending Confirmation" th:selected="${status == 'Pending Confirmation'}">Pending Confirm</option>
+                    <option value="Pending Confirmation" th:selected="${status == 'Pending Confirmation'}">Pending
+                        Confirm
+                    </option>
                     <option value="Prepay" th:selected="${status == 'Prepay'}">Prepay</option>
                 </select>
                 <button type="submit"
@@ -169,7 +173,6 @@
     </div>
 </div>
 
-
 <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close" id="closeModalBtn">&times;</span>
@@ -179,17 +182,20 @@
             <input type="hidden" id="selectedProductId" name="selectedProductId"/>
             <input type="hidden" id="orderId" name="orderId"/>
             <input type="hidden" id="productName" name="productName"/>
+
             <label for="image" style="display: block; margin-top: 10px;">Image:</label>
             <input type="file" id="image" th:field="*{image}"
                    style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
                    accept=".png, .jpg, .jpeg"
                    required/>
-            <img id="preview" src="#" alt="Your Image" style="display:none; margin-top: 10px; max-width: 100%; border-radius: 5px;" />
+            <img id="preview" src="#" alt="Your Image"
+                 style="display:none; margin-top: 10px; max-width: 100%; border-radius: 5px;"/>
 
             <label for="description" style="display: block; margin-top: 10px;">Issues Description:</label>
-            <textarea type="text" id="description" th:field="*{issueDescription}"
+            <textarea id="description" th:field="*{issueDescription}"
                       style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px; resize: vertical;"
                       required></textarea>
+            <span id="error" style="color: red; display: none;">Description must not be blank or contain only spaces!</span>
 
             <button type="submit"
                     style="display: block; margin-top: 20px; background-color: #008CBA; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;"
@@ -214,7 +220,7 @@
                              th:if="${order[9] != null and order[9] == 'Completed' and isWarrantyExpired != null and !isWarrantyExpired}"
                              style="display: flex; align-items: center; margin-bottom: 10px;">
 
-                            <input th:if="${warrantyStatuses[orderId + '_' + productName] == null or warrantyStatuses[orderId + '_' + productName] == 'Warranty Completed'}"
+                            <input th:if="${warrantyStatuses[orderId + '_' + productName] == null or warrantyStatuses[orderId + '_' + productName] == 'Warranty Completed' or warrantyStatuses[orderId + '_' + productName] == 'Warranty Failed'} "
                                    type="radio" name="productId" th:value="${combinedId}"
                                    th:data-quantity="${order[6]}"/>
 
@@ -226,7 +232,8 @@
                                  style="width: 50px; height: 50px; margin-left: 10px; margin-right: 10px;"
                                  th:if="${order[3] != null}">
                             <div>
-                                <label th:text="${productName} +' - ' +${colorMap[orderId + '_' + productName]}" style="font-weight: bold;"></label>
+                                <label th:text="${productName} +' - ' +${colorMap[orderId + '_' + productName]}"
+                                       style="font-weight: bold;"></label>
                                 <p th:text="'Price: $' + (${order[4] != null ? order[4] : 'N/A'})"></p>
                                 <p th:if="${warrantyExpiryDate != null}"
                                    th:text="'Warranty period to: ' + ${warrantyExpiryDate}"></p>
@@ -321,7 +328,8 @@
         <div class="modal-content">
             <span class="close" id="closeErrorModalBtn">&times;</span>
             <h5 id="errorModalTitle">Error</h5> <!-- This will dynamically change to "Success" if needed -->
-            <div id="errorMessage" class="alert alert-danger" role="alert"></div> <!-- alert-danger will change to alert-success if needed -->
+            <div id="errorMessage" class="alert alert-danger" role="alert"></div>
+            <!-- alert-danger will change to alert-success if needed -->
         </div>
     </div>
     <div id="bottom-footer" class="section">
@@ -448,7 +456,7 @@
         }
     }
 
-    document.getElementById('image').addEventListener('change', function() {
+    document.getElementById('image').addEventListener('change', function () {
         var file = this.files[0];
         if (file) {
             var fileType = file.type;
@@ -459,13 +467,23 @@
                 document.getElementById('preview').style.display = 'none'; // Ẩn ảnh xem trước nếu không hợp lệ
             } else {
                 var reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     var previewImage = document.getElementById('preview');
                     previewImage.src = e.target.result;
                     previewImage.style.display = 'block';
                 }
                 reader.readAsDataURL(file);
             }
+        }
+    });
+
+    document.getElementById('warrantyForm').addEventListener('submit', function(e) {
+        var description = document.getElementById('description').value.trim();
+        if (description === '') {
+            document.getElementById('error').style.display = 'inline';
+            e.preventDefault();  // Ngăn chặn việc submit form
+        } else {
+            document.getElementById('error').style.display = 'none';
         }
     });
 

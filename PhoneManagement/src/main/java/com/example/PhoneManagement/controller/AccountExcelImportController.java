@@ -46,6 +46,21 @@ public class AccountExcelImportController {
         Workbook workbook = new XSSFWorkbook(inputStream);
         Sheet sheet = workbook.getSheetAt(0);
 
+        Row headerRow = sheet.getRow(0);
+        if (headerRow == null || headerRow.getPhysicalNumberOfCells() != 5) {
+            workbook.close();
+            throw new IOException("Invalid Excel file: Incorrect number of columns.");
+        }
+
+
+        String[] expectedHeaders = {"Email", "Full Name", "Address", "PhoneNumber", "Role"};
+        for (int j = 0; j < expectedHeaders.length; j++) {
+            if (!headerRow.getCell(j).getStringCellValue().trim().equalsIgnoreCase(expectedHeaders[j])) {
+                workbook.close();
+                throw new IOException("Invalid Excel file: Column " + (j + 1) + " should be '" + expectedHeaders[j] + "'.");
+            }
+        }
+
         for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
             Row row = sheet.getRow(i);
             if (row == null) continue;
@@ -57,25 +72,24 @@ public class AccountExcelImportController {
             if (row.getCell(0) != null) {
                 userName = row.getCell(0).getStringCellValue();
                 if (accountServiceImp.isEmailExist(userName)) {
-                    errorMessages.add("Row " + (i + 1) + ": Email " + userName + " already exists.");
-                    continue;
+                    throw new IOException("Row " + (i + 1) + ": Email " + userName + " already exists.");
                 }
                 user.setUserName(userName);
             } else {
-                errorMessages.add("Row " + (i + 1) + ": Email is required.");
-                continue;
+                throw new IOException("Row " + (i + 1) + ": Email is required.");
+
             }
 
             if (row.getCell(3) != null) {
                 phoneNumber = row.getCell(3).getStringCellValue();
-                if (accountServiceImp.isPhoneExist(phoneNumber)) {
-                    errorMessages.add("Row " + (i + 1) + ": Phone number " + phoneNumber + " already exists.");
-                    continue;
+                if (accountServiceImp.isPhoneExist(phoneNumber) && !row.getCell(4).getStringCellValue().equalsIgnoreCase("USER")) {
+                    throw new IOException("Row " + (i + 1) + ": Phone number " + phoneNumber + " already exists.");
+
                 }
                 user.setPhoneNumber(phoneNumber);
             } else {
-                errorMessages.add("Row " + (i + 1) + ": Phone number is required.");
-                continue;
+                throw new IOException("Row " + (i + 1) + ": Phone number is required.");
+
             }
 
             user.setFullName(row.getCell(1) != null ? row.getCell(1).getStringCellValue() : null);

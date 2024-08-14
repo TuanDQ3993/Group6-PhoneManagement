@@ -56,7 +56,7 @@ public interface WarrantyService {
 
     void acceptWarranty(int id);
 
-    void rejectWarranty(int id);
+    void cancelWarranty(int id);
 
     Map<String, Long> getWarrantyCountByDate(int id);
 
