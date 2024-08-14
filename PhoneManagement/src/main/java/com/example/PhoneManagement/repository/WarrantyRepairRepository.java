@@ -38,7 +38,7 @@ public interface WarrantyRepairRepository extends JpaRepository<WarrantyRepair, 
     @Query("SELECT COUNT(w) FROM warrantyrepair w WHERE w.technical.userId = :technicalId AND w.status = 'Warranty Completed' AND w.isDeleted = false")
     long countAllWarrantyRepairsAndStatus(@Param("technicalId") int technicalId);
 
-    @Query("SELECT w.repairDate, COUNT(w) FROM warrantyrepair w WHERE w.isDeleted = false AND w.technical.userId = :technicalId GROUP BY Date(w.repairDate) ORDER BY w.repairDate DESC")
+    @Query("SELECT MIN(w.repairDate), COUNT(w) FROM warrantyrepair w WHERE w.isDeleted = false AND w.technical.userId = :technicalId GROUP BY Date(w.repairDate) ORDER BY MIN(w.repairDate) DESC")
     List<Object[]> findCountByRepairDate(@Param("technicalId") int technicalId);
 
     // Dashboard admin

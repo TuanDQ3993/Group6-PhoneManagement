@@ -108,7 +108,7 @@
                                     <th>Issue</th>
                                     <th>Repair Date</th>
                                     <th>Status</th>
-                                    <th th:if="${warrantyRepair.status} == 'Warranty Completed' or ${warrantyRepair.status} == 'Warranty Rejected'">
+                                    <th th:if="${warrantyRepair.status} == 'Warranty Completed' or ${warrantyRepair.status} == 'Warranty Failed'">
                                         Note to customer
                                     </th>
                                     <th th:if="${warrantyRepair.status} == 'Warranty In Process'">Action</th>
@@ -125,12 +125,12 @@
                                     <td th:text="${warrantyRepair.issueDescription}"></td>
                                     <td th:text="${#dates.format(warrantyRepair.repairDate, 'yyyy-MM-dd')}"></td>
                                     <td th:text="${warrantyRepair.status}"></td>
-                                    <td th:if="${warrantyRepair.status} == 'Warranty Completed' or ${warrantyRepair.status} == 'Warranty Rejected'"
+                                    <td th:if="${warrantyRepair.status} == 'Warranty Completed' or ${warrantyRepair.status} == 'Warranty Failed'"
                                      >
                                         <textarea    th:text="${warrantyRepair.noteTechnical}" readonly></textarea>
                                     </td>
                                     <td>
-                                        <form th:if="${warrantyRepair.status != 'Warranty Pending'} and ${warrantyRepair.status != 'Warranty Completed'} and ${warrantyRepair.status != 'Warranty Rejected'} "
+                                        <form th:if="${warrantyRepair.status == 'Warranty In Process'}  "
                                               th:action="@{/technical/changeStatus/{id}(id=${warrantyRepair.warrantyId})}"
                                               onsubmit="return checkStatusChange(event, this)"
                                               method="post" style="margin-top: -0.5rem !important;">
@@ -141,9 +141,9 @@
                                                         th:selected="${warrantyRepair.status == 'Warranty Completed'}">
                                                     Completed
                                                 </option>
-                                                <option value="Warranty Rejected"
-                                                        th:selected="${warrantyRepair.status == 'Warranty Rejected'}">
-                                                    Rejected
+                                                <option value="Warranty Failed"
+                                                        th:selected="${warrantyRepair.status == 'Warranty Failed'}">
+                                                    Failed
                                                 </option>
                                             </select>
                                             <textarea name="noteTechnical" class="form-control mt-2"
@@ -162,11 +162,11 @@
                                             </button>
                                         </form>
                                         <form th:if="${warrantyRepair.status == 'Warranty Pending'}"
-                                              th:action="@{/technical/rejectWarranty/{id}(id=${warrantyRepair.warrantyId})}"
-                                              th:onsubmit="return confirm('Are you sure to reject this ?')"
+                                              th:action="@{/technical/cancelWarranty/{id}(id=${warrantyRepair.warrantyId})}"
+                                              th:onsubmit="return confirm('Are you sure to cancel this ?')"
                                               method="post" style="margin-top: -0.5rem !important;">
                                             <button type="submit" class="btn btn-danger mt-2"
-                                                    style="font-size: 11px;width: 60px">Reject
+                                                    style="font-size: 11px;width: 60px">Cancel
                                             </button>
                                         </form>
                                     </td>

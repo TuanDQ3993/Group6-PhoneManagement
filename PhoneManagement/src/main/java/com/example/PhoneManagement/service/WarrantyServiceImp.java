@@ -198,13 +198,13 @@ public class WarrantyServiceImp implements WarrantyService {
 
     @Override
     // Huy don
-    public void rejectWarranty(int id) {
+    public void cancelWarranty(int id) {
         Optional<WarrantyRepair> optionalRepair = warrantyRepairRepository.findById(id);
 
         if (optionalRepair.isPresent()) {
             WarrantyRepair repair = optionalRepair.get();
             if (repair.getStatus().equals("Warranty Pending")) {
-                repair.setStatus("Reject");
+                repair.setStatus("Warranty Cancel");
 
                 warrantyRepairRepository.save(repair);
             } else {

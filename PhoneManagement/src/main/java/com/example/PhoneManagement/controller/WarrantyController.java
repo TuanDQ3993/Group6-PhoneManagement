@@ -211,10 +211,10 @@ public class WarrantyController {
         return "redirect:/technical/warranties";
     }
 
-    @PostMapping("/rejectWarranty/{id}")
+    @PostMapping("/cancelWarranty/{id}")
     public String rejectWarranty(
             @PathVariable int id) {
-        warrantyRepairService.rejectWarranty(id);
+        warrantyRepairService.cancelWarranty(id);
         return "redirect:/technical/warranties";
     }
 
