@@ -118,7 +118,7 @@ public class AccountServiceImp implements AccountService {
     }
 
     public boolean isValidPhoneNumber(String phoneNumber) {
-        String phoneRegex = "^[0-9]{10}$"; // Giả sử số điện thoại chỉ bao gồm 10 chữ số
+        String phoneRegex = "^0[0-9]{9}$";
         return Pattern.matches(phoneRegex, phoneNumber);
     }
 
