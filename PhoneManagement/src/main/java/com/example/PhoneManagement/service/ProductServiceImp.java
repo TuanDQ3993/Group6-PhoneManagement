@@ -46,9 +46,11 @@ public class ProductServiceImp implements ProductService {
         Products product = new Products();
         boolean result = productRepository.findAll().stream().anyMatch(p -> p.getProductName().equals(productDTO.getProductName()));
         if (result) throw new IllegalArgumentException("Product Name already existed");
-        ;
+
         if (productDTO.getWarrantyPeriod() < 0) throw new IllegalArgumentException("WarrantyPeriod cannot be negative");
-        ;
+        if(productDTO.getProductName().trim().isEmpty()) throw new IllegalArgumentException("Product Name is not empty");
+        if(productDTO.getBrandName().trim().isEmpty()) throw new IllegalArgumentException("Brand Name is not empty");
+        if(productDTO.getDescription().trim().isEmpty()) throw new IllegalArgumentException("Description is not empty");
         product.setProductName(productDTO.getProductName());
         product.setDescription(productDTO.getDescription());
 
@@ -184,6 +186,9 @@ public class ProductServiceImp implements ProductService {
             if (result && !products.getProductName().equals(request.getProductName())) {
                 throw new IllegalArgumentException("Product Name already exist");
             }
+            if(request.getProductName().trim().isEmpty()) throw new IllegalArgumentException("Product Name is not empty");
+            if(request.getBrandName().trim().isEmpty()) throw new IllegalArgumentException("Brand Name is not empty");
+            if(request.getDescription().trim().isEmpty()) throw new IllegalArgumentException("Description is not empty");
             products.setProductName(request.getProductName());
             products.setCategory(category);
             products.setDescription(request.getDescription());

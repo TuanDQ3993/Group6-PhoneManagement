@@ -119,7 +119,7 @@
                         </div>
                         <div class="form-group">
                             <input th:value="${user.fullName}" class="input" type="text" name="fullname"
-                                   placeholder="Full Name" required>
+                                   placeholder="Full Name"   required pattern=".*\S.*">
                         </div>
                         <div class="form-group">
                             <input th:value="${user.userName}" class="input" type="email" name="email"
@@ -128,7 +128,7 @@
                         </div>
                         <div class="form-group">
                             <input th:value="${user.address}" class="input" type="text" name="address"
-                                   placeholder="Address" required>
+                                   placeholder="Address"  required pattern=".*\S.*">
                         </div>
                         <div class="form-group">
                             <input th:value="${user.phoneNumber}" class="input" type="tel" name="tel"
@@ -165,7 +165,7 @@
                         <th:block th:if="${cart != null}">
                             <div th:each="item : ${cart.items}" class="order-products">
                                 <div class="order-col">
-                                    <div th:text="'x'+${item.quantity} +'  '+${item.productColor.products.productName}">
+                                    <div th:text="'x'+${item.quantity} +'  '+${item.productColor.products.productName} + ' - '+${item.productColor.colors.colorName}">
                                         1x Product Name Goes Here
                                     </div>
                                     <div th:text="${item.price}">$980.00</div>

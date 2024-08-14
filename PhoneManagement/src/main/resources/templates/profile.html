@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <input type="text" class="form-control" th:field="*{fullName}"
-                                           placeholder="Full Name" required>
+                                           placeholder="Full Name" required pattern=".*\S.*">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -110,7 +110,7 @@
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <input type="text" class="form-control" th:field="*{address}" placeholder="Address"
-                                           required>
+                                           required pattern=".*\S.*">
                                 </div>
                             </div>
                             <div class="row">

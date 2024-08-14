@@ -98,12 +98,12 @@
                         <label for="fullname" style="display: block; margin-top: 10px;">Full Name:</label>
                         <input type="text" id="fullname" th:field="*{fullName}"
                                style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
-                               required/>
+                               required  pattern=".*\S.*"/>
 
                         <label for="address" style="display: block; margin-top: 10px;">Address:</label>
                         <input type="text" id="address" th:field="*{address}"
                                style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
-                               required/>
+                               required pattern=".*\S.*"/>
 
                         <label for="phoneNumber" style="display: block; margin-top: 10px;">Phone Number:</label>
                         <input type="text" id="phoneNumber" th:field="*{phoneNumber}"

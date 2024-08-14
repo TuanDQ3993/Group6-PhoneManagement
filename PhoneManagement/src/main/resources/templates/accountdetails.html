@@ -125,7 +125,8 @@
                                     <td th:text="${#dates.format(user.createdAt, 'yyyy-MM-dd')}"></td>
                                     <td th:text="${user.role.roleName}"></td>
                                     <td th:unless="${user.userId == userId}">
-                                        <form th:action="@{/admin/changeRole/{id}(id=${user.userId})}" method="post">
+                                        <form th:if="${user.role.roleName != 'ADMIN'}"
+                                                th:action="@{/admin/changeRole/{id}(id=${user.userId})}" method="post">
                                             <select name="roleId" class="form-control">
                                                 <option th:each="role : ${roles}"
                                                         th:value="${role.roleId}"
