@@ -111,7 +111,7 @@
                                     <th th:if="${warrantyRepair.status} == 'Warranty Completed' or ${warrantyRepair.status} == 'Warranty Failed'">
                                         Note to customer
                                     </th>
-                                    <th th:if="${warrantyRepair.status} == 'Warranty In Process'">Action</th>
+                                    <th th:if="${warrantyRepair.status} == 'Warranty In Process' or ${warrantyRepair.status} == 'Warranty Cancel' ">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -130,6 +130,13 @@
                                         <textarea    th:text="${warrantyRepair.noteTechnical}" readonly></textarea>
                                     </td>
                                     <td>
+                                        <form th:if="${warrantyRepair.status == 'Warranty Cancel'}"
+                                            th:action="@{/technical/changeCancel/{id}(id=${warrantyRepair.warrantyId})}"
+                                            onsubmit="return checkStatusChange(event, this)"
+                                            method="post" style="margin-top: -0.5rem !important;">
+                                            <button type="submit" class="btn btn-danger mt-2"
+                                                    onclick="return confirmSecondTime();">Re accept</button>
+                                        </form>
                                         <form th:if="${warrantyRepair.status == 'Warranty In Process'}  "
                                               th:action="@{/technical/changeStatus/{id}(id=${warrantyRepair.warrantyId})}"
                                               onsubmit="return checkStatusChange(event, this)"
