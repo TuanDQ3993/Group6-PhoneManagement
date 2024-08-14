@@ -3,6 +3,7 @@
 <head>
     <title>Gentelella Alela! | Users List</title>
     <!-- Bootstrap -->
+    <!-- Bootstrap -->
     <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
     <!-- Font Awesome -->
     <link th:href="@{/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
@@ -12,8 +13,6 @@
     <link th:href="@{/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
         .form-inline .form-group {
             margin-left: -9px;
@@ -67,31 +66,48 @@
 
 <body class="nav-md">
 <div class="container body">
-    <header th:insert="~{fragments/menu.html :: header}"></header>
+    <div th:insert="~{fragments/sidebar.html}"></div>
+
 
     <div class="right_col" role="main">
         <div class="row-fluid">
             <h3>Warranty List</h3>
         </div>
-        <div class="row"> <!-- New row for better alignment and separation -->
-            <!--            <form th:action="@{/admin/users}" method="get" class="form-inline w-100">-->
-            <!--                <div class="row">-->
-            <!--                    <div class="col-md-9"> &lt;!&ndash; This column now takes up more space pushing elements to the right &ndash;&gt;-->
-            <!--                    </div>-->
-            <!--                    <div class="col-md-3 d-flex justify-content-end">-->
-            <!--                        &lt;!&ndash; Combined Search Input and Role Filter Dropdown into a single column &ndash;&gt;-->
-            <!--                        <div class="form-group">-->
-            <!--                            <input type="text" class="form-control form-control-sm" th:name="query" placeholder="Search for..." style="margin-right: 10px;">-->
-            <!--                            <select name="role" class="form-control form-control-sm">-->
-            <!--                                <option value="">Select Role</option>-->
-            <!--                                <option th:each="role : ${rolesFilter}" th:value="${role.roleId}" th:text="${role.roleName}"></option>-->
-            <!--                            </select>-->
-            <!--                            <button class="btn btn-secondary btn-sm" type="submit">Go</button>-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                </div>-->
+        <div class="row">
+            <form th:action="@{/technical/warranties}" method="get" class="form-inline w-100">
+                <div class="row">
+                    <div class="col-md-9">
+                        <!-- Cột này có thể chứa các nội dung khác -->
+                    </div>
+                    <div class="col-md-3 d-flex justify-content-end">
+                        <div class="form-group d-flex flex-column flex-md-row align-items-center">
+                            <input type="text" class="form-control form-control-sm mb-2 mb-md-0 mr-md-2" th:name="query"
+                                   placeholder="Search for..." th:value="${query}">
+                            <select name="status" class="form-control form-control-sm mb-2 mb-md-0 mr-md-2">
+                                <option value="" th:selected="${status == ''}">All</option>
+                                <option value="Warranty Completed" th:selected="${status == 'Warranty Completed'}">Completed</option>
+                                <option value="Warranty Pending" th:selected="${status == 'Warranty Pending'}">Pending</option>
+                                <option value="Warranty Failed" th:selected="${status == 'Warranty Failed'}">Failed</option>
+                                <option value="Warranty Cancel" th:selected="${status == 'Warranty Cancel'}">Cancel</option>
+                                <option value="Warranty In Process" th:selected="${status == 'Warranty In Process'}">In Process</option>
+                            </select>
 
-            <!--            </form>-->
+                            <input type="date" name="repairDate" id="repairDate"
+                                   class="form-control form-control-sm mb-2 mb-md-0 mr-md-2"
+                                   placeholder="Choose date: ..." th:value="${repairDate}">
+                            <button class="btn btn-secondary btn-sm mb-2 mb-md-0 mr-md-2" type="submit">Go</button>
+                            <div class="form-container">
+                                <a class="btn btn-secondary btn-sm mb-2 mb-md-0 mr-md-2" id="exportButton"
+                                   th:href="@{/technical/export/excel}"
+                                   onclick="this.href += '?repairDate=' + encodeURIComponent(document.getElementById('repairDate').value);">Export</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
+
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -106,6 +122,7 @@
                                 <th>Issue</th>
                                 <th>Customer Name</th>
                                 <th>Warranty date</th>
+                                <th>Date Completed</th>
                                 <th>Status</th>
                                 <th>Technical Name</th>
                                 <th style="width: 20%">Action</th>
@@ -122,29 +139,31 @@
                                          style="width: 100px; height: auto;">
                                 </td>
                                 <td th:text="${technical.issueDescription}"></td>
-                                <td th:text="${technical.user.fullName}"></td>
-                                <td th:text="${#dates.format(technical.repairDate, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${technical.user.getFullName()}"></td>
+                                <td th:text="${#dates.format(technical.repairDate, 'dd-MM-yyyy')}"></td>
+                                <td th:text="${#dates.format(technical.date_completed, 'dd-MM-yyyy')}"></td>
                                 <td th:text="${technical.status}"></td>
                                 <td th:text="${technical.technical.fullName}"></td>
                                 <td>
-                                    <a th:href="@{/technical/add/{id}(id=${technical.technical.userId})}"
+                                    <a th:href="@{/technical/view/{id}(id=${technical.warrantyId})}"
                                        class="btn btn-primary btn-xs">
                                         <i class="fa fa-folder"></i> View
                                     </a>
+
+<!--                                        <form th:action="@{/technical/delete/{id}(id=${technical.warrantyId})}"-->
+<!--                                              method="post" th:unless="${roleName == 'TECHNICAL STAFF'}"-->
+<!--                                              th:onsubmit="return confirm('Are you sure to delete this?')">-->
+<!--                                            <button type="submit" class="btn btn-danger btn-xs"-->
+<!--                                                    style="width: 80px; height: 40px; font-size: 12px;">-->
+<!--                                                <i class="fa fa-trash"></i> Delete-->
+<!--                                            </button>-->
+<!--                                        </form>-->
                                 </td>
+
                             </tr>
                             </tbody>
 
                         </table>
-
-
-                        <div class="form-container" th:unless="${roleName == 'ADMIN'}">
-                            <a>Export excel by repair date:</a>
-                            <form th:action="@{/technical/export/excel}" method="get">
-                                <input type="text" id="repairDate" name="repairDate" class="form-control"
-                                       placeholder="Choose date: ..." onchange="this.form.submit()">
-                            </form>
-                        </div>
 
                         <div id="errorModal" class="modal">
                             <div class="modal-content">
@@ -165,9 +184,9 @@
                                                 <option th:value="10" th:selected="${size == 10}">10</option>
                                                 <option th:value="15" th:selected="${size == 15}">15</option>
                                             </select>
-                                            <!--                                            <input type="hidden" th:name="page" th:value="${warrantyPage.number}"/>-->
-                                            <!--                                            <input type="hidden" th:name="query" th:value="${query}"/>-->
-                                            <!--                                            <input type="hidden" th:name="role" th:value="${role}"/>-->
+                                            <input type="hidden" th:name="page" th:value="${warrantyPage.number}"/>
+                                            <input type="hidden" th:name="query" th:value="${query}"/>
+                                            <input type="hidden" th:name="repairDate" th:value="${repairDate}"/>
                                         </form>
                                     </div>
                                 </div>
@@ -177,18 +196,18 @@
                                             <li class="page-item"
                                                 th:classappend="${warrantyPage.number == 0} ? 'disabled'">
                                                 <a class="page-link"
-                                                   th:href="@{/technical/warranties(size=${warrantyPage.size}, page=${warrantyPage.number - 1})}">Previous</a>
+                                                   th:href="@{/technical/warranties(size=${warrantyPage.size}, page=${warrantyPage.number - 1}, query = ${query}, repairDate =${repairDate} )}">Previous</a>
                                             </li>
                                             <li th:each="pageNumber : ${pageNumbers}" th:class="page-item"
                                                 th:classappend="${pageNumber == warrantyPage.number + 1} ? 'active'">
                                                 <a class="page-link"
-                                                   th:href="@{/technical/warranties(size=${warrantyPage.size}, page=${pageNumber - 1})}"
+                                                   th:href="@{/technical/warranties(size=${warrantyPage.size}, page=${pageNumber - 1} ,query = ${query}, repairDate =${repairDate})}"
                                                    th:text="${pageNumber}"></a>
                                             </li>
                                             <li class="page-item"
                                                 th:classappend="${warrantyPage.number + 1 == warrantyPage.totalPages} ? 'disabled'">
                                                 <a class="page-link"
-                                                   th:href="@{/technical/warranties(size=${warrantyPage.size}, page=${warrantyPage.number + 1})}">Next</a>
+                                                   th:href="@{/technical/warranties(size=${warrantyPage.size}, page=${warrantyPage.number + 1},query = ${query}, repairDate =${repairDate})}">Next</a>
                                             </li>
                                         </ul>
                                     </nav>
@@ -209,17 +228,29 @@
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        flatpickr("#repairDate", {
-            dateFormat: "Y-m-d",
-            defaultDate: null,
-            placeholder: "Choose date",
-            onChange: function(selectedDates, dateStr, instance) {
-                instance.input.form.submit();
+    document.addEventListener('DOMContentLoaded', function () {
+        const repairDateInput = document.getElementById('repairDate');
+        const exportButton = document.getElementById('exportButton');
+
+        // Cập nhật href của nút "Export" khi người dùng chọn ngày
+        repairDateInput.addEventListener('input', function () {
+            const dateValue = repairDateInput.value;
+            exportButton.href = `/technical/export/excel?repairDate=${encodeURIComponent(dateValue)}`;
+        });
+
+        // Kiểm tra khi nhấn nút Export
+        exportButton.addEventListener('click', function (e) {
+            const dateValue = repairDateInput.value;
+            if (!dateValue) {
+                e.preventDefault(); // Ngăn không cho gửi nếu không có giá trị ngày
+                alert('Please select a repair date.');
             }
         });
     });
+
 </script>
+
+
 <script th:inline="javascript">
     /*<![CDATA[*/
     var errorModal = document.getElementById("errorModal");

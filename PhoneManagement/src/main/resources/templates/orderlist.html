@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Electro - HTML Ecommerce Template</title>
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/bootstrap.min.css}"/>
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/slick.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/slick-theme.css}"/>
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/nouislider.min.css}"/>
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" th:href="@{/build1/css/font-awesome.min.css}">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/style.css}"/>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script th:src="@{https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js}"></script>
+    <script th:src="@{https://oss.maxcdn.com/respond/1.4.2/respond.min.js}"></script>
+    <![endif]-->
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+<!-- HEADER -->
+<div th:include="header.html"></div>
+<!-- /HEADER -->
+
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="breadcrumb-header">My Order</h3>
+                <ul class="breadcrumb-tree">
+                    <li><a href="/home/homepage">Home</a></li>
+                    <li class="active">My Order</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /container -->
+</div>
+<!-- /BREADCRUMB -->
+
+<!-- SECTION -->
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <form th:action="@{/home/order}" method="get"
+                  style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px;">
+                <input type="text" name="search" placeholder="Search..." th:value="${searchQuery}"
+                       style="padding: 10px; width: 25%; border: 1px solid #ccc; border-radius: 4px;">
+                <select name="status" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 25%;">
+                    <option value="all" th:selected="${status == 'all'}">All Statuses</option>
+                    <option value="Completed" th:selected="${status == 'Completed'}">Completed</option>
+                    <option value="Confirm and Shipping" th:selected="${status == 'Confirm and Shipping'}">Confirm and
+                        Shipping
+                    </option>
+                    <option value="Canceled" th:selected="${status == 'Cancelled'}">Cancelled</option>
+                    <option value="Pending Confirmation" th:selected="${status == 'Pending Confirmation'}">Pending
+                        Confirm
+                    </option>
+                    <option value="Prepay" th:selected="${status == 'Prepay'}">Prepay</option>
+                </select>
+                <button type="submit"
+                        style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Search
+                </button>
+                <button type="button" class="btn btn-primary btn-xs"
+                        style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;"
+                        id="openModalBtn2"><i class="fa fa-refresh"></i> Warranty
+                </button>
+            </form>
+            <div th:each="entry, iterStat : ${groupedOrders}" style="margin-bottom: 20px;">
+                <a class="orderdetail" th:href="@{/home/order/{order}(order=${entry.value[0][0]})}">
+                    <div style="font-family: Arial, sans-serif; width: 80%; margin: auto; border: 1px solid #eee; padding: 20px;">
+                        <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                            <p style="margin: 0;">Date <span
+                                    th:text="${entry.value[0][7] != null ? entry.value[0][7] : '₫0'}"></span></p>
+                            <p style="margin: 0;font-size: 18px;"><span th:text="${entry.value[0][9]}"></span></p>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <div th:each="order : ${entry.value}"
+                                 style="display: flex; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                                <img th:src="@{/uploads/{image}(image=${order[3]})}" alt="Product Image"
+                                     style="width: 100px; height: 100px; margin-right: 20px;"
+                                     th:if="${order[3] != null}">
+                                <div>
+                                    <p style="margin: 0; font-size: 16px;"
+                                       th:text="${order[1] != null ? order[1] : 'Product Name'}"></p>
+                                    <p style="margin: 5px 0;"
+                                       th:text="'Category: ' + (${order[8] != null ? order[8] : 'Unknown'})"></p>
+                                    <p style="margin: 5px 0;"
+                                       th:text="'x' + (${order[6] != null ? order[6] : '0'})"></p>
+                                    <p style="color: red"
+                                       th:if="${isWarrantyExpired == false}"
+                                       th:text="'Warranty period to: '+ ${warrantyExpiryDate}"></p>
+                                    <p style="color: blue"
+                                       th:if="${isWarrantyExpired == true}"
+                                       th:text="'Warranty period was ended at: '+ ${warrantyExpiryDate}"></p>
+
+                                </div>
+                                <div style="margin-left: auto; text-align: right;">
+                                    <p style="margin: 5px 0;"
+                                       th:text="(${order[4] != null ? order[4] : 0} * ${order[6] != null ? order[6] : 0})+'$'"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                            <form th:if="${entry.value[0][9]}== 'Pending Confirmation'" method="post"
+                                  th:action="@{/home/order}">
+                                <input th:value="${entry.value[0][0]}" type="hidden" name="orderId">
+                                <button type="submit" style="padding: 8px 20px;">Cancel</button>
+                            </form>
+
+                            <p style="margin: 0; margin-left: auto;">Total Amount: <span
+                                    style="color: red; font-size: 24px;"
+                                    th:text="${entry.value[0][5] != null ? entry.value[0][5] : '₫0'}"></span></p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <h5>Enter Information</h5>
+        <form id="warrantyForm" th:action="@{/home/createWarrantyRepair}" th:object="${warrantyDTO}" method="post"
+              style="border: 1px solid #ccc; padding: 20px; border-radius: 10px;">
+            <input type="hidden" id="selectedProductId" name="selectedProductId"/>
+            <input type="hidden" id="orderId" name="orderId"/>
+            <input type="hidden" id="productName" name="productName"/>
+
+            <label for="image" style="display: block; margin-top: 10px;">Image:</label>
+            <input type="file" id="image" th:field="*{image}"
+                   style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
+                   accept=".png, .jpg, .jpeg"
+                   required/>
+            <img id="preview" src="#" alt="Your Image"
+                 style="display:none; margin-top: 10px; max-width: 100%; border-radius: 5px;"/>
+
+            <label for="description" style="display: block; margin-top: 10px;">Issues Description:</label>
+            <textarea id="description" th:field="*{issueDescription}"
+                      style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px; resize: vertical;"
+                      required></textarea>
+            <span id="error" style="color: red; display: none;">Description must not be blank or contain only spaces!</span>
+
+            <button type="submit"
+                    style="display: block; margin-top: 20px; background-color: #008CBA; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;"
+                    onclick="return confirm('Are you sure you want to save?');">
+                Save
+            </button>
+
+        </form>
+    </div>
+</div>
+
+
+<div id="productWarrantyModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeProductWarrantyModalBtn">&times;</span>
+        <h5>List of Products That Can Be Warrantied</h5>
+        <div id="productList">
+            <form id="productSelectionForm">
+                <div th:each="entry : ${groupedOrders}">
+                    <div th:each="order : ${entry.value}">
+                        <div th:with="orderId=${order[0]}, productName=${order[1]}, combinedId=${orderId + '_' + productName}"
+                             th:if="${order[9] != null and order[9] == 'Completed' and isWarrantyExpired != null and !isWarrantyExpired}"
+                             style="display: flex; align-items: center; margin-bottom: 10px;">
+
+                            <input th:if="${warrantyStatuses[orderId + '_' + productName] == null or warrantyStatuses[orderId + '_' + productName] == 'Warranty Completed' or warrantyStatuses[orderId + '_' + productName] == 'Warranty Failed'} "
+                                   type="radio" name="productId" th:value="${combinedId}"
+                                   th:data-quantity="${order[6]}"/>
+
+                            <!-- Placeholder if the radio button is not present -->
+                            <span th:unless="${warrantyStatuses[orderId + '_' + productName] == null or warrantyStatuses[orderId + '_' + productName] == 'Warranty Completed'}"
+                                  style="width: 16px; display: inline-block;"></span>
+
+                            <img th:src="@{/uploads/{image}(image=${order[3]})}" alt="Product Image"
+                                 style="width: 50px; height: 50px; margin-left: 10px; margin-right: 10px;"
+                                 th:if="${order[3] != null}">
+                            <div>
+                                <label th:text="${productName} +' - ' +${colorMap[orderId + '_' + productName]}"
+                                       style="font-weight: bold;"></label>
+                                <p th:text="'Price: $' + (${order[4] != null ? order[4] : 'N/A'})"></p>
+                                <p th:if="${warrantyExpiryDate != null}"
+                                   th:text="'Warranty period to: ' + ${warrantyExpiryDate}"></p>
+                                <p style="color: purple"
+                                   th:if="${isWarrantyExpired == false and warrantyStatuses[orderId + '_' + productName] != null}"
+                                   th:text="'Status: '+ ${warrantyStatuses[orderId + '_' + productName]} + ' at: ' + ${#dates.format(dateWarranty[orderId + '_' + productName], 'yyyy-MM-dd, HH:mm')}">
+                                </p>
+                                <p style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f9f9f9; color: green; text-decoration:initial;"
+                                   th:if="${noteFromCustomer[orderId + '_' + productName] != null}"
+                                   th:text="'Your note: ' + ${noteFromCustomer[orderId + '_' + productName]}">
+                                </p>
+                                <p style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f9f9f9; color: red; text-decoration:initial;"
+                                   th:if="${noteFromTechnical[orderId + '_' + productName] != null}"
+                                   th:text="'Note from technical: ' + ${noteFromTechnical[orderId + '_' + productName]}">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit"
+                        style="display: block; margin-top: 20px; background-color: #008CBA; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- FOOTER -->
+<footer id="footer">
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">About Us</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
+                            ut.</p>
+                        <ul class="footer-links">
+                            <li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
+                            <li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
+                            <li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">Categories</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">Hot deals</a></li>
+                            <li><a href="#">Laptops</a></li>
+                            <li><a href="#">Smartphones</a></li>
+                            <li><a href="#">Cameras</a></li>
+                            <li><a href="#">Accessories</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="clearfix visible-xs"></div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">Information</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Orders and Returns</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">Service</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">My Account</a></li>
+                            <li><a href="#">View Cart</a></li>
+                            <li><a href="#">Wishlist</a></li>
+                            <li><a href="#">Track My Order</a></li>
+                            <li><a href="#">Help</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeErrorModalBtn">&times;</span>
+            <h5 id="errorModalTitle">Error</h5> <!-- This will dynamically change to "Success" if needed -->
+            <div id="errorMessage" class="alert alert-danger" role="alert"></div>
+            <!-- alert-danger will change to alert-success if needed -->
+        </div>
+    </div>
+    <div id="bottom-footer" class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <ul class="footer-payments">
+                        <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+                        <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
+                    </ul>
+                    <span class="copyright">
+                        Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i
+                            class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com"
+                                                                                target="_blank">Colorlib</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- JavaScript -->
+<script>
+    // Lấy các phần tử modal, nút mở và nút đóng
+    var modal = document.getElementById("myModal");
+    var btn = document.getElementById("openModalBtn");
+    var span = document.getElementById("closeModalBtn");
+
+    // Lấy các phần tử modal, nút mở và nút đóng cho modal sản phẩm
+    var productWarrantyModal = document.getElementById("productWarrantyModal");
+    var productWarrantyBtn = document.getElementById("openModalBtn2");
+    var closeProductWarrantySpan = document.getElementById("closeProductWarrantyModalBtn");
+
+    // Khi người dùng nhấp vào nút, mở modal và ngăn chặn submit form
+    if (btn) {
+        btn.onclick = function (event) {
+            event.preventDefault(); // Ngăn chặn hành động submit mặc định
+            modal.style.display = "block";
+        }
+    }
+
+    // Khi người dùng nhấp vào nút, mở modal sản phẩm và ngăn chặn submit form
+    if (productWarrantyBtn) {
+        productWarrantyBtn.onclick = function (event) {
+            event.preventDefault(); // Ngăn chặn hành động submit mặc định
+            productWarrantyModal.style.display = "block";
+        }
+    }
+
+    // Khi người dùng nhấp vào <span> (x), đóng modal
+    if (span) {
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+    }
+
+    // Khi người dùng nhấp vào <span> (x), đóng modal sản phẩm
+    if (closeProductWarrantySpan) {
+        closeProductWarrantySpan.onclick = function () {
+            productWarrantyModal.style.display = "none";
+        }
+    }
+
+    // Khi người dùng nhấp vào bất cứ đâu bên ngoài modal, đóng modal
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        if (event.target == productWarrantyModal) {
+            productWarrantyModal.style.display = "none";
+        }
+    }
+
+
+    var errors = [
+        /*[[${success != null ? success : ''}]]*/,
+        /*[[${error != null ? error : ''}]]*/,
+    ];
+
+    errors.forEach(function (error) {
+        if (error !== '' && error.trim() !== '') {
+            showErrorModal(error);
+        }
+    });
+
+    function showErrorModal(message) {
+        document.getElementById("errorMessage").innerText = message;
+        var errorModal = document.getElementById("errorModal");
+
+        // Check if it's a success message or an error message and adjust the modal accordingly
+        if (message.toLowerCase().includes("success")) {
+            document.getElementById("errorModalTitle").innerText = "Success";
+            document.getElementById("errorMessage").classList.remove("alert-danger");
+            document.getElementById("errorMessage").classList.add("alert-success");
+        } else {
+            document.getElementById("errorModalTitle").innerText = "Error";
+            document.getElementById("errorMessage").classList.remove("alert-success");
+            document.getElementById("errorMessage").classList.add("alert-danger");
+        }
+
+        errorModal.style.display = "block";
+    }
+
+    // Xử lý sự kiện submit của form chọn sản phẩm
+    document.getElementById("productSelectionForm").onsubmit = function (event) {
+        event.preventDefault(); // Ngăn chặn hành động submit mặc định
+        var selectedProductElement = document.querySelector('input[name="productId"]:checked');
+        if (selectedProductElement) {
+            var selectedProductId = selectedProductElement.value;
+            var selectedProductKey = selectedProductId.split('_');
+            var orderId = selectedProductKey[0];
+            var productName = selectedProductKey[1];
+
+            document.getElementById("selectedProductId").value = selectedProductId;
+            document.getElementById("orderId").value = orderId;
+            document.getElementById("productName").value = productName;
+
+            productWarrantyModal.style.display = "none";
+            modal.style.display = "block";
+        }
+    }
+
+    document.getElementById('image').addEventListener('change', function () {
+        var file = this.files[0];
+        if (file) {
+            var fileType = file.type;
+            var validImageTypes = ["image/jpeg", "image/png"];
+            if (!validImageTypes.includes(fileType)) {
+                alert("Please upload an image file (jpg or png).");
+                this.value = ''; // Xóa tệp đã chọn
+                document.getElementById('preview').style.display = 'none'; // Ẩn ảnh xem trước nếu không hợp lệ
+            } else {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var previewImage = document.getElementById('preview');
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+
+    document.getElementById('warrantyForm').addEventListener('submit', function(e) {
+        var description = document.getElementById('description').value.trim();
+        if (description === '') {
+            document.getElementById('error').style.display = 'inline';
+            e.preventDefault();  // Ngăn chặn việc submit form
+        } else {
+            document.getElementById('error').style.display = 'none';
+        }
+    });
+
+</script>
+
+<!-- jQuery Plugins -->
+<script th:src="@{/build1/js/jquery.min.js}"></script>
+<script th:src="@{/build1/js/bootstrap.min.js}"></script>
+<script th:src="@{/build1/js/slick.min.js}"></script>
+<script th:src="@{/build1/js/nouislider.min.js}"></script>
+<script th:src="@{/build1/js/jquery.zoom.min.js}"></script>
+<script th:src="@{/build1/js/main.js}"></script>
+
+</body>
+</html>

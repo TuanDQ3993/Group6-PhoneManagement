@@ -1,20 +1,22 @@
 package com.example.PhoneManagement.service;
 
-import com.example.PhoneManagement.dto.request.ChangePasswordRequest;
-import com.example.PhoneManagement.dto.request.UserCreate;
-import com.example.PhoneManagement.dto.request.UserDTO;
-import com.example.PhoneManagement.dto.request.UserUpdateRequest;
+import com.example.PhoneManagement.dto.request.*;
 import com.example.PhoneManagement.entity.Roles;
 import com.example.PhoneManagement.entity.Users;
 import com.example.PhoneManagement.repository.RoleRepository;
 import com.example.PhoneManagement.repository.UserRepository;
+import com.example.PhoneManagement.security.JwtService;
+import com.example.PhoneManagement.service.imp.EmailService;
 import com.example.PhoneManagement.service.imp.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -33,6 +35,15 @@ public class UserServiceImp implements UserService {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private EmailService emailService;
 
     public List<UserDTO> getAllUser() {
         List<Users> users = userRepository.findAll();
@@ -119,8 +130,8 @@ public class UserServiceImp implements UserService {
     }
 
     public void changePassword(ChangePasswordRequest request, Authentication authentication) {
-        var user = (Users) authentication.getPrincipal();
-
+        Users user = (Users) authentication.getPrincipal();
+        Users users = userRepository.findById(user.getUserId()).orElseThrow(() -> new RuntimeException("User Not Found"));
         // check password
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Current password is incorrect.");
@@ -128,8 +139,8 @@ public class UserServiceImp implements UserService {
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new IllegalArgumentException("New password and confirmation do not match.");
         }
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        userRepository.save(user);
+        users.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(users);
     }
 
 
@@ -142,5 +153,59 @@ public class UserServiceImp implements UserService {
     public void updatePassword(Users user, String password) {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
+    }
+
+    @Override
+    public Users getUserByName(String email) {
+        return userRepository.findByUserName(email).get();
+    }
+
+    @Override
+    public boolean existEmail(String email) {
+        return userRepository.existsByUserName(email);
+    }
+
+    @Override
+    public void createAccount(RegisterRequest registerRequest) {
+        var user = Users.builder()
+                .userName(registerRequest.getUserName())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .fullName(registerRequest.getFullName())
+                .address(registerRequest.getAddress())
+                .phoneNumber(registerRequest.getPhoneNumber())
+                .role(roleRepository.findById(4))
+                .active(false)
+                .createdAt(new Date())
+                .build();
+
+        userRepository.save(user);
+    }
+
+    @Override
+    public void activeAccount(String email, Model model) {
+        Optional<Users> userOptional = findByEmail(email);
+        if (userOptional.isPresent()) {
+            Users user = userOptional.get();
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
+            String token = jwtService.generateActiveAccountToken(userDetails);
+            String resetLink = "http://localhost:8080/auth/active?token=" + token;
+            emailService.sendEmail(user.getUserName(), "Active Account Request", "To active your account, click the link below:\n" + resetLink);
+            model.addAttribute("message", "Go to your email to activate your account.");
+        } else {
+            model.addAttribute("error", "Please register your account again.");
+        }
+    }
+
+    @Override
+    public void activesuccess(String token, Model model) {
+        String username = jwtService.extractUsername(token);
+        if (username != null && !jwtService.isTokenExpired(token)) {
+            Users user = findByEmail(username).orElseThrow();
+            user.setActive(true);
+            userRepository.save(user);
+            model.addAttribute("message", "Your account has been activated.");
+        } else {
+            model.addAttribute("error", "Invalid or expired password reset token.");
+        }
     }
 }

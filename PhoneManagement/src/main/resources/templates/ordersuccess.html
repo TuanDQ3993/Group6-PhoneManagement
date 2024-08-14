@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>Electro - HTML Ecommerce Template</title>
+
+    <!-- Google font -->
+    <link th:href="@{https://fonts.googleapis.com/css?family=Montserrat:400,500,700}" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/bootstrap.min.css}"/>
+
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/slick.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/slick-theme.css}"/>
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/nouislider.min.css}"/>
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" th:href="@{/build1/css/font-awesome.min.css}">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" th:href="@{/build1/css/style.css}"/>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        /* Hide the dropdown menu by default */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            min-width: 160px;
+            padding: 12px 16px;
+        }
+
+        /* Show the dropdown menu when the parent has the class 'show' */
+        .nav-item.dropdown.show .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+            color: black;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            margin: 8px 0;
+            overflow: hidden;
+            background-color: #e9ecef;
+        }
+        .product__cart__item__pic {
+            width: 90px;
+            height: 90px;
+            overflow: hidden;
+        }
+
+        .product__cart__item__pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .shopping__cart__table table tbody tr td.quantity__item {
+            width: 270px;
+        }
+        .shopping__cart__table table tbody tr td.quantity__price {
+            width: 270px;
+        }
+        .shopping__cart__table table tbody tr td.product__cart__item {
+            width: 450px;
+        }
+        .confirmation-message {
+            text-align: center;
+        }
+
+        .big-text {
+            font-size: 32px; /* Chữ to */
+            font-weight: bold; /* Chữ đậm */
+            color: #3498db; /* Màu sắc, bạn có thể thay đổi mã màu theo ý muốn */
+        }
+        .signature {
+            font-style: italic; /* Nghiêng nghiêng */
+            color: #e74c3c; /* Màu sắc, bạn có thể thay đổi mã màu theo ý muốn */
+        }
+
+        .heart {
+            color: #e74c3c; /* Màu sắc trái tim */
+        }
+        .total {
+            font-size: 24px; /* Chữ to */
+            font-weight: bold; /* Chữ đậm */
+            text-align: right;
+        }
+
+    </style>
+</head>
+<body>
+<!-- HEADER -->
+<div th:include="header.html"></div>
+<!-- /HEADER -->
+
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="breadcrumb-header">Checkout</h3>
+                <ul class="breadcrumb-tree">
+                    <li><a href="/home/homepage">Home</a></li>
+                    <li class="active">Order Success</li>
+                </ul>
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /BREADCRUMB -->
+
+<!-- SECTION -->
+<section class="shopping-cart spad">
+    <div class="container">
+        <div class="confirmation-message">
+            <p class="big-text">You have placed your order successfully</p>
+            <p>Thank you for choosing our products.</p>
+            <p>The product will reach you as soon as possible.</p>
+            <p class="signature">from PhoneManagerJ03 with love <span class="heart">&#10084;</span></p>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shopping__cart__table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+
+                        <tr th:each="item :${listi}">
+                            <td class="product__cart__item">
+                                <div class="product__cart__item__pic">
+                                    <img th:src="@{/uploads/{image}(image=${item.productColor.image})}" alt="">
+                                </div>
+                                <div class="product__cart__item__text">
+                                    <h6 th:text="${item.productColor.products.productName}+' - '+${item.productColor.colors.colorName} "></h6>
+                                </div>
+                            </td>
+
+                            <td class="original-price" th:text="'$'+${item.price}"></td>
+
+                            <td class="quantity__item">
+                                <div class="quantity">
+                                    <div>
+                                        &emsp;<span class="qty" th:text="${item.quantity}"></span>&emsp;
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="original-price" th:text="'$'+${item.quantity*item.price}"></td>
+
+                        </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn">
+                            <a href="/home/shop">Continue Shopping</a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="total">
+                            Total <span class="original-price" th:text="'$'+${totalsuccess}"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- /SECTION -->
+
+<!-- NEWSLETTER -->
+<div id="newsletter" class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="newsletter">
+                    <p>Sign Up for the <strong>NEWSLETTER</strong></p>
+                    <form>
+                        <input class="input" type="email" placeholder="Enter Your Email">
+                        <button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
+                    </form>
+                    <ul class="newsletter-follow">
+                        <li>
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-pinterest"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /NEWSLETTER -->
+
+<!-- FOOTER -->
+<footer id="footer">
+    <!-- top footer -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">About Us</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
+                            ut.</p>
+                        <ul class="footer-links">
+                            <li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
+                            <li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
+                            <li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">Categories</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">Hot deals</a></li>
+                            <li><a href="#">Laptops</a></li>
+                            <li><a href="#">Smartphones</a></li>
+                            <li><a href="#">Cameras</a></li>
+                            <li><a href="#">Accessories</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="clearfix visible-xs"></div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">Information</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Orders and Returns</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">Service</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">My Account</a></li>
+                            <li><a href="#">View Cart</a></li>
+                            <li><a href="#">Wishlist</a></li>
+                            <li><a href="#">Track My Order</a></li>
+                            <li><a href="#">Help</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /top footer -->
+
+    <!-- bottom footer -->
+    <div id="bottom-footer" class="section">
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <ul class="footer-payments">
+                        <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+                        <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
+                    </ul>
+                    <span class="copyright">
+								<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+								Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i
+                            class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com"
+                                                                                target="_blank">Colorlib</a>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+							</span>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /bottom footer -->
+</footer>
+<!-- /FOOTER -->
+
+<!-- jQuery Plugins -->
+
+<script>
+    function toggleDropdown(event) {
+        event.preventDefault();
+        var dropdown = event.target.closest('.nav-item.dropdown');
+        dropdown.classList.toggle('show');
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function (event) {
+        if (!event.target.matches('.nav-link') && !event.target.closest('.nav-item.dropdown')) {
+            var dropdowns = document.getElementsByClassName('nav-item dropdown');
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+
+
+</script>
+
+
+<script>
+    document.getElementById('checkout-form').addEventListener('submit', function(event) {
+        const paymentMethods = document.getElementsByName('payment');
+        let isChecked = false;
+
+        for (const method of paymentMethods) {
+            if (method.checked) {
+                isChecked = true;
+                break;
+            }
+        }
+
+        if (!isChecked) {
+            // Show error message
+            document.getElementById('payment-error').style.display = 'block';
+            // Prevent form submission
+            event.preventDefault();
+        } else {
+            // Hide error message
+            document.getElementById('payment-error').style.display = 'none';
+        }
+    });
+</script>
+
+<script th:src="@{/build1/js/jquery.min.js}"></script>
+<script th:src="@{/build1/js/bootstrap.min.js}"></script>
+<script th:src="@{/build1/js/slick.min.js}"></script>
+<script th:src="@{/build1/js/nouislider.min.js}"></script>
+<script th:src="@{/build1/js/jquery.zoom.min.js}"></script>
+<script th:src="@{/build1/js/main.js}"></script>
+
+</body>
+</html>

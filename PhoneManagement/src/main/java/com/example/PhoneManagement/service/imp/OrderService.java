@@ -2,6 +2,8 @@ package com.example.PhoneManagement.service.imp;
 
 import com.example.PhoneManagement.dto.request.*;
 import com.example.PhoneManagement.dto.response.ProductTopSeller;
+import com.example.PhoneManagement.entity.Orders;
+import com.example.PhoneManagement.entity.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,7 +20,7 @@ public interface OrderService {
 
     List<OrderDetailDTO> getOrderDetails(int orderId);
 
-    OrderDetailInfoDTO getOrderInfo(int orderId);
+    Orders getOrderInfo(int orderId);
 
     LocalDate convertToLocalDate(Date date);
 
@@ -39,4 +41,17 @@ public interface OrderService {
     List<ProductTopSeller> getProductTopSellers();
 
     void changeStatusOrder(int orderId, String status);
+
+    void changeSale(int orderId,int saleId);
+
+    void backProduct(int id);
+
+    List<Users> getAllSale();
+
+    public List<Object[]> getOrdersByUserIdWithFilters(UserDTO user, String status, String search);
+
+    public int countTotalOrders(UserDTO user);
+
+    public List<Object[]> findOrderDetail(int orderId);
+
 }
