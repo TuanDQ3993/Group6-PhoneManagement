@@ -138,10 +138,10 @@
                 <div class="col-md-12">
                     <div class="d-flex justify-content-between align-items-center">
                         <!-- Import Excel Form -->
-                        <form th:action="@{/admin/importUsers}" method="post" enctype="multipart/form-data" class="form-inline">
+                        <form th:action="@{/admin/importUsers}" method="post" enctype="multipart/form-data" class="form-inline" onsubmit="return validateFile()">
                             <div class="form-group d-flex align-items-center">
-                                <input type="file" name="file" accept=".xlsx"  class="form-control form-control-sm mr-2">
-                                <button type="submit" class="btn btn-primary btn-sm" style="margin-bottom: -1px;" >Upload</button>
+                                <input type="file" id="fileInput" name="file" accept=".xlsx" class="form-control form-control-sm mr-2">
+                                <button type="submit" class="btn btn-primary btn-sm" style="margin-bottom: -1px;">Upload</button>
                             </div>
                         </form>
 
@@ -247,20 +247,26 @@
                                     <div class="col-auto">
                                         <nav aria-label="Page navigation">
                                             <ul class="pagination justify-content-end mb-0">
-                                                <li th:classappend="${userPage.number == 0} ? 'disabled'">
+                                                <li id="previousPageBtn">
                                                     <a class="page-link"
-                                                       th:href="@{/admin/users(size=${userPage.size}, page=${userPage.number - 1}, pageSize=${size}, query=${query}, role=${role})}">Previous</a>
+                                                       th:href="@{/admin/users(size=${userPage.size}, page=${userPage.number - 1}, pageSize=${size}, query=${query}, role=${role})}">
+                                                        Previous
+                                                    </a>
                                                 </li>
+
                                                 <li th:each="pageNumber : ${pageNumbers}" th:class="page-item"
                                                     th:classappend="${pageNumber - 1 == userPage.number} ? 'active'">
                                                     <a class="page-link"
                                                        th:href="@{/admin/users(size=${userPage.size}, page=${pageNumber - 1}, pageSize=${size}, query=${query}, role=${role})}"
                                                        th:text="${pageNumber}"></a>
                                                 </li>
-                                                <li th:classappend="${userPage.number + 1 == userPage.totalPages} ? 'disabled'">
+                                                <li id="nextPageBtn">
                                                     <a class="page-link"
-                                                       th:href="@{/admin/users(size=${userPage.size}, page=${userPage.number + 1}, pageSize=${size}, query=${query}, role=${role})}">Next</a>
+                                                       th:href="@{/admin/users(size=${userPage.size}, page=${userPage.number + 1}, pageSize=${size}, query=${query}, role=${role})}">
+                                                        Next
+                                                    </a>
                                                 </li>
+
 
                                             </ul>
                                         </nav>
@@ -326,11 +332,62 @@
 
                                     errorModal.style.display = "block";
                                 }
+                                function validateFile() {
+                                    const fileInput = document.getElementById('fileInput');
+                                    const filePath = fileInput.value;
+                                    const allowedExtensions = /(\.xlsx)$/i;
+
+                                    if (!filePath) {
+                                        alert("Please select a file to upload.");
+                                        return false;
+                                    }
+
+                                    if (!allowedExtensions.exec(filePath)) {
+                                        alert("Please upload a file with .xlsx extension.");
+                                        fileInput.value = '';
+                                        return false;
+                                    }
+
+                                    const fileSize = fileInput.files[0].size / 1024 / 1024; // in MB
+                                    const maxSize = 2; // Maximum file size in MB (you can adjust this)
+
+                                    if (fileSize > maxSize) {
+                                        alert(`File size must be less than ${maxSize} MB.`);
+                                        fileInput.value = '';
+                                        return false;
+                                    }
+
+                                    return true;
+                                }
 
 
 
                                 /*]]>*/
                             </script>
+                            <script th:inline="javascript">
+                                /*<![CDATA[*/
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    var previousPageBtn = document.getElementById("previousPageBtn");
+                                    var nextPageBtn = document.getElementById("nextPageBtn");
+                                    var totalElements = /*[[${userPage.totalElements}]]*/;
+                                    var currentPage = /*[[${userPage.number}]]*/;
+                                    var pageSize = /*[[${userPage.size}]]*/;
+
+                                    // Kiểm tra nếu không có dữ liệu trên trang tiếp theo
+                                    if ((currentPage + 1) * pageSize >= totalElements) {
+                                        nextPageBtn.classList.add("disabled");
+                                        nextPageBtn.querySelector("a").removeAttribute("href"); // Xóa thuộc tính href để ngăn chặn việc nhấp chuột
+                                    }
+
+                                    // Kiểm tra nếu trang hiện tại là trang đầu tiên
+                                    if (currentPage === 0) {
+                                        previousPageBtn.classList.add("disabled");
+                                        previousPageBtn.querySelector("a").removeAttribute("href"); // Xóa thuộc tính href để ngăn chặn việc nhấp chuột
+                                    }
+                                });
+                                /*]]>*/
+                            </script>
+
                         </div>
                     </div>
                 </div>
