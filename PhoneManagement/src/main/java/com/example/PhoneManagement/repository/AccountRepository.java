@@ -14,10 +14,10 @@ import java.util.List;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Users, Integer> {
-    @Query("SELECT u FROM useraccount u WHERE (u.fullName LIKE %:query%) AND u.role.roleId = :role order by u.createdAt desc ")
+    @Query("SELECT u FROM useraccount u WHERE (u.fullName LIKE %:query% ) AND u.role.roleId = :role order by u.createdAt desc ")
     Page<Users> findByRoleAndFullName(String query, int role, Pageable pageable);
 
-    @Query("SELECT u FROM useraccount u WHERE u.userName LIKE %:query% OR u.userName LIKE %:query% order by u.createdAt desc ")
+    @Query("SELECT u FROM useraccount u  WHERE (u.fullName LIKE %:query% ) order by u.createdAt desc ")
     Page<Users> findByFullName(String query, Pageable pageable);
 
     @Query("SELECT u FROM useraccount u WHERE u.role.roleId = :role order by u.createdAt desc ")
