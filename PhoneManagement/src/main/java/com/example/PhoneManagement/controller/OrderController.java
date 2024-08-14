@@ -72,52 +72,67 @@ public class OrderController {
         Map<String, Date> warrantyDate = new HashMap<>();
         Map<String, Date> dateRepair = new HashMap<>();
         Map<String, String> colorMap = new HashMap<>();
+
         for (Object[] order : ordersPage) {
             Integer orderId = (Integer) order[0];
             String productName = (String)  order[1];
-            String productColor = (String) order[2];
+            String productColor = (String) order[2];  // Assuming color is stored as part of order details
             Date orderDate = null;
             Integer warrantyPeriod = null;
+
             if (order.length > 7) {
-                orderDate = (Date) order[7]; // orderDate
+                orderDate = (Date) order[7];
             }
             if (order.length > 10) {
-                warrantyPeriod = (Integer) order[10]; // warrantyPeriod
+                warrantyPeriod = (Integer) order[10];
             }
-            colorMap.put(orderId + "_" + productName, productColor);
+
+            // Create a unique key including product name and color
+            String productKey = orderId + "_" + productName + "_" + productColor;
+
+
+            colorMap.put(productKey, productColor);
+            String productNameColor = productName + " - " + productColor;
+
             if (orderDate != null && warrantyPeriod != null) {
                 LocalDate createdAtDate = orderDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDate warrantyExpiryDate = createdAtDate.plusMonths(warrantyPeriod);
                 boolean isWarrantyExpired = LocalDate.now().isAfter(warrantyExpiryDate);
                 List<WarrantyRepair> warrantyRepairs = warrantyServiceImp.getByOrder(orderId);
+
                 String warrantyStatus = null;
                 String noteFromTechnical = null;
                 Date dateWarranty = null;
                 Date dateWarrantyRepair = null;
                 String noteFromCustomer = null;
+
                 for (WarrantyRepair repair : warrantyRepairs) {
-                    if (repair.getProductName().equals(productName)) {
-                        warrantyStatus = repair.getStatus();
+                    if (repair.getProductName().equals(productNameColor)) {  // Match by name
+                        warrantyStatus = repair.getStatus().trim();
                         noteFromTechnical = repair.getNoteTechnical();
                         noteFromCustomer = repair.getIssueDescription();
                         dateWarranty = repair.getDate_completed();
                         dateWarrantyRepair = repair.getRepairDate();
                     }
+
                 }
 
-                warrantyStatuses.put(orderId + "_" + productName, warrantyStatus);
-                warrantyNoteFromTechnical.put(orderId + "_" + productName, noteFromTechnical);
-                warrantyNoteFromCustomer.put(orderId + "_" + productName, noteFromCustomer);
-                warrantyDate.put(orderId + "_" + productName, dateWarranty);
-                dateRepair.put(orderId + "_" + productName, dateWarrantyRepair);
+                warrantyStatuses.put(productNameColor, warrantyStatus);
+                System.out.println("Warranty Statuses: " + warrantyStatuses);
 
+                warrantyNoteFromTechnical.put(productNameColor, noteFromTechnical);
+                warrantyNoteFromCustomer.put(productNameColor, noteFromCustomer);
+                warrantyDate.put(productNameColor, dateWarranty);
+                dateRepair.put(productNameColor, dateWarrantyRepair);
                 model.addAttribute("warrantyExpiryDate", warrantyExpiryDate);
                 model.addAttribute("isWarrantyExpired", isWarrantyExpired);
             }
 
             model.addAttribute("orderId", orderId);
-            model.addAttribute("productNameWithColor", productName);
+            model.addAttribute("productNameWithColor", productName + " - " + productColor);
+            model.addAttribute("productKey",productKey);
         }
+
         model.addAttribute("colorMap", colorMap);
         model.addAttribute("warrantyDTO", new WarrantyDTO());
         model.addAttribute("user", userDTO.get());
@@ -154,44 +169,63 @@ public class OrderController {
 
     @PostMapping("/createWarrantyRepair")
     public String createWarrantyRepair(@ModelAttribute @Valid WarrantyDTO warrantyDTO,
-                                       @RequestParam("orderId") int orderId,
-                                       @RequestParam("productName") String productName,
+                                       @RequestParam("orderId") String orderIdStr,
+                                       @RequestParam("productName") String productNameWithColor,
                                        BindingResult bindingResult,
                                        Authentication authentication,
                                        RedirectAttributes redirectAttributes,
                                        Model model) {
+        // Validate the orderId input
+        int orderId;
+        try {
+            orderId = Integer.parseInt(orderIdStr);
+        } catch (NumberFormatException e) {
+            model.addAttribute("error", "Invalid order ID. Please ensure you are submitting the form correctly.");
+            return "orderlist";
+        }
+
+        // Handle validation errors in the DTO
         if (bindingResult.hasErrors()) {
             return "orderlist";
         }
 
+        // Get the current authenticated user
         Users users = (Users) authentication.getPrincipal();
+
+        // Fetch the order details by orderId
         Optional<Orders> ordersOptional = Optional.ofNullable(orderServiceImp.getOrderInfo(orderId));
         if (ordersOptional.isEmpty()) {
-            return "redirect:/home/homepage";
+            return "redirect:/home/homepage"; // Redirect if the order is not found
         }
+
         Orders order = ordersOptional.get();
         List<OrderDetail> orderDetails = order.getOrderDetails();
 
-        // Tìm kiếm sản phẩm liên quan trong đơn hàng
+        // Find the relevant product in the order
         OrderDetail relevantOrderDetail = orderDetails.stream()
-                .filter(od -> od.getProductInfo().getProducts().getProductName().equals(productName))
+                .filter(od -> (od.getProductInfo().getProducts().getProductName() + " - " + od.getProductInfo().getColors().getColorName())
+                        .equals(productNameWithColor))
                 .findFirst()
                 .orElse(null);
 
         if (relevantOrderDetail == null) {
-            model.addAttribute("error", "Product not found in order");
-            return "orderlist";
+            model.addAttribute("error", "Product not found in order.");
+            return "orderlist"; // Return to the order list if the product is not found
         }
 
-
+        // Assign a technical person to handle the warranty repair
         int technicalId = warrantyServiceImp.getTechnicalMinOrder();
         Users technical = userService.getUserById(technicalId);
-        warrantyServiceImp.createWarrantyRepair(warrantyDTO, order, users, technical, productName);
 
+        // Create the warranty repair record
+        warrantyServiceImp.createWarrantyRepair(warrantyDTO, order, users, technical, productNameWithColor);
 
+        // Add a success message and redirect
         redirectAttributes.addFlashAttribute("success", "Warranty repair created successfully.");
-        return "redirect:/home/order";
+        return "redirect:/home/order"; // Redirect to the order page
     }
+
+
 
 
 }
