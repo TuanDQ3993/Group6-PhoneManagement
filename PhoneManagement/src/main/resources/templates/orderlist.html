@@ -223,15 +223,15 @@
                              style="display: flex; align-items: center; margin-bottom: 10px;">
 
                             <!-- Hiển thị radio button khi status là null, "Warranty Completed", hoặc "Warranty Failed" -->
-                            <input th:if="${warrantyStatuses[productName + ' - ' + productColor] == null or
-                                          warrantyStatuses[productName + ' - ' + productColor] == 'Warranty Completed' or
-                                          warrantyStatuses[productName + ' - ' + productColor] == 'Warranty Failed'}"
+                            <input th:if="${warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] == null or
+                                          warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] == 'Warranty Completed' or
+                                          warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] == 'Warranty Failed'}"
                                    type="radio" name="productId" th:value="${combinedId}"
                                    th:data-quantity="${order[6]}"/>
 
                             <!-- Placeholder nếu radio button không được hiển thị -->
-                            <span th:unless="${warrantyStatuses[productName + ' - ' + productColor] == null or
-                                             warrantyStatuses[productName + ' - ' + productColor] == 'Warranty Completed'}"
+                            <span th:unless="${warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] == null or
+                                             warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] == 'Warranty Completed'}"
                                   style="width: 16px; display: inline-block;"></span>
 
                             <!-- Hiển thị ảnh sản phẩm nếu có -->
@@ -252,21 +252,21 @@
                                    th:text="'Warranty period to: ' + ${warrantyExpiryDate}"></p>
 
                                 <!-- Hiển thị trạng thái nếu status không null -->
-                                <p th:if="${isWarrantyExpired == false and warrantyStatuses[productName + ' - ' + productColor] != null}"
-                                   th:text="'Status: '+ ${warrantyStatuses[productName + ' - ' + productColor]} + ' at: ' + ${#dates.format(dateWarranty[productName + ' - ' + productColor], 'yyyy-MM-dd, HH:mm')}"
+                                <p th:if="${isWarrantyExpired == false and warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] != null}"
+                                   th:text="'Status: '+ ${warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor]} + ' at: ' + ${#dates.format(dateWarranty[orderId + ' - ' + productName + ' - ' + productColor], 'yyyy-MM-dd, HH:mm')}"
                                    style="color: purple">
                                 </p>
 
                                 <!-- Hiển thị ghi chú từ khách hàng nếu có -->
-                                <p th:if="${noteFromCustomer[productName + ' - ' + productColor] != null}"
-                                   th:text="'Your note: ' + ${noteFromCustomer[productName + ' - ' + productColor]}"
+                                <p th:if="${noteFromCustomer[orderId + ' - ' + productName + ' - ' + productColor] != null}"
+                                   th:text="'Your note: ' + ${noteFromCustomer[orderId + ' - ' + productName + ' - ' + productColor]}"
                                    style="border: 1px solid #ccc; padding: 10px;
                                           border-radius: 5px; background-color: #f9f9f9; color: green;">
                                 </p>
 
                                 <!-- Hiển thị ghi chú từ kỹ thuật nếu có -->
-                                <p th:if="${noteFromTechnical[productName + ' - ' + productColor] != null}"
-                                   th:text="'Note from technical: ' + ${noteFromTechnical[productName + ' - ' + productColor]}"
+                                <p th:if="${noteFromTechnical[orderId + ' - ' + productName + ' - ' + productColor] != null}"
+                                   th:text="'Note from technical: ' + ${noteFromTechnical[orderId + ' - ' + productName + ' - ' + productColor]}"
                                    style="border: 1px solid #ccc; padding: 10px;
                                           border-radius: 5px; background-color: #f9f9f9; color: red;">
                                 </p>
