@@ -88,7 +88,7 @@ public class OrderController {
             }
 
             // Create a unique key including product name and color
-            String productKey = orderId + "_" + productName + "_" + productColor;
+            String productKey = orderId + " - " + productName + " - " + productColor;
 
 
             colorMap.put(productKey, productColor);
@@ -117,13 +117,13 @@ public class OrderController {
 
                 }
 
-                warrantyStatuses.put(productNameColor, warrantyStatus);
+                warrantyStatuses.put(productKey, warrantyStatus);
                 System.out.println("Warranty Statuses: " + warrantyStatuses);
 
-                warrantyNoteFromTechnical.put(productNameColor, noteFromTechnical);
-                warrantyNoteFromCustomer.put(productNameColor, noteFromCustomer);
-                warrantyDate.put(productNameColor, dateWarranty);
-                dateRepair.put(productNameColor, dateWarrantyRepair);
+                warrantyNoteFromTechnical.put(productKey, noteFromTechnical);
+                warrantyNoteFromCustomer.put(productKey, noteFromCustomer);
+                warrantyDate.put(productKey, dateWarranty);
+                dateRepair.put(productKey, dateWarrantyRepair);
                 model.addAttribute("warrantyExpiryDate", warrantyExpiryDate);
                 model.addAttribute("isWarrantyExpired", isWarrantyExpired);
             }
