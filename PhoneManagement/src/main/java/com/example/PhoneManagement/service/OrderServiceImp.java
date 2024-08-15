@@ -73,6 +73,7 @@ public class OrderServiceImp implements OrderService {
             dto.setImage((String) result[3]);
             dto.setQuantity(((Number) result[4]).intValue());
             dto.setPrice(((Number) result[5]).doubleValue());
+            dto.setColorName((String) result[6]);
             orderDetails.add(dto);
         }
         return orderDetails;

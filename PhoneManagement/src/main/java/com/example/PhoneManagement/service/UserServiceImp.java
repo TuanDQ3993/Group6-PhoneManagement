@@ -103,6 +103,7 @@ public class UserServiceImp implements UserService {
         if (userOpt.isPresent()) {
             Users user = userOpt.get(); //nếu userOpt trùng với csdl có trong Users thì gán vào user
             UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(user.getUserId());
             userDTO.setUserName(user.getUserName());
             userDTO.setFullName(user.getFullName());
             userDTO.setAddress(user.getAddress());
@@ -130,8 +131,8 @@ public class UserServiceImp implements UserService {
     }
 
     public void changePassword(ChangePasswordRequest request, Authentication authentication) {
-        var user = (Users) authentication.getPrincipal();
-
+        Users user = (Users) authentication.getPrincipal();
+        Users users = userRepository.findById(user.getUserId()).orElseThrow(() -> new RuntimeException("User Not Found"));
         // check password
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Current password is incorrect.");
@@ -139,8 +140,8 @@ public class UserServiceImp implements UserService {
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new IllegalArgumentException("New password and confirmation do not match.");
         }
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        userRepository.save(user);
+        users.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(users);
     }
 
 
@@ -197,7 +198,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public void activesuccess(String token,Model model) {
+    public void activesuccess(String token, Model model) {
         String username = jwtService.extractUsername(token);
         if (username != null && !jwtService.isTokenExpired(token)) {
             Users user = findByEmail(username).orElseThrow();

@@ -101,9 +101,13 @@
                 <select name="status" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 25%;">
                     <option value="all" th:selected="${status == 'all'}">All Statuses</option>
                     <option value="Completed" th:selected="${status == 'Completed'}">Completed</option>
-                    <option value="Confirm and Shipping" th:selected="${status == 'Confirm and Shipping'}">Confirm and Shipping</option>
+                    <option value="Confirm and Shipping" th:selected="${status == 'Confirm and Shipping'}">Confirm and
+                        Shipping
+                    </option>
                     <option value="Canceled" th:selected="${status == 'Cancelled'}">Cancelled</option>
-                    <option value="Pending Confirmation" th:selected="${status == 'Pending Confirmation'}">Pending Confirm</option>
+                    <option value="Pending Confirmation" th:selected="${status == 'Pending Confirmation'}">Pending
+                        Confirm
+                    </option>
                     <option value="Prepay" th:selected="${status == 'Prepay'}">Prepay</option>
                 </select>
                 <button type="submit"
@@ -168,8 +172,6 @@
         </div>
     </div>
 </div>
-
-
 <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close" id="closeModalBtn">&times;</span>
@@ -177,30 +179,33 @@
         <form id="warrantyForm" th:action="@{/home/createWarrantyRepair}" th:object="${warrantyDTO}" method="post"
               style="border: 1px solid #ccc; padding: 20px; border-radius: 10px;">
             <input type="hidden" id="selectedProductId" name="selectedProductId"/>
-            <input type="hidden" id="orderId" name="orderId"/>
+            <input type="hidden" id="orderId" name="orderId" th:value="${warrantyDTO.orderId}" />
+
+            <!-- Combined product name and color -->
             <input type="hidden" id="productName" name="productName"/>
+
             <label for="image" style="display: block; margin-top: 10px;">Image:</label>
             <input type="file" id="image" th:field="*{image}"
                    style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px;"
                    accept=".png, .jpg, .jpeg"
                    required/>
-            <img id="preview" src="#" alt="Your Image" style="display:none; margin-top: 10px; max-width: 100%; border-radius: 5px;" />
+            <img id="preview" src="#" alt="Your Image"
+                 style="display:none; margin-top: 10px; max-width: 100%; border-radius: 5px;"/>
 
             <label for="description" style="display: block; margin-top: 10px;">Issues Description:</label>
-            <textarea type="text" id="description" th:field="*{issueDescription}"
+            <textarea id="description" th:field="*{issueDescription}"
                       style="width: calc(100% - 20px); padding: 5px; border: 1px solid #ccc; border-radius: 5px; resize: vertical;"
                       required></textarea>
+            <span id="error" style="color: red; display: none;">Description must not be blank or contain only spaces!</span>
 
             <button type="submit"
                     style="display: block; margin-top: 20px; background-color: #008CBA; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;"
                     onclick="return confirm('Are you sure you want to save?');">
                 Save
             </button>
-
         </form>
     </div>
 </div>
-
 
 <div id="productWarrantyModal" class="modal">
     <div class="modal-content">
@@ -210,42 +215,67 @@
             <form id="productSelectionForm">
                 <div th:each="entry : ${groupedOrders}">
                     <div th:each="order : ${entry.value}">
-                        <div th:with="orderId=${order[0]}, productName=${order[1]}, combinedId=${orderId + '_' + productName}"
+                        <div th:with="orderId=${order[0]},
+                                      productName=${order[1]},
+                                      productColor=${order[2]},
+                                      combinedId=${orderId + '_' + productName + '_' + productColor}"
                              th:if="${order[9] != null and order[9] == 'Completed' and isWarrantyExpired != null and !isWarrantyExpired}"
                              style="display: flex; align-items: center; margin-bottom: 10px;">
 
-                            <input th:if="${warrantyStatuses[orderId + '_' + productName] == null or warrantyStatuses[orderId + '_' + productName] == 'Warranty Completed'}"
+                            <!-- Hiển thị radio button khi status là null, "Warranty Completed", hoặc "Warranty Failed" -->
+                            <input th:if="${warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] == null or
+                                          warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] == 'Warranty Completed' or
+                                          warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] == 'Warranty Failed'}"
                                    type="radio" name="productId" th:value="${combinedId}"
                                    th:data-quantity="${order[6]}"/>
 
-                            <!-- Placeholder if the radio button is not present -->
-                            <span th:unless="${warrantyStatuses[orderId + '_' + productName] == null or warrantyStatuses[orderId + '_' + productName] == 'Warranty Completed'}"
+                            <!-- Placeholder nếu radio button không được hiển thị -->
+                            <span th:unless="${warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] == null or
+                                             warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] == 'Warranty Completed'}"
                                   style="width: 16px; display: inline-block;"></span>
 
+                            <!-- Hiển thị ảnh sản phẩm nếu có -->
                             <img th:src="@{/uploads/{image}(image=${order[3]})}" alt="Product Image"
                                  style="width: 50px; height: 50px; margin-left: 10px; margin-right: 10px;"
                                  th:if="${order[3] != null}">
+
                             <div>
-                                <label th:text="${productName} +' - ' +${colorMap[orderId + '_' + productName]}" style="font-weight: bold;"></label>
+                                <!-- Hiển thị tên và màu sản phẩm -->
+                                <label th:text="${productName + ' - ' + productColor}"
+                                       style="font-weight: bold;"></label>
+
+                                <!-- Hiển thị giá sản phẩm -->
                                 <p th:text="'Price: $' + (${order[4] != null ? order[4] : 'N/A'})"></p>
+
+                                <!-- Hiển thị ngày hết hạn bảo hành -->
                                 <p th:if="${warrantyExpiryDate != null}"
                                    th:text="'Warranty period to: ' + ${warrantyExpiryDate}"></p>
-                                <p style="color: purple"
-                                   th:if="${isWarrantyExpired == false and warrantyStatuses[orderId + '_' + productName] != null}"
-                                   th:text="'Status: '+ ${warrantyStatuses[orderId + '_' + productName]} + ' at: ' + ${#dates.format(dateWarranty[orderId + '_' + productName], 'yyyy-MM-dd, HH:mm')}">
+
+                                <!-- Hiển thị trạng thái nếu status không null -->
+                                <p th:if="${isWarrantyExpired == false and warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor] != null}"
+                                   th:text="'Status: '+ ${warrantyStatuses[orderId + ' - ' + productName + ' - ' + productColor]} + ' at: ' + ${#dates.format(dateWarranty[orderId + ' - ' + productName + ' - ' + productColor], 'yyyy-MM-dd, HH:mm')}"
+                                   style="color: purple">
                                 </p>
-                                <p style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f9f9f9; color: green; text-decoration:initial;"
-                                   th:if="${noteFromCustomer[orderId + '_' + productName] != null}"
-                                   th:text="'Your note: ' + ${noteFromCustomer[orderId + '_' + productName]}">
+
+                                <!-- Hiển thị ghi chú từ khách hàng nếu có -->
+                                <p th:if="${noteFromCustomer[orderId + ' - ' + productName + ' - ' + productColor] != null}"
+                                   th:text="'Your note: ' + ${noteFromCustomer[orderId + ' - ' + productName + ' - ' + productColor]}"
+                                   style="border: 1px solid #ccc; padding: 10px;
+                                          border-radius: 5px; background-color: #f9f9f9; color: green;">
                                 </p>
-                                <p style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f9f9f9; color: red; text-decoration:initial;"
-                                   th:if="${noteFromTechnical[orderId + '_' + productName] != null}"
-                                   th:text="'Note from technical: ' + ${noteFromTechnical[orderId + '_' + productName]}">
+
+                                <!-- Hiển thị ghi chú từ kỹ thuật nếu có -->
+                                <p th:if="${noteFromTechnical[orderId + ' - ' + productName + ' - ' + productColor] != null}"
+                                   th:text="'Note from technical: ' + ${noteFromTechnical[orderId + ' - ' + productName + ' - ' + productColor]}"
+                                   style="border: 1px solid #ccc; padding: 10px;
+                                          border-radius: 5px; background-color: #f9f9f9; color: red;">
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Nút submit -->
                 <button type="submit"
                         style="display: block; margin-top: 20px; background-color: #008CBA; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
                     Submit
@@ -254,6 +284,7 @@
         </div>
     </div>
 </div>
+
 
 
 <!-- FOOTER -->
@@ -321,7 +352,8 @@
         <div class="modal-content">
             <span class="close" id="closeErrorModalBtn">&times;</span>
             <h5 id="errorModalTitle">Error</h5> <!-- This will dynamically change to "Success" if needed -->
-            <div id="errorMessage" class="alert alert-danger" role="alert"></div> <!-- alert-danger will change to alert-success if needed -->
+            <div id="errorMessage" class="alert alert-danger" role="alert"></div>
+            <!-- alert-danger will change to alert-success if needed -->
         </div>
     </div>
     <div id="bottom-footer" class="section">
@@ -431,24 +463,31 @@
 
     // Xử lý sự kiện submit của form chọn sản phẩm
     document.getElementById("productSelectionForm").onsubmit = function (event) {
-        event.preventDefault(); // Ngăn chặn hành động submit mặc định
+        event.preventDefault(); // Prevent the default form submission
         var selectedProductElement = document.querySelector('input[name="productId"]:checked');
         if (selectedProductElement) {
             var selectedProductId = selectedProductElement.value;
             var selectedProductKey = selectedProductId.split('_');
             var orderId = selectedProductKey[0];
             var productName = selectedProductKey[1];
+            var productColor = selectedProductKey[2];
+
+            var productNameWithColor = productName + " - " + productColor;
 
             document.getElementById("selectedProductId").value = selectedProductId;
             document.getElementById("orderId").value = orderId;
-            document.getElementById("productName").value = productName;
+            document.getElementById("productName").value = productNameWithColor;
 
             productWarrantyModal.style.display = "none";
-            modal.style.display = "block";
+            document.getElementById("myModal").style.display = "block";
         }
-    }
+    };
 
-    document.getElementById('image').addEventListener('change', function() {
+
+
+
+
+    document.getElementById('image').addEventListener('change', function () {
         var file = this.files[0];
         if (file) {
             var fileType = file.type;
@@ -459,13 +498,23 @@
                 document.getElementById('preview').style.display = 'none'; // Ẩn ảnh xem trước nếu không hợp lệ
             } else {
                 var reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     var previewImage = document.getElementById('preview');
                     previewImage.src = e.target.result;
                     previewImage.style.display = 'block';
                 }
                 reader.readAsDataURL(file);
             }
+        }
+    });
+
+    document.getElementById('warrantyForm').addEventListener('submit', function(e) {
+        var description = document.getElementById('description').value.trim();
+        if (description === '') {
+            document.getElementById('error').style.display = 'inline';
+            e.preventDefault();  // Ngăn chặn việc submit form
+        } else {
+            document.getElementById('error').style.display = 'none';
         }
     });
 
