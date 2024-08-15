@@ -96,7 +96,7 @@ public class ProductServiceImp implements ProductService {
                     e.printStackTrace();
                 }
             }
-            if (colorDTO.getQuantity() <= 0) throw new IllegalArgumentException("Quantity cannot be negative");
+            if (colorDTO.getQuantity() <= 0) throw new IllegalArgumentException("Quantity cannot be negative or zero");
 
             ProductInfo productInfo = new ProductInfo();
             Colors color = new Colors();
@@ -105,9 +105,10 @@ public class ProductServiceImp implements ProductService {
             BigDecimal gia = null;
             try {
                 gia = new BigDecimal(colorDTO.getPrice());
+
             } catch (NumberFormatException e) {
-                e.printStackTrace();
-                return;
+                throw new IllegalArgumentException("Price invalid");
+
             }
             if (gia.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Price cannot be negative");
             productInfo.setPrice(gia);
@@ -216,8 +217,8 @@ public class ProductServiceImp implements ProductService {
 
         ProductViewRequest productViewRequest = getProduct(request.getProductId());
         boolean colorExists = productViewRequest.getColorId().stream().anyMatch(id -> id == color.getColorId() && id != productInfo.getColors().getColorId());
-        if (request.getQuantity() < 0) {
-            throw new IllegalArgumentException("Quantity cannot be negative");
+        if (request.getQuantity() <= 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative or zero");
         }
         if (colorExists) {
             throw new IllegalArgumentException("Color already exists for the product");
@@ -243,7 +244,7 @@ public class ProductServiceImp implements ProductService {
                 if (c.getColorId() == request.getColorId())
                     throw new IllegalArgumentException("Color already exists for the product");
             }
-            if (request.getQuantity() < 0) throw new IllegalArgumentException("Quantity cannot be negative");
+            if (request.getQuantity() <= 0) throw new IllegalArgumentException("Quantity cannot be negative or zero");
             productInfo.setProducts(products);
             productInfo.setColors(color);
             productInfo.setImage(request.getImage());
