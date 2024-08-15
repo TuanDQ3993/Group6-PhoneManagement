@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -64,7 +65,7 @@ public class SalerController {
             @RequestParam("endDate") Optional<String> endDate,
             @RequestParam("status") Optional<String> status,
             @RequestParam("searchQuery") Optional<String> searchQuery,
-            Model model, Principal principal
+            Model model, Principal principal, RedirectAttributes redirectAttributes
     ) {
         String userName = principal.getName();
         Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
@@ -78,8 +79,15 @@ public class SalerController {
         String query = searchQuery.orElse("");
 
 
+
         LocalDate start = startDate.map(LocalDate::parse).orElse(LocalDate.now().minusMonths(1));
         LocalDate end = endDate.map(LocalDate::parse).orElse(LocalDate.now());
+
+        if(start.isAfter(end)){
+            redirectAttributes.addFlashAttribute("error", "Start date cannot be after end date! ");
+            return  "redirect:/saler/orders";
+        }
+
 
         PageableDTO pageableDTO = new PageableDTO(currentPage - 1, pageSize);
         Page<OrderInfoDTO> orderlist = orderService.findPaginated(pageableDTO, start, end, statusO, query, userDTO.get());
@@ -119,7 +127,7 @@ public class SalerController {
         } else if (value == 1) {
             orderService.changeStatusOrder(oid, "Completed");
         } else {
-            orderService.changeStatusOrder(oid, "Cancelled");
+            orderService.changeStatusOrder(oid, "Canceled");
             orderService.backProduct(oid);
         }
 

@@ -132,8 +132,8 @@
                         </div>
                         <div class="form-group">
                             <input th:value="${user.phoneNumber}" class="input" type="tel" name="tel"
-                                   placeholder="Telephone" required pattern="[0-9]{10}">
-                            <small class="form-text text-muted">Please enter a 10-digit phone number.</small>
+                                   placeholder="Telephone" required pattern="0\d{9}">
+                            <small class="form-text text-muted">Please enter a 10-digit phone number and begin to 0.</small>
                         </div>
                     </div>
                     <!-- /Billing Details -->
