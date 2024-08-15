@@ -81,6 +81,11 @@ public class SalerController {
         LocalDate start = startDate.map(LocalDate::parse).orElse(LocalDate.now().minusMonths(1));
         LocalDate end = endDate.map(LocalDate::parse).orElse(LocalDate.now());
 
+        if(start.isAfter(end)){
+            redirectAttributes.addFlashAttribute("error", "Start date cannot be after end date! ");
+            return  "redirect:/saler/orders";
+        }
+
         PageableDTO pageableDTO = new PageableDTO(currentPage - 1, pageSize);
         Page<OrderInfoDTO> orderlist = orderService.findPaginated(pageableDTO, start, end, statusO, query, userDTO.get());
 
