@@ -63,14 +63,13 @@ public class CategoryExcelImportController {
             if (categoryName == null || categoryName.trim().isEmpty()) continue;
 
             if (existingCategoryNamesInExcel.contains(categoryName.trim())) {
-                System.out.println("Duplicate category name in Excel: " + categoryName.trim() + ", skipping...");
-                continue;
+                throw new IllegalArgumentException("Duplicate category name in Excel: " + categoryName.trim() + ", skipping...");
             }
 
             boolean existingCategory = categoryService.findByName(categoryName.trim());
 
             if (existingCategory) {
-                System.out.println("Category with name " + categoryName.trim() + " already exists in database, skipping...");
+                throw new IllegalArgumentException("Category with name " + categoryName.trim() + " already exists in database, skipping...");
             } else {
                 Category category = new Category();
                 category.setCategoryName(categoryName.trim());
