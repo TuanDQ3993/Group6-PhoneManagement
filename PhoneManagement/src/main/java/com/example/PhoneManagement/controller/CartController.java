@@ -7,8 +7,13 @@ import com.example.PhoneManagement.service.imp.CartService;
 import com.example.PhoneManagement.service.imp.UserService;
 import com.example.PhoneManagement.util.Cart;
 import com.example.PhoneManagement.util.Item;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,10 +40,42 @@ public class CartController {
     @PostMapping("/addtocart")
     public String addtocart(@RequestParam("productColorId") int productColorId,
                             @RequestParam("number") int number,
-                            Model model, HttpSession session, Principal principal) {
+                            Model model, HttpSession session, Principal principal,
+                            HttpServletRequest req,RedirectAttributes redirectAttributes,
+                            HttpServletResponse res) {
+
+
+
         if (principal == null) {
             model.addAttribute("error", "You need login before adding to cart.");
             return "login";
+        }else{
+            String userName = principal.getName();
+            Optional<UserDTO> userDTO = userService.getUserByUserName(userName);
+            System.out.println(userDTO.get().getUserId());
+            Users user= userService.getUserById(userDTO.get().getUserId());
+            if(!user.isActive()){
+                redirectAttributes.addFlashAttribute("message", "you have ban,you can't buy!");
+
+
+                // Xóa tất cả cookie liên quan
+                Cookie[] cookies = req.getCookies();
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if (cookie.getName().equals("JSESSIONID") || cookie.getName().equals("Authorization")) {
+                            cookie.setPath("/");
+                            cookie.setMaxAge(0);
+                            res.addCookie(cookie);
+                        }
+                    }
+                }
+
+                // Thiết lập lại SecurityContext
+                SecurityContextHolder.clearContext();
+
+                // Chuyển hướng đến trang đăng nhập
+                return "redirect:/auth/login";
+            }
         }
 
         Cart cart = (Cart) session.getAttribute("cart");
