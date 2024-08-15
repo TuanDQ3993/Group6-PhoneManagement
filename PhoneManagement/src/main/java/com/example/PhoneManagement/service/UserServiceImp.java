@@ -103,6 +103,7 @@ public class UserServiceImp implements UserService {
         if (userOpt.isPresent()) {
             Users user = userOpt.get(); //nếu userOpt trùng với csdl có trong Users thì gán vào user
             UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(user.getUserId());
             userDTO.setUserName(user.getUserName());
             userDTO.setFullName(user.getFullName());
             userDTO.setAddress(user.getAddress());
