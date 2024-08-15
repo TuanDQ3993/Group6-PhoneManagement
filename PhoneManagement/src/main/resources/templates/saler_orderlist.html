@@ -225,6 +225,9 @@
                         </div>
 
                     </div>
+                    <div th:if="${error}">
+                        <p style="font-size: 16px ;padding-left: 12px" th:text="${error}" class="text-danger"></p>
+                    </div>
                 </form>
 
 
