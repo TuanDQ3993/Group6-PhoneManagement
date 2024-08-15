@@ -68,12 +68,13 @@ public class AccountExcelImportController {
             Users user = new Users();
             String userName = null;
             String phoneNumber = null;
-
+            String address = null;
+            String fullName = null;
             if (row.getCell(0) != null) {
                 userName = row.getCell(0).getStringCellValue();
                 if (accountServiceImp.isEmailExist(userName)) {
                     throw new IOException("Row " + (i + 1) + ": Email " + userName + " already exists.");
-                }else if(!accountServiceImp.isValidEmail(userName)){
+                } else if (!accountServiceImp.isValidEmail(userName)) {
                     throw new IOException("Row " + (i + 1) + ": Email " + userName + " not valid.");
                 }
                 user.setUserName(userName);
@@ -84,7 +85,7 @@ public class AccountExcelImportController {
 
             if (row.getCell(3) != null) {
                 phoneNumber = row.getCell(3).getStringCellValue();
-                if (accountServiceImp.isPhoneExist(phoneNumber) && !row.getCell(4).getStringCellValue().equalsIgnoreCase("USER") ) {
+                if (accountServiceImp.isPhoneExist(phoneNumber) && !row.getCell(4).getStringCellValue().equalsIgnoreCase("USER")) {
                     throw new IOException("Row " + (i + 1) + ": Phone number " + phoneNumber + " already exists.");
 
                 } else if (!accountServiceImp.isValidPhoneNumber(phoneNumber)) {
@@ -96,9 +97,20 @@ public class AccountExcelImportController {
                 throw new IOException("Row " + (i + 1) + ": Phone number is required.");
 
             }
+            if (row.getCell(1) != null && !row.getCell(1).getStringCellValue().trim().isEmpty()) {
+                 fullName = row.getCell(1).getStringCellValue().trim();
+                user.setFullName(fullName);
+            } else {
+                throw new IOException("Row " + (i + 1) + ": Full Name is required.");
+            }
+            
+            if (row.getCell(2) != null && !row.getCell(2).getStringCellValue().trim().isEmpty()) {
+                 address = row.getCell(2).getStringCellValue().trim();
+                user.setAddress(address);
+            } else {
+                throw new IOException("Row " + (i + 1) + ": Address is required.");
+            }
 
-            user.setFullName(row.getCell(1) != null ? row.getCell(1).getStringCellValue() : null);
-            user.setAddress(row.getCell(2) != null ? row.getCell(2).getStringCellValue() : null);
             user.setCreatedAt(new Date());
 
             if (row.getCell(4) != null && row.getCell(4).getCellType() == CellType.STRING) {
@@ -128,10 +140,6 @@ public class AccountExcelImportController {
         workbook.close();
         return usersList;
     }
-
-
-
-
 
 
 }
