@@ -64,7 +64,7 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationEntryPoint customAuthenticationEntryPoint() {
         return (request, response, authException) -> {
-            String errorMessage = "Your session has expired or you are not authorized!";
+            String errorMessage = "Link expired or you are not authorized!";
             response.sendRedirect(request.getContextPath() + "/auth/login?error=" + URLEncoder.encode(errorMessage, StandardCharsets.UTF_8));
         };
     }
